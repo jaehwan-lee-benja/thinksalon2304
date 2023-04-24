@@ -6,16 +6,21 @@
     <li v-for="todo in filteredTodos" :key="todo.id">
         <input :class="{ done: todo.done }" v-model="todo.text" placeholder="Type here" :readonly="false">
         <input type="checkbox" v-model="todo.done" @click="updateDone(todo)">
-        <button @click="editTodo(todo)">save</button>
         <button @click="removeTodo(todo)">X</button>
+        <!-- <button @click="editTodo(todo)">save</button> -->
+        <button @click="editTodo(todo)" v-if="shouldShowSaveButton(todo)">save</button>
     </li>
+
+  </ul>
+  <ul>
     <li>
         <form @submit.prevent="addTodo">
             <input v-model="newTodo">
             <button>save new</button>    
         </form>        
-    </li>  
+    </li> 
   </ul>
+  
 </template>
 
 <script>
@@ -28,6 +33,7 @@
         return {
           newTodo: '',
           todos: [],
+          fetchedTodos: [],
           showChecked: false
         }
     },
@@ -54,6 +60,7 @@
               .select()
           const { data } = a;
           this.todos = data;
+          this.fetchedTodos = JSON.parse(JSON.stringify(data));
           console.log("working! - fetchData()");
       },
       async insertData(oHere) { 
@@ -89,6 +96,8 @@
           },
           editTodo(todo) {
               this.updateData(todo);
+              console.log("todo = ", todo);
+              // fetchedTodos에 업로드하는 함수 넣기
           },
           updateDone(todo) {
               todo.done = !todo.done;
@@ -112,6 +121,10 @@
           return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
           (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
           );
+      },
+      shouldShowSaveButton(editedTodo) {
+        const fetchedTodo = this.fetchedTodos.find(e => e.id === editedTodo.id)
+        return fetchedTodo.text != editedTodo.text
       }
     }
   }
