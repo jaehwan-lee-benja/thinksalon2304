@@ -2,7 +2,7 @@
 
   <ol>
     <li v-for="expense in expenses" :key="expense.id">
-        <input v-model="expense.expenseCategory" placeholder="Type here" :readonly="false">
+        <input v-model="expense.expenseCategory" placeholder="Type here">
         <button @click="removeExpense(expense)">X</button>
         <button @click="editExpense(expense)" v-if="isEdited(expense)">save</button>
     </li>
@@ -38,7 +38,7 @@
     },
     methods: {
       addExpense() {
-        let o = { id: this.getUuidv4(), expenseCategory: this.newExpense };
+        let o = { id: this.getUuidv4(), expenseCategory: this.newExpense, order: this.setOrder() };
         this.expenses.push(o);
         this.newExpense = ''
         this.fetchedExpenses.push(JSON.parse(JSON.stringify(o)));
@@ -48,6 +48,7 @@
           const a = await supabase
               .from('expense')
               .select()
+              .order('order', { ascending: true })
           const { data } = a;
           this.expenses = data;
           this.fetchedExpenses = JSON.parse(JSON.stringify(data));
@@ -65,7 +66,18 @@
           }
         },
       removeExpense(expense) {
+        const orderRemoved = expense.order;
+
+        this.expenses.forEach(e => {
+          const order = e.order;
+          if(order > orderRemoved) {
+            this.expenses[this.expenses.indexOf(e)].order = order - 1;
+            this.updateData(e);
+          }
+        });
+
         this.expenses = this.expenses.filter((t) => t !== expense)
+        this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
         this.deleteData(expense);
       },
       async deleteData(expense) {
@@ -96,7 +108,7 @@
           const { error } = await supabase
               .from('expense')
               .update(expense)
-              .eq('id',expense.id)
+              .eq('id', expense.id)
           if (error) {
             throw error;
           }
@@ -114,6 +126,10 @@
          if(fetchedExpense != undefined) { // [질문] 이 방법이 최선이까?
           return fetchedExpense.expenseCategory != editedExpense.expenseCategory
         }
+      },
+      setOrder() {
+        const expenseLength = Object.keys(this.expenses).length;
+        return expenseLength+1 ;
       }
     }
   }
