@@ -1,25 +1,20 @@
 <template>
 
-  <button @click="showChecked = !showChecked">
-        {{ showChecked ? 'show all' : 'show checked only' }}
-  </button>
-
-  <ul>
-    <li v-for="todo in filteredTodos" :key="todo.id">
-        <input type="checkbox" v-model="todo.done" @click="updateDone(todo)">
-        <input :class="{ done: todo.done }" v-model="todo.text" placeholder="Type here" :readonly="false">
-        <button @click="removeTodo(todo)">X</button>
-        <button @click="editTodo(todo)" v-if="isEdited(todo)">save</button>
+  <ol>
+    <li v-for="expense in expenses" :key="expense.id">
+        <input v-model="expense.expenseCategory" placeholder="Type here" :readonly="false">
+        <button @click="removeExpense(expense)">X</button>
+        <button @click="editExpense(expense)" v-if="isEdited(expense)">save</button>
     </li>
-  </ul>
+  </ol>
 
   <ul>
     <li>
-        <form @submit.prevent="addTodo">
-            <input v-model="newTodo">
+        <form @submit.prevent="addExpense">
+            <input v-model="newExpense">
             <button>save new</button>    
         </form>        
-    </li> 
+    </li>
   </ul>
   
 </template>
@@ -32,42 +27,35 @@
 
     data() {
         return {
-          newTodo: '',
-          todos: [],
-          fetchedTodos: [],
+          newExpense: '',
+          expenses: [],
+          fetchedExpenses: [],
           showChecked: false
-        }
-    },
-    computed: {
-        filteredTodos() {
-        return this.showChecked
-            ? this.todos.filter((t) => t.done)
-            : this.todos
         }
     },
     mounted() {
       this.fetchData();
     },
     methods: {
-      addTodo() {
-        console.log("addTodo here!");
-        let o = { id: this.getUuidv4(), text: this.newTodo, done: false };
-        this.todos.push(o);
-        this.newTodo = ''
+      addExpense() {
+        let o = { id: this.getUuidv4(), expenseCategory: this.newExpense };
+        this.expenses.push(o);
+        this.newExpense = ''
+        this.fetchedExpenses.push(JSON.parse(JSON.stringify(o)));
         this.insertData(o);
       },
       async fetchData() {
           const a = await supabase
-              .from('toDo')
+              .from('expense')
               .select()
           const { data } = a;
-          this.todos = data;
-          this.fetchedTodos = JSON.parse(JSON.stringify(data));
+          this.expenses = data;
+          this.fetchedExpenses = JSON.parse(JSON.stringify(data));
       },
       async insertData(oHere) { 
         try {
               const { error } = await supabase
-                  .from('toDo')
+                  .from('expense')
                   .insert(oHere)
               if (error) {
                   throw error;
@@ -76,16 +64,16 @@
               console.error(error);
           }
         },
-      removeTodo(todo) {
-        this.todos = this.todos.filter((t) => t !== todo)
-        this.deleteData(todo);
+      removeExpense(expense) {
+        this.expenses = this.expenses.filter((t) => t !== expense)
+        this.deleteData(expense);
       },
-      async deleteData(todo) {
+      async deleteData(expense) {
         try {
           const { error } = await supabase
-            .from('toDo')
+            .from('expense')
             .delete()
-            .eq('id', todo['id'])
+            .eq('id', expense['id'])
           if (error) {
             throw error;
           }
@@ -93,33 +81,22 @@
           console.error(error);
         }
       },
-      editTodo(editedTodo) {
-          this.updateData(editedTodo);
-          // if(this.isEdited(editedTodo)){
-          //   // const thisFetchedTodos = this.fetchedTodos;
-          //   const fetchedTodosKeys = Object.keys(this.fetchedTodos);
-          //   const fetchedTodoKey = fetchedTodosKeys.find(key => this.fetchedTodos[key] === editedTodo)
-          //   console.log("fetchedTodoKey = ", fetchedTodoKey);
-          //   this.fetchedTodos[fetchedTodoKey] = JSON.parse(JSON.stringify(editedTodo));
-          // } // [질문] 이 부분은 왜 안되는가?
-          const fetchedTodosKeys = Object.keys(this.fetchedTodos);
-          fetchedTodosKeys.forEach(e => {
-            const fetchedTodo = this.fetchedTodos[e];
-            if(fetchedTodo.id === editedTodo.id) {
-              this.fetchedTodos[e] = JSON.parse(JSON.stringify(editedTodo));
+      editExpense(editedExpense) {
+          this.updateData(editedExpense);
+          const fetchedExpensesKeys = Object.keys(this.fetchedExpenses);
+          fetchedExpensesKeys.forEach(e => {
+            const fetchedExpense = this.fetchedExpenses[e];
+            if(fetchedExpense.id === editedExpense.id) {
+              this.fetchedExpenses[e] = JSON.parse(JSON.stringify(editedExpense));
             }
           })
       },
-      updateDone(todo) {
-          todo.done = !todo.done;
-          this.updateData(todo);
-      },
-      async updateData(todo) { 
+      async updateData(expense) { 
         try {
           const { error } = await supabase
-              .from('toDo')
-              .update(todo)
-              .eq('id',todo.id)
+              .from('expense')
+              .update(expense)
+              .eq('id',expense.id)
           if (error) {
             throw error;
           }
@@ -132,10 +109,10 @@
           (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
           );
       },
-      isEdited(editedTodo) {
-        const fetchedTodo = this.fetchedTodos.find(e => e.id === editedTodo.id)
-         if(fetchedTodo != undefined) { // [질문] 이 방법이 최선이까?
-          return fetchedTodo.text != editedTodo.text
+      isEdited(editedExpense) {
+        const fetchedExpense = this.fetchedExpenses.find(e => e.id === editedExpense.id)
+         if(fetchedExpense != undefined) { // [질문] 이 방법이 최선이까?
+          return fetchedExpense.expenseCategory != editedExpense.expenseCategory
         }
       }
     }
