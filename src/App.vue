@@ -29,7 +29,6 @@
 <script>
   
   import { supabase } from './lib/supabaseClient.js'
-  import { ref } from 'vue'
 
   export default {
 
@@ -42,28 +41,34 @@
         }
     },
     setup() {
-      console.log("setup!");
-      // console.log("this.expenses = ", this.expenses);
-      const items = ref( [
-        {newExpenseAmount: 1},
-        {newExpenseAmount: 2},
-        {newExpenseAmount: 3},
-      ] );
-      console.log("items = ", items);
-      const totalExpenseAmount = ref(0);
-      // items 배열의 모든 expenseAmount를 합산하는 함수
-      const calculateTotalExpenseAmount = () => {
-        totalExpenseAmount.value = items.value.reduce((acc, item) => acc + item.expenseAmount, 0)
-      }
-      // 컴포넌트가 처음 마운트될 때 합산 실행
-      calculateTotalExpenseAmount()
-      return { items, totalExpenseAmount }
+      // console.log("setup!");
+      // // console.log("this.expenses = ", this.expenses);
+      // // const items = ref( [
+      // //   {expenseAmount: 1},
+      // //   {expenseAmount: 2},
+      // //   {expenseAmount: 3},
+      // // ] );
+      // // console.log("items = ", items);
+      // const totalExpenseAmount = ref(0);
+      // // items 배열의 모든 expenseAmount를 합산하는 함수
+      // const calculateTotalExpenseAmount = () => {
+      //   totalExpenseAmount.value = this.expenses.value.reduce((acc, item) => acc + item.expenseAmount, 0)
+      // }
+      // // 컴포넌트가 처음 마운트될 때 합산 실행
+      // calculateTotalExpenseAmount()
+      // // return { items, totalExpenseAmount }
+      // this.totalExpenseAmount = this.expenses.reduce((acc, item) => acc + item.expenseAmount, 0)
     },
     mounted() {
       this.fetchData();
     },
     created() {
       this.setEmpthyToNull();
+    },
+    computed: {
+      totalExpenseAmount() {
+        return this.expenses.reduce((acc, item) => acc + Number(item.expenseAmount), 0)
+      } 
     },
     methods: {
       addExpense() {
@@ -168,10 +173,11 @@
       },
       isEdited(editedExpense) {
         const fetchedExpense = this.fetchedExpenses.find(e => e.id === editedExpense.id);
-        console.log("f = ", fetchedExpense.expenseCategory, " | ", fetchedExpense.expenseAmount)
-        console.log("e = ", editedExpense.expenseCategory, " | ", editedExpense.expenseAmount)
-         if(fetchedExpense != undefined) { // [질문] 이 방법이 최선이까?
-          return fetchedExpense.expenseCategory != editedExpense.expenseCategory || fetchedExpense.expenseAmount != editedExpense.expenseAmount
+        console.log("f = ", fetchedExpense.expenseCategory+" ", " | ", Number(fetchedExpense.expenseAmount))
+        console.log("e = ", editedExpense.expenseCategory+" ", " | ", Number(editedExpense.expenseAmount))
+        if(fetchedExpense != undefined) {
+          return (fetchedExpense.expenseCategory || "") != (editedExpense.expenseCategory || "") 
+          || Number(fetchedExpense.expenseAmount) != Number(editedExpense.expenseAmount)
         }
       },
       setOrder() {
