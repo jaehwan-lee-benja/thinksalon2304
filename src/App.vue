@@ -1,9 +1,12 @@
 <template>
 
   <ol>
-    <li v-for="expense in expenses" :key="expense.id">
+    <li ref="expense" v-for="expense in expenses" :key="expense.id">
         <input v-model="expense.expenseCategory" placeholder="Type here">
+        <span> : </span>
+        <input v-model="expense.expenseAmount" placeholder="Type here">
         <button @click="removeExpense(expense)">X</button>
+        <!-- <button @click="editOrder(expense)">☰</button> -->
         <button @click="editExpense(expense)" v-if="isEdited(expense)">save</button>
     </li>
   </ol>
@@ -11,36 +14,78 @@
   <ul>
     <li>
         <form @submit.prevent="addExpense">
-            <input v-model="newExpense">
-            <button>save new</button>    
+          <input v-model="newExpenseCategory">
+          <span> : </span>
+          <input v-model="newExpenseAmount">
+          <button>save new</button>
         </form>        
     </li>
   </ul>
+
+  <p>Total Expense Amount: {{ totalExpenseAmount }}</p>
   
 </template>
 
 <script>
   
   import { supabase } from './lib/supabaseClient.js'
+  import { ref } from 'vue'
 
   export default {
 
     data() {
         return {
-          newExpense: '',
           expenses: [],
           fetchedExpenses: [],
-          showChecked: false
+          newExpenseCategory: '',
+          newExpenseAmount: '',
         }
+    },
+    setup() {
+      console.log("setup!");
+      // console.log("this.expenses = ", this.expenses);
+      const items = ref( [
+        {newExpenseAmount: 1},
+        {newExpenseAmount: 2},
+        {newExpenseAmount: 3},
+      ] );
+      console.log("items = ", items);
+      const totalExpenseAmount = ref(0);
+      // items 배열의 모든 expenseAmount를 합산하는 함수
+      const calculateTotalExpenseAmount = () => {
+        totalExpenseAmount.value = items.value.reduce((acc, item) => acc + item.expenseAmount, 0)
+      }
+      // 컴포넌트가 처음 마운트될 때 합산 실행
+      calculateTotalExpenseAmount()
+      return { items, totalExpenseAmount }
     },
     mounted() {
       this.fetchData();
     },
+    created() {
+      this.setEmpthyToNull();
+    },
     methods: {
       addExpense() {
-        let o = { id: this.getUuidv4(), expenseCategory: this.newExpense, order: this.setOrder() };
+        if(this.newExpenseCategory == '') {
+          this.newExpenseCategory = null;
+        }
+
+        console.log("this.newExpenseAmount = ", this.newExpenseAmount);
+        if(this.newExpenseAmount == '') {
+          console.log("check!");
+          this.newExpenseAmount = null;
+        }
+        console.log("this.newExpenseAmount = ", this.newExpenseAmount);
+
+        const o = { 
+          id: this.getUuidv4(), 
+          expenseCategory: this.newExpenseCategory, 
+          expenseAmount: this.newExpenseAmount,
+          order: this.setOrder() };
         this.expenses.push(o);
-        this.newExpense = ''
+        this.newExpenseCategory = ''
+        this.newExpenseAmount = ''
         this.fetchedExpenses.push(JSON.parse(JSON.stringify(o)));
         this.insertData(o);
       },
@@ -122,14 +167,19 @@
           );
       },
       isEdited(editedExpense) {
-        const fetchedExpense = this.fetchedExpenses.find(e => e.id === editedExpense.id)
+        const fetchedExpense = this.fetchedExpenses.find(e => e.id === editedExpense.id);
+        console.log("f = ", fetchedExpense.expenseCategory, " | ", fetchedExpense.expenseAmount)
+        console.log("e = ", editedExpense.expenseCategory, " | ", editedExpense.expenseAmount)
          if(fetchedExpense != undefined) { // [질문] 이 방법이 최선이까?
-          return fetchedExpense.expenseCategory != editedExpense.expenseCategory
+          return fetchedExpense.expenseCategory != editedExpense.expenseCategory || fetchedExpense.expenseAmount != editedExpense.expenseAmount
         }
       },
       setOrder() {
         const expenseLength = Object.keys(this.expenses).length;
         return expenseLength+1 ;
+      },
+      setEmpthyToNull(){
+        console.log("expense = ", this.$refs.expense); // [질문] 어떻게 null로 인식할 수 있을까?
       }
     }
   }
