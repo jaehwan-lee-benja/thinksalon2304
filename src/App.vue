@@ -1,7 +1,9 @@
 <template>
+
   <button @click="showChecked = !showChecked">
         {{ showChecked ? 'show all' : 'show checked only' }}
   </button>
+
   <ul>
     <li v-for="todo in filteredTodos" :key="todo.id">
         <input type="checkbox" v-model="todo.done" @click="updateDone(todo)">
@@ -9,8 +11,8 @@
         <button @click="removeTodo(todo)">X</button>
         <button @click="editTodo(todo)" v-if="isEdited(todo)">save</button>
     </li>
-
   </ul>
+
   <ul>
     <li>
         <form @submit.prevent="addTodo">
@@ -48,6 +50,7 @@
     },
     methods: {
       addTodo() {
+        console.log("addTodo here!");
         let o = { id: this.getUuidv4(), text: this.newTodo, done: false };
         this.todos.push(o);
         this.newTodo = ''
@@ -98,7 +101,7 @@
           //   const fetchedTodoKey = fetchedTodosKeys.find(key => this.fetchedTodos[key] === editedTodo)
           //   console.log("fetchedTodoKey = ", fetchedTodoKey);
           //   this.fetchedTodos[fetchedTodoKey] = JSON.parse(JSON.stringify(editedTodo));
-          // }
+          // } // [질문] 이 부분은 왜 안되는가?
           const fetchedTodosKeys = Object.keys(this.fetchedTodos);
           fetchedTodosKeys.forEach(e => {
             const fetchedTodo = this.fetchedTodos[e];
@@ -130,13 +133,10 @@
           );
       },
       isEdited(editedTodo) {
-        console.log("editedTodo = ", editedTodo);
         const fetchedTodo = this.fetchedTodos.find(e => e.id === editedTodo.id)
-        console.log("fetchedTodo = ", fetchedTodo);
-        // if(fetchedTodo.text != editedTodo.text) {
-        //   console.log("true");
-        // }
-        return fetchedTodo.text != editedTodo.text
+         if(fetchedTodo != undefined) { // [질문] 이 방법이 최선이까?
+          return fetchedTodo.text != editedTodo.text
+        }
       }
     }
   }
