@@ -1,15 +1,17 @@
 <template>
 
   <ol>
-    <li ref="expense" v-for="expense in expenses" :key="expense.id">
+    <li v-for="expense in expenses" :key="expense.id">
         <input v-model="expense.expenseCategory" placeholder="Type here">
         <span> : </span>
         <input :class="expenseAmountStyle" v-model="expense.expenseAmount" placeholder="Type here">
         <button @click="removeExpense(expense)">X</button>
         <!-- <button @click="editOrder(expense)">☰</button> -->
-        <button @click="editExpense(expense)" v-if="isEdited(expense)">save</button>
     </li>
   </ol>
+  <div v-for="expense in expenses" :key="expense.id">
+    <button @click="editExpense(expense)" v-if="isEdited(expense)">save</button>
+  </div>
 
   <ul>
     <li>
