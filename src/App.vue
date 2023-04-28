@@ -21,7 +21,7 @@
     </li>
   </ol>
 
-  <button v-if="isEdited2" @click="editExpenses" >save</button>
+  <button v-if="isEdited" @click="editExpenses" >save</button>
 
   
 </template>
@@ -53,12 +53,12 @@
         const sum = a2 + b2;
         return sum.toLocaleString();
       },
-      isEdited2() {
+      isEdited() {
         const fetched = [];
         this.fetchedExpenses.forEach(e => {
           fetched.push({
             expenseCategory: e.expenseCategory,
-            expenseAmount: Number(e.expenseAmount)
+            expenseAmount: e.expenseAmount
           })
         });
 
@@ -66,10 +66,12 @@
         this.expenses.forEach(e => {
           edited.push({
             expenseCategory: e.expenseCategory,
-            expenseAmount: Number(e.expenseAmount)
+            expenseAmount: e.expenseAmount
           })
         });
+
         return ( JSON.stringify(fetched) || "" ) != ( JSON.stringify(edited) || "" )
+
       },
       newExpenseAmountWithComma: {
         get() {
@@ -181,13 +183,6 @@
           return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
           (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
           );
-      },
-      isEdited(editedExpense) {
-        const fetchedExpense = this.fetchedExpenses.find(e => e.id === editedExpense.id);
-        if(fetchedExpense != undefined) {
-          return (fetchedExpense.expenseCategory || "") != (editedExpense.expenseCategory || "") 
-          || Number(fetchedExpense.expenseAmount) != Number(editedExpense.expenseAmount)
-        }
       },
       setOrder() {
         const expenseLength = Object.keys(this.expenses).length;
