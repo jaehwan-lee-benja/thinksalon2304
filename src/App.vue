@@ -4,7 +4,7 @@
     <li ref="expense" v-for="expense in expenses" :key="expense.id">
         <input v-model="expense.expenseCategory" placeholder="Type here">
         <span> : </span>
-        <input v-model="expense.expenseAmount" placeholder="Type here">
+        <input :class="expenseAmountStyle" v-model="expense.expenseAmount" placeholder="Type here">
         <button @click="removeExpense(expense)">X</button>
         <!-- <button @click="editOrder(expense)">☰</button> -->
         <button @click="editExpense(expense)" v-if="isEdited(expense)">save</button>
@@ -16,7 +16,7 @@
         <form @submit.prevent="addExpense">
           <input v-model="newExpenseCategory">
           <span> : </span>
-          <input v-model="newExpenseAmount">
+          <input :class="expenseAmountStyle" v-model="newExpenseAmount">
           <button>save new</button>
         </form>        
     </li>
@@ -38,51 +38,19 @@
           fetchedExpenses: [],
           newExpenseCategory: '',
           newExpenseAmount: '',
+          expenseAmountStyle: 'expenseAmountStyle'
         }
-    },
-    setup() {
-      // console.log("setup!");
-      // // console.log("this.expenses = ", this.expenses);
-      // // const items = ref( [
-      // //   {expenseAmount: 1},
-      // //   {expenseAmount: 2},
-      // //   {expenseAmount: 3},
-      // // ] );
-      // // console.log("items = ", items);
-      // const totalExpenseAmount = ref(0);
-      // // items 배열의 모든 expenseAmount를 합산하는 함수
-      // const calculateTotalExpenseAmount = () => {
-      //   totalExpenseAmount.value = this.expenses.value.reduce((acc, item) => acc + item.expenseAmount, 0)
-      // }
-      // // 컴포넌트가 처음 마운트될 때 합산 실행
-      // calculateTotalExpenseAmount()
-      // // return { items, totalExpenseAmount }
-      // this.totalExpenseAmount = this.expenses.reduce((acc, item) => acc + item.expenseAmount, 0)
     },
     mounted() {
       this.fetchData();
     },
-    created() {
-      this.setEmpthyToNull();
-    },
     computed: {
       totalExpenseAmount() {
-        return this.expenses.reduce((acc, item) => acc + Number(item.expenseAmount), 0)
-      } 
+        return this.expenses.reduce((acc, item) => acc + Number(item.expenseAmount), 0).toLocaleString()
+      }
     },
     methods: {
       addExpense() {
-        if(this.newExpenseCategory == '') {
-          this.newExpenseCategory = null;
-        }
-
-        console.log("this.newExpenseAmount = ", this.newExpenseAmount);
-        if(this.newExpenseAmount == '') {
-          console.log("check!");
-          this.newExpenseAmount = null;
-        }
-        console.log("this.newExpenseAmount = ", this.newExpenseAmount);
-
         const o = { 
           id: this.getUuidv4(), 
           expenseCategory: this.newExpenseCategory, 
@@ -173,8 +141,6 @@
       },
       isEdited(editedExpense) {
         const fetchedExpense = this.fetchedExpenses.find(e => e.id === editedExpense.id);
-        console.log("f = ", fetchedExpense.expenseCategory+" ", " | ", Number(fetchedExpense.expenseAmount))
-        console.log("e = ", editedExpense.expenseCategory+" ", " | ", Number(editedExpense.expenseAmount))
         if(fetchedExpense != undefined) {
           return (fetchedExpense.expenseCategory || "") != (editedExpense.expenseCategory || "") 
           || Number(fetchedExpense.expenseAmount) != Number(editedExpense.expenseAmount)
@@ -183,10 +149,15 @@
       setOrder() {
         const expenseLength = Object.keys(this.expenses).length;
         return expenseLength+1 ;
-      },
-      setEmpthyToNull(){
-        console.log("expense = ", this.$refs.expense); // [질문] 어떻게 null로 인식할 수 있을까?
       }
     }
   }
 </script>
+
+<style>
+.expenseAmountStyle {
+  text-align : right;
+  width: 70px;
+  margin-right: 10px;
+}
+</style>
