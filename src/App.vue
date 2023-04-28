@@ -9,9 +9,8 @@
         <!-- <button @click="editOrder(expense)">☰</button> -->
     </li>
   </ol>
-  <div v-for="expense in expenses" :key="expense.id">
-    <button @click="editExpense(expense)" v-if="isEdited(expense)">save</button>
-  </div>
+
+  <button v-if="isEdited2" @click="editExpenses" >save</button>
 
   <ul>
     <li>
@@ -49,6 +48,25 @@
     computed: {
       totalExpenseAmount() {
         return this.expenses.reduce((acc, item) => acc + Number(item.expenseAmount), 0).toLocaleString()
+      },
+      isEdited2() {
+
+        const fetched = [];
+        this.fetchedExpenses.forEach(e => {
+          fetched.push({
+            expenseCategory: e.expenseCategory,
+            expenseAmount: Number(e.expenseAmount)
+          })
+        });
+
+        const edited = [];
+        this.expenses.forEach(e => {
+          edited.push({
+            expenseCategory: e.expenseCategory,
+            expenseAmount: Number(e.expenseAmount)
+          })
+        });
+        return ( JSON.stringify(fetched) || "" ) != ( JSON.stringify(edited) || "" )
       }
     },
     methods: {
@@ -123,6 +141,11 @@
             }
           })
       },
+      editExpenses() {
+        const editedExpenses = this.expenses;
+        this.expenses.forEach(e => this.updateData(e))
+        this.fetchedExpenses = JSON.parse(JSON.stringify(editedExpenses));
+      },
       async updateData(expense) { 
         try {
           const { error } = await supabase
@@ -148,6 +171,23 @@
           || Number(fetchedExpense.expenseAmount) != Number(editedExpense.expenseAmount)
         }
       },
+      // isEdited2() {
+      //   console.log("check! - 1");
+      //   if(this.fetchedExpenses != undefined) {
+      //     console.log("check! - 2");
+      //     return (this.fetchedExpenses || "") != (this.editedExpenses || "") 
+      //   }
+      // },
+      // isEdited2() {
+      //   const a = "b"
+      //   if(a == "a") {
+      //     console.log("true");
+      //     return true
+      //   } else {
+      //     console.log("false");
+      //     return false
+      //   }
+      // },
       setOrder() {
         const expenseLength = Object.keys(this.expenses).length;
         return expenseLength+1 ;
