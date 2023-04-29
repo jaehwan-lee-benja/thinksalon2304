@@ -6,15 +6,16 @@
     <li v-for="expense in expenses" :key="expense.id">
         <input v-model="expense.expenseCategory" placeholder="Type here">
         <span> : </span>
+        <!-- <input :class="expenseAmountStyle" v-model="expense.expenseAmountWithComma" @input="setComma(expense.id)" placeholder="Type here"> -->
         <input :class="expenseAmountStyle" v-model="expense.expenseAmount" @input="setComma(expense.id)" placeholder="Type here">
         <button @click="removeExpense(expense)">X</button>
-        <!-- <button @click="editOrder(expense)">☰</button> -->
     </li>
+
+    
     <li>
         <form @submit.prevent="addExpense">
           <input v-model="newExpenseCategory" placeholder="Type here">
           <span> : </span>
-          <!-- <input :class="expenseAmountStyle" v-model="newExpenseAmount"> -->
           <input :class="expenseAmountStyle" v-model="newExpenseAmountWithComma" placeholder="Type here">
           <button>save new</button>
         </form>        
@@ -83,8 +84,8 @@
         },
         set(value) {
           this.newExpenseAmount = value.replace(/[^0-9.]/g, "");
-        },
-      },
+        }
+      }
     },
     methods: {
       addExpense() {
@@ -92,7 +93,8 @@
           id: this.getUuidv4(), 
           expenseCategory: this.newExpenseCategory, 
           expenseAmount: this.newExpenseAmount,
-          order: this.setOrder() };
+          order: this.setOrder()
+        };
         this.expenses.push(o);
         this.newExpenseCategory = ''
         this.newExpenseAmount = ''
