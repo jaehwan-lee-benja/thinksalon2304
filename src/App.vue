@@ -165,7 +165,10 @@
       },
       editExpenses() {
         const editedExpenses = this.expenses;
-        this.expenses.forEach(e => this.updateData(e))
+        this.expenses.forEach(e => {
+          e.expenseAmount = e.expenseAmount.replace(/[^0-9.]/g, "");
+          this.updateData(e)
+        })
         this.fetchedExpenses = JSON.parse(JSON.stringify(editedExpenses));
       },
       async updateData(expense) { 
