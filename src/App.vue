@@ -86,7 +86,7 @@
             <input v-model="showAmountOfFutureExpense" placeholder="입력">
           </div>
           <div>
-            <span>계산값: {{ totalAmount }}</span>
+            <span>계산값: {{ sumFutureExpenses }}</span>
           </div>
         </div>
         <ol>
@@ -157,18 +157,12 @@
         return arr
       },
       sortFutureExpenses() {
-        const arr = [];
-        this.expenses.forEach(e => {
-          if(e.parentsCategory === "futureExpense") {
-            arr.push(e);
-          }
-        })
-        return arr
+        return this.expenses.filter(e => e.parentsCategory === "futureExpense")
       },
-      // sumPastExpenses() {
-      //   const sum = this.sortPastExpenses().reduce((acc, item) => acc + Number(item.amount), 0);
-      //   return sum;
-      // },
+      sumFutureExpenses() {
+        return this.expenses.filter(e => e.parentsCategory === "futureExpense")
+        .reduce((acc, item) => acc + Number(item.amount), 0);
+      },
       showAmountOfTotalExpense() {
         let result = '';
         this.expenses.forEach(e => {
