@@ -1,29 +1,50 @@
 <template>
 
-  <p>현재형 지출 합: {{ totalExpenseAmount }}</p>
+<div class="unitDiv">
+    <h1>하류 - 돈이 나가는 영역</h1>
+    <div>
+      <span>결정값:</span>
+      <input v-model="presentBudget" placeholder="입력">
+    </div>
+    <div>
+      <span>계산값: {{ totalExpenseAmount }}</span>
+    </div>
 
-  <ol>
-    <li v-for="expense in expenses" :key="expense.id">
-        <input v-model="expense.expenseCategory" placeholder="Type here">
-        <span> : </span>
-        <!-- <input :class="expenseAmountStyle" v-model="expense.expenseAmountWithComma" @input="setComma(expense.id)" placeholder="Type here"> -->
-        <input :class="expenseAmountStyle" v-model="expense.expenseAmount" @input="setComma(expense.id)" placeholder="Type here">
-        <button @click="removeExpense(expense)">X</button>
-    </li>
+    <div class="unitDiv">
+      <h2>현재형 지출</h2>
+      <div>
+        <span>결정값:</span>
+        <input v-model="presentBudget" placeholder="입력">
+      </div>
+      <div>
+        <span>계산값: {{ totalExpenseAmount }}</span>
+      </div>
 
-    
-    <li>
-        <form @submit.prevent="addExpense">
-          <input v-model="newExpenseCategory" placeholder="Type here">
-          <span> : </span>
-          <input :class="expenseAmountStyle" v-model="newExpenseAmountWithComma" placeholder="Type here">
-          <button>save new</button>
-        </form>        
-    </li>
-  </ol>
+      <ol>
+        <li v-for="expense in expenses" :key="expense.id">
+            <input v-model="expense.expenseCategory">
+            <span> : </span>
+            <!-- <input :class="expenseAmountStyle" v-model="expense.expenseAmount" @input="setComma(expense.id)" placeholder="Type here"> -->
+            <input :class="expenseAmountStyle" v-model="expense.expenseAmount" placeholder="0">
+            <button @click="removeExpense(expense)">X</button>
+        </li>
+      </ol>
 
-  <button v-if="isEdited" @click="editExpenses" >save</button>
+      <ul>
+        <li>
+            <form @submit.prevent="addExpense">
+              <input v-model="newExpenseCategory" placeholder="입력">
+              <span> : </span>
+              <!-- <input :class="expenseAmountStyle" v-model="newExpenseAmountWithComma" placeholder="Type here"> -->
+              <input :class="expenseAmountStyle" v-model="newExpenseAmount" placeholder="0">
+              <button>save new</button>
+            </form>        
+        </li>
+      </ul>
 
+      <button v-if="isEdited" @click="editExpenses" >save</button>
+    </div>
+  </div>
   
 </template>
 
@@ -39,7 +60,8 @@
           fetchedExpenses: [],
           newExpenseCategory: '',
           newExpenseAmount: '',
-          expenseAmountStyle: 'expenseAmountStyle'
+          expenseAmountStyle: 'expenseAmountStyle',
+          presentBudget: ''
         }
     },
     mounted() {
@@ -47,12 +69,13 @@
     },
     computed: {
       totalExpenseAmount() {
-        const a = this.expenses.reduce((acc, item) => acc + Number(parseInt(item.expenseAmount.replace(/,/g , ''))), 0);
-        const b = this.newExpenseAmount;
-        const a2 = Number(a);
-        const b2 = Number(b);
-        const sum = a2 + b2;
-        return sum.toLocaleString();
+        // const a = this.expenses.reduce((acc, item) => acc + Number(parseInt(item.expenseAmount.replace(/,/g , ''))), 0);
+        // const b = this.newExpenseAmount;
+        // const a2 = Number(a);
+        // const b2 = Number(b);
+        // const sum = a2 + b2;
+        // return sum.toLocaleString();
+        return this.expenses.reduce((acc, item) => acc + Number(item.expenseAmount), 0)
       },
       isEdited() {
         const fetched = [];
@@ -74,18 +97,18 @@
         return ( JSON.stringify(fetched) || "" ) != ( JSON.stringify(edited) || "" )
 
       },
-      newExpenseAmountWithComma: {
-        get() {
-          if(this.newExpenseAmount > 0) {
-            return Number(this.newExpenseAmount).toLocaleString();
-          } else {
-            return 0;
-          }
-        },
-        set(value) {
-          this.newExpenseAmount = value.replace(/[^0-9.]/g, "");
-        }
-      }
+      // newExpenseAmountWithComma: {
+      //   get() {
+      //     if(this.newExpenseAmount > 0) {
+      //       return Number(this.newExpenseAmount).toLocaleString();
+      //     } else {
+      //       return 0;
+      //     }
+      //   },
+      //   set(value) {
+      //     this.newExpenseAmount = value.replace(/[^0-9.]/g, "");
+      //   }
+      // }
     },
     methods: {
       addExpense() {
@@ -108,9 +131,9 @@
               .order('order', { ascending: true })
           const { data } = a;
           this.expenses = data;
-          this.expenses.forEach(e => {
-            e.expenseAmount = Number(e.expenseAmount).toLocaleString();
-          })
+          // this.expenses.forEach(e => {
+          //   e.expenseAmount = Number(e.expenseAmount).toLocaleString();
+          // })
           this.fetchedExpenses = JSON.parse(JSON.stringify(data));
       },
       async insertData(oHere) { 
@@ -166,7 +189,7 @@
       editExpenses() {
         const editedExpenses = this.expenses;
         this.expenses.forEach(e => {
-          e.expenseAmount = e.expenseAmount.replace(/[^0-9.]/g, "");
+          // e.expenseAmount = e.expenseAmount.replace(/[^0-9.]/g, "");
           this.updateData(e)
         })
         this.fetchedExpenses = JSON.parse(JSON.stringify(editedExpenses));
@@ -193,16 +216,16 @@
         const expenseLength = Object.keys(this.expenses).length;
         return expenseLength+1 ;
       },
-      setComma(expenseId) {
-        const selectedExpense = this.expenses.find(e => e.id === expenseId);
-        const index = this.expenses.indexOf(selectedExpense)
-        const formattedAmount = parseInt(selectedExpense.expenseAmount.replace(/,/g , ''))
-        if(!isNaN(formattedAmount)){
-          this.expenses[index].expenseAmount = formattedAmount.toLocaleString();
-        } else {
-          this.expenses[index].expenseAmount = "0";
-        }
-      }
+      // setComma(expenseId) {
+      //   const selectedExpense = this.expenses.find(e => e.id === expenseId);
+      //   const index = this.expenses.indexOf(selectedExpense)
+      //   const formattedAmount = parseInt(selectedExpense.expenseAmount.replace(/,/g , ''))
+      //   if(!isNaN(formattedAmount)){
+      //     this.expenses[index].expenseAmount = formattedAmount.toLocaleString();
+      //   } else {
+      //     this.expenses[index].expenseAmount = "0";
+      //   }
+      // }
     }
   }
 </script>
@@ -212,5 +235,10 @@
   text-align : right;
   width: 70px;
   margin-right: 10px;
+}
+.unitDiv {
+  border: 1px solid black;
+  padding: 10px;
+  margin: 5px;
 }
 </style>
