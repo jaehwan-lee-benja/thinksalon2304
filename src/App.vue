@@ -1,34 +1,31 @@
 <template>
-  <div class="bodyDiv">
-    <div class="unitDiv">
-      <div>
-        <h1>하류 - 돈이 나가는 영역</h1>
-        <ul>
-          <li v-for="expense in sortTotalExpenses" :key="expense.id">
-              <span>결정값</span>
-              <span> : </span>
-              <input :class="amountStyle" v-model="expense.amount" placeholder="0">
-              <button v-if="isEdited" @click="editExpenses" >저장</button>
-          </li>
-          <li>계산값 : {{ sumTotalExpenses }}</li>
-        </ul>
+  <div :class="bodyDiv">
+    <div>
+      <h1>돈이 나가는 영역</h1>
+      <ul>
+        <li v-for="expense in sortTotalExpenses" :key="expense.id">
+            <span>결정값</span>
+            <span> : </span>
+            <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+            <button v-if="isEdited" @click="editExpenses" >저장</button>
+        </li>
+        <li>계산값 : {{ sumTotalExpenses }}</li>
+      </ul>
+    </div>
+    <div :class="subDiv">
+      <div :class="unitDiv">
         <div>
+          <h2>과거형 지출</h2>
+          <ul>
+            <li v-for="expense in sortPastExpenses" :key="expense.id">
+                <span>결정값 : </span>
+                <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+                <button v-if="isEdited" @click="editExpenses" >저장</button>
+            </li>
+            <li>계산값 : {{ sumPastExpenses }}</li>
+          </ul>
         </div>
-      </div>
-      <div class="subDiv">
-        <div class="unitDiv">
-          <div>
-            <h2>과거형 지출</h2>
-            <ul>
-              <li v-for="expense in sortPastExpenses" :key="expense.id">
-                  <span>결정값</span>
-                  <span> : </span>
-                  <input :class="amountStyle" v-model="expense.amount" placeholder="0">
-                  <button v-if="isEdited" @click="editExpenses" >저장</button>
-              </li>
-              <li>계산값 : {{ sumPastExpenses }}</li>
-            </ul>
-          </div>
+        <div>
           <ol>
             <li v-for="expense in sortParentsPastExpenses" :key="expense.id">
                 <input :class="categoryStyle" v-model="expense.category">
@@ -49,19 +46,20 @@
           </ul>
           <button v-if="isEdited" @click="editExpenses" >저장</button>
         </div>
-        <div class="unitDiv">
-          <div>
-            <h2>현재형 지출</h2>
-            <ul>
-              <li v-for="expense in sortPresentExpenses" :key="expense.id">
-                  <span>결정값</span>
-                  <span> : </span>
-                  <input :class="amountStyle" v-model="expense.amount" placeholder="0">
-                  <button v-if="isEdited" @click="editExpenses" >저장</button>
-              </li>
-              <li>계산값 : {{ sumPastExpenses }}</li>
-            </ul>
-          </div>
+      </div>
+      <div :class="unitDiv">
+        <div>
+          <h2>현재형 지출</h2>
+          <ul>
+            <li v-for="expense in sortPresentExpenses" :key="expense.id">
+                <span>결정값 : </span>
+                <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+                <button v-if="isEdited" @click="editExpenses" >저장</button>
+            </li>
+            <li>계산값 : {{ sumPastExpenses }}</li>
+          </ul>
+        </div>
+        <div>
           <ol>
             <li v-for="expense in sortParentsPresentExpenses" :key="expense.id">
                 <input :class="categoryStyle" v-model="expense.category">
@@ -82,19 +80,20 @@
           </ul>
           <button v-if="isEdited" @click="editExpenses" >저장</button>
         </div>
-        <div class="unitDiv">
-          <div>
-            <h2>미래형 지출</h2>
-            <ul>
-              <li v-for="expense in sortFutureExpenses" :key="expense.id">
-                  <span>결정값</span>
-                  <span> : </span>
-                  <input :class="amountStyle" v-model="expense.amount" placeholder="0">
-                  <button v-if="isEdited" @click="editExpenses" >저장</button>
-              </li>
-              <li>계산값 : {{ sumPastExpenses }}</li>
-            </ul>
-          </div>
+      </div>
+      <div :class="unitDiv">
+        <div>
+          <h2>미래형 지출</h2>
+          <ul>
+            <li v-for="expense in sortFutureExpenses" :key="expense.id">
+                <span>결정값 : </span>
+                <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+                <button v-if="isEdited" @click="editExpenses" >저장</button>
+            </li>
+            <li>계산값 : {{ sumFutureExpenses }}</li>
+          </ul>
+        </div>
+        <div>
           <ol>
             <li v-for="expense in sortParentsFutureExpenses" :key="expense.id">
                 <input :class="categoryStyle" v-model="expense.category">
@@ -128,60 +127,95 @@
 
     data() {
         return {
+
           expenses: [],
           fetchedExpenses: [],
+
           newCategoryPast: '',
           newCategoryPresent: '',
           newCategoryFuture: '',
+
           newAmountPast: '',
           newAmountPresent: '',
           newAmountFuture: '',
+
+          bodyDiv: 'bodyDiv',
+          unitDiv: 'unitDiv',
+          subDiv: 'subDiv',
+
           categoryStyle: 'categoryStyle',
           amountStyle: 'amountStyle',
+
         }
     },
     mounted() {
       this.fetchData()
     },
     computed: {
+
       sortTotalExpenses() {
-        return this.expenses.filter(e => e.category === "totalExpense")
+        return this.expenses.filter(e => e.category === "total")
       },
       sortPastExpenses() {
-        return this.expenses.filter(e => e.category === "pastExpense")
+        return this.expenses.filter(e => e.category === "past")
       },
       sortPresentExpenses() {
-        return this.expenses.filter(e => e.category === "presentExpense")
+        return this.expenses.filter(e => e.category === "present")
       },
       sortFutureExpenses() {
-        return this.expenses.filter(e => e.category === "futureExpense")
+        return this.expenses.filter(e => e.category === "future")
       },
+
       sortParentsPastExpenses() {
-        return this.expenses.filter(e => e.parentsCategory === "pastExpense")
+        return this.expenses.filter(e => e.parentsCategory === "past")
       },
       sortParentsPresentExpenses() {
-        return this.expenses.filter(e => e.parentsCategory === "presentExpense")
+        return this.expenses.filter(e => e.parentsCategory === "present")
       },
       sortParentsFutureExpenses() {
-        return this.expenses.filter(e => e.parentsCategory === "futureExpense")
+        return this.expenses.filter(e => e.parentsCategory === "future")
+      },
+
+      sumTotalExpenses() {
+        return this.expenses.filter(e => e.parentsCategory === "total")
+        .reduce((acc, item) => acc + Number(item.amount), 0);
       },
       sumPastExpenses() {
-        return this.expenses.filter(e => e.parentsCategory === "pastExpense")
+        return this.expenses.filter(e => e.parentsCategory === "past")
         .reduce((acc, item) => acc + Number(item.amount), 0);
       },
       sumPresentExpenses() {
-        return this.expenses.filter(e => e.parentsCategory === "presentExpense")
+        return this.expenses.filter(e => e.parentsCategory === "present")
         .reduce((acc, item) => acc + Number(item.amount), 0);
       },
       sumFutureExpenses() {
-        return this.expenses.filter(e => e.parentsCategory === "futureExpense")
+        return this.expenses.filter(e => e.parentsCategory === "future")
         .reduce((acc, item) => acc + Number(item.amount), 0);
       },
-      sumTotalExpenses() {
-        return this.expenses.filter(e => e.parentsCategory === "totalExpense")
-        .reduce((acc, item) => acc + Number(item.amount), 0);
-      },
+      
       isEdited() {
+
+        const fetched = [];
+        this.fetchedExpenses.forEach(e => {
+          fetched.push({
+            category: e.category,
+            amount: e.amount
+          })
+        });
+
+        const edited = [];
+        this.expenses.forEach(e => {
+          edited.push({
+            category: e.category,
+            amount: e.amount
+          })
+        });
+
+        return ( JSON.stringify(fetched) || "" ) != ( JSON.stringify(edited) || "" )
+
+      },
+      isEditedTotal() {
+
         const fetched = [];
         this.fetchedExpenses.forEach(e => {
           fetched.push({
@@ -201,12 +235,13 @@
         return ( JSON.stringify(fetched) || "" ) != ( JSON.stringify(edited) || "" )
 
       }
+
     },
     methods: {
       addExpense(parentsCategoryHere) {
         const o = {
           id: this.getUuidv4(), 
-          parentsCategory: parentsCategoryHere+"Expense",
+          parentsCategory: parentsCategoryHere,
           category: this.newCategory, 
           amount: this.newAmount,
           order: this.setOrder()
@@ -216,15 +251,6 @@
         this.newAmount = ''
         this.fetchedExpenses.push(JSON.parse(JSON.stringify(o)));
         this.insertData(o);
-      },
-      async fetchData() {
-          const a = await supabase
-              .from('expense')
-              .select()
-              .order('order', { ascending: true })
-          const { data } = a;
-          this.expenses = data;
-          this.fetchedExpenses = JSON.parse(JSON.stringify(data));
       },
       async insertData(oHere) { 
         try {
@@ -237,7 +263,16 @@
           } catch (error) {
               console.error(error);
           }
-        },
+      },
+      async fetchData() {
+          const a = await supabase
+              .from('expense')
+              .select()
+              .order('order', { ascending: true })
+          const { data } = a;
+          this.expenses = data;
+          this.fetchedExpenses = JSON.parse(JSON.stringify(data));
+      },
       removeExpense(expense) {
         const orderRemoved = expense.order;
 
@@ -252,29 +287,6 @@
         this.expenses = this.expenses.filter((t) => t !== expense)
         this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
         this.deleteData(expense);
-      },
-      async deleteData(expense) {
-        try {
-          const { error } = await supabase
-            .from('expense')
-            .delete()
-            .eq('id', expense['id'])
-          if (error) {
-            throw error;
-          }
-        } catch (error) {
-          console.error(error);
-        }
-      },
-      editExpense(editedExpense) {
-          this.updateData(editedExpense);
-          const fetchedExpensesKeys = Object.keys(this.fetchedExpenses);
-          fetchedExpensesKeys.forEach(e => {
-            const fetchedExpense = this.fetchedExpenses[e];
-            if(fetchedExpense.id === editedExpense.id) {
-              this.fetchedExpenses[e] = JSON.parse(JSON.stringify(editedExpense));
-            }
-          })
       },
       editExpenses() {
         this.expenses.forEach(e => {
@@ -295,6 +307,20 @@
           console.error(error);
         }
       },
+      async deleteData(expense) {
+        try {
+          const { error } = await supabase
+            .from('expense')
+            .delete()
+            .eq('id', expense['id'])
+          if (error) {
+            throw error;
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      },
+
       getUuidv4() {
           return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
           (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
@@ -303,26 +329,28 @@
       setOrder() {
         const expenseLength = Object.keys(this.expenses).length;
         return expenseLength+1 ;
-      },
-      sumTotalExpense(dataHere) {
-        const arr = [];
-        dataHere.forEach(e => {
-          if(e.category === "pastExpense") {
-            arr.push(e.amount);
-          } else if (e.category === "presentExpense") {
-            arr.push(e.amount);
-          } else if (e.category === "futureExpense") {
-            arr.push(e.amount);
-          }
-        })
-        const sum = arr.reduce((acc, item) => acc + Number(item), 0);
-        return sum
       }
+      
     }
   }
 </script>
 
 <style>
+.unitDiv {
+  border: 1px solid black;
+  padding: 20px;
+  margin: 5px;
+}
+.bodyDiv {
+  min-width : 1200px;
+  padding: 20px;
+}
+.subDiv {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 10px;
+    padding: 10px;
+}
 .categoryStyle {
   width: 100px;
 }
@@ -330,19 +358,5 @@
   text-align : right;
   width: 70px;
   margin-right: 10px;
-}
-.unitDiv {
-  border: 1px solid black;
-  padding: 20px;
-  margin: 5px;
-}
-.bodyDiv {
-  min-width : 1200px
-}
-.subDiv {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    grid-gap: 10px;
-    padding: 10px;
 }
 </style>
