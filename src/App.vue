@@ -8,7 +8,7 @@
               <span>결정값 : </span>
               <input :class="amountStyle" v-model="expense.amount" placeholder="0">
           </li>
-          <li>계산값 : {{ sumTotalExpenses }}</li>
+          <li>계산값 : <input :class="amountStyle" v-model="sumTotalExpenses"></li>
         </ul>
       </div>
       <div :class="subGrid">
@@ -20,15 +20,15 @@
                   <span>결정값 : </span>
                   <input :class="amountStyle" v-model="expense.amount" placeholder="0">
               </li>
-              <li>계산값 : {{ sumPastExpenses }}</li>
+              <li>계산값 : <input :class="amountStyle" v-model="sumPastExpenses"></li>
             </ul>
           </div>
           <div>
             <ol>
               <li v-for="expense in sortParentsPastExpenses" :key="expense.id">
-                  <input :class="categoryStyle" v-model="expense.category">
+                  <input :class="categoryStyle" v-model="expense.category" @click="selected">
                   <span> : </span>
-                  <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+                  <input :class="amountStyle" v-model="expense.amount" @click="selected">
                   <button @click="removeExpense(expense)">X</button>
               </li>
             </ol>
@@ -52,7 +52,7 @@
                   <span>결정값 : </span>
                   <input :class="amountStyle" v-model="expense.amount" placeholder="0">
               </li>
-              <li>계산값 : {{ sumPresentExpenses }}</li>
+              <li>계산값 : <input :class="amountStyle" v-model="sumPresentExpenses"></li>
             </ul>
           </div>
           <div>
@@ -60,7 +60,7 @@
               <li v-for="expense in sortParentsPresentExpenses" :key="expense.id">
                   <input :class="categoryStyle" v-model="expense.category">
                   <span> : </span>
-                  <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+                  <input :class="amountStyle" v-model="expense.amount">
                   <button @click="removeExpense(expense)">X</button>
               </li>
             </ol>
@@ -84,7 +84,7 @@
                   <span>결정값 : </span>
                   <input :class="amountStyle" v-model="expense.amount" placeholder="0">
               </li>
-              <li>계산값 : {{ sumFutureExpenses }}</li>
+              <li>계산값 : <input :class="amountStyle" v-model="sumFutureExpenses"></li>
             </ul>
           </div>
           <div>
@@ -92,7 +92,7 @@
               <li v-for="expense in sortParentsFutureExpenses" :key="expense.id">
                   <input :class="categoryStyle" v-model="expense.category">
                   <span> : </span>
-                  <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+                  <input :class="amountStyle" v-model="expense.amount">
                   <button @click="removeExpense(expense)">X</button>
               </li>
             </ol>
@@ -141,12 +141,13 @@
           categoryStyle: 'categoryStyle',
           amountStyle: 'amountStyle',
           newUlStyle: 'newUlStyle',
-          saveEditedStyle: 'saveEditedStyle'
+          saveEditedStyle: 'saveEditedStyle',
 
         }
     },
     mounted() {
       this.fetchData()
+      this.setReadOnly()
     },
     computed: {
 
@@ -189,7 +190,7 @@
         return this.expenses.filter(e => e.parentsCategory === "future")
         .reduce((acc, item) => acc + Number(item.amount), 0);
       },
-      
+
       isEdited() {
 
         const fetched = [];
@@ -208,8 +209,10 @@
           })
         });
 
+        const fetchedData = JSON.stringify(fetched);
+        const editedData = JSON.stringify(edited);
 
-        return ( JSON.stringify(fetched) || "" ) != ( JSON.stringify(edited) || "" )
+        return ( fetchedData || "" ) != ( editedData || "" )
 
       }
 
@@ -304,6 +307,20 @@
           console.error(error);
         }
       },
+      selected(event) {
+        const selectedElement = event.currentTarget;
+        console.log("selectedElement = ", selectedElement);
+        console.log("selectedElement.readOnly(1) = ", selectedElement.readOnly);
+        selectedElement.readOnly = false;
+        console.log("selectedElement.readOnly(2) = ", selectedElement.readOnly);
+      },
+      setReadOnly() {
+        const inputArr = Array.from(document.getElementsByTagName('input'));
+        // const inputArr = Array.prototype.slice.call(document.getElementsByTagName('input'));
+        console.log('inputArr = ', inputArr);
+        console.log('inputArr.length = ', inputArr.length);
+        inputArr.forEach(e => e.readOnly = true);
+      },
 
       getUuidv4() {
           return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -321,13 +338,22 @@
 </script>
 
 <style>
+body {
+    background-color:#f5efe9;
+}
+h1 {
+  padding-left: 40px;
+}
+h2 {
+  padding-left: 40px;
+}
 .unitDiv {
   border: 1px solid black;
-  padding: 20px;
+  padding: 30px 10px;
   margin: 5px;
 }
 .bodyDiv {
-  min-width : 1200px;
+  min-width : 1100px;
   padding: 20px;
 }
 .subGrid {
@@ -344,12 +370,17 @@
   width: 70px;
   margin-right: 10px;
 }
+input:read-only {
+  background-color: #cdcdcd;
+}
 .newUlStyle {
   list-style:none;
 }
 .saveEditedStyle {
   width: 100%;
-  height: 70px;
-  background-color: aquamarine;
+  height: 40px;
+  color: white;
+  background-color: #3d3f45;
 }
+
 </style>
