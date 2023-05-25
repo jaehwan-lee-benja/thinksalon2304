@@ -242,7 +242,7 @@
           parentsCategory: parentsCategoryHere,
           category: this['newCategory_'+parentsCategoryHere], 
           amount: this['newAmount_'+parentsCategoryHere],
-          order: this.setOrder()
+          order: this.setOrder(parentsCategoryHere)
         };
         this.expenses.push(o);
         this['newCategory_'+parentsCategoryHere] = ''
@@ -273,13 +273,18 @@
           this.fetchedExpenses = JSON.parse(JSON.stringify(data));
       },
       removeExpense(expense) {
+
+        const parentsCategory = expense.parentsCategory;
         const orderRemoved = expense.order;
 
         this.expenses.forEach(e => {
           const order = e.order;
-          if(order > orderRemoved) {
-            this.expenses[this.expenses.indexOf(e)].order = order - 1;
-            this.updateData(e);
+          if(e.parentsCategory == parentsCategory) {
+            console.log("e.parentsCategory = ", e.parentsCategory);
+            if(order > orderRemoved) {
+              this.expenses[this.expenses.indexOf(e)].order = order - 1;
+              this.updateData(e);
+            }
           }
         });
 
@@ -325,8 +330,9 @@
           (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
           );
       },
-      setOrder() {
-        const expenseLength = Object.keys(this.expenses).length;
+      setOrder(parentsCategoryHere) {
+        const arr = this.expenses.filter(e => e.parentsCategory === parentsCategoryHere)
+        const expenseLength = Object.keys(arr).length;
         return expenseLength+1 ;
       }
 
