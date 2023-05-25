@@ -1,8 +1,5 @@
 <template>
-  <div :class="bodyGrid">
-    <div>
-      <button v-if="isEdited" @click="editExpenses">저장</button>
-    </div>
+  <div :class="bodyDiv">
     <div>
       <div>
         <h1>돈이 나가는 영역</h1>
@@ -35,14 +32,14 @@
                   <button @click="removeExpense(expense)">X</button>
               </li>
             </ol>
-            <ul>
+            <ul :class="newUlStyle">
               <li>
                   <form @submit.prevent="addExpense('past')">
                     <input :class="categoryStyle" v-model="newCategory_past" placeholder="항목적기">
                     <span> : </span>
                     <input :class="amountStyle" v-model="newAmount_past" placeholder="0">
                     <button>입력</button>
-                  </form>        
+                  </form>
               </li>
             </ul>
           </div>
@@ -67,7 +64,7 @@
                   <button @click="removeExpense(expense)">X</button>
               </li>
             </ol>
-            <ul>
+            <ul :class="newUlStyle">
               <li>
                   <form @submit.prevent="addExpense('present')">
                     <input :class="categoryStyle" v-model="newCategory_present" placeholder="항목적기">
@@ -99,7 +96,7 @@
                   <button @click="removeExpense(expense)">X</button>
               </li>
             </ol>
-            <ul>
+            <ul :class="newUlStyle">
               <li>
                   <form @submit.prevent="addExpense('future')">
                     <input :class="categoryStyle" v-model="newCategory_future" placeholder="항목적기">
@@ -113,6 +110,7 @@
         </div>
       </div>
     </div>
+    <button :class="saveEditedStyle" v-if="isEdited" @click="editExpenses">저장</button>
   </div>
 </template>
 
@@ -136,12 +134,14 @@
           newAmount_present: '',
           newAmount_future: '',
 
-          bodyGrid: 'bodyGrid',
+          bodyDiv: 'bodyDiv',
           unitDiv: 'unitDiv',
           subGrid: 'subGrid',
 
           categoryStyle: 'categoryStyle',
           amountStyle: 'amountStyle',
+          newUlStyle: 'newUlStyle',
+          saveEditedStyle: 'saveEditedStyle'
 
         }
     },
@@ -196,7 +196,7 @@
         this.fetchedExpenses.forEach(e => {
           fetched.push({
             category: e.category,
-            amount: e.amount
+            amount: Number(e.amount)
           })
         });
 
@@ -204,30 +204,10 @@
         this.expenses.forEach(e => {
           edited.push({
             category: e.category,
-            amount: e.amount
+            amount: Number(e.amount)
           })
         });
 
-        return ( JSON.stringify(fetched) || "" ) != ( JSON.stringify(edited) || "" )
-
-      },
-      isEditedTotal() {
-
-        const fetched = [];
-        this.fetchedExpenses.forEach(e => {
-          fetched.push({
-            category: e.category,
-            amount: e.amount
-          })
-        });
-
-        const edited = [];
-        this.expenses.forEach(e => {
-          edited.push({
-            category: e.category,
-            amount: e.amount
-          })
-        });
 
         return ( JSON.stringify(fetched) || "" ) != ( JSON.stringify(edited) || "" )
 
@@ -346,11 +326,7 @@
   padding: 20px;
   margin: 5px;
 }
-.bodyGrid {
-  display: grid;
-  grid-template-columns: 30px 1fr;
-  grid-gap: 10px;
-  padding: 10px;
+.bodyDiv {
   min-width : 1200px;
   padding: 20px;
 }
@@ -367,5 +343,13 @@
   text-align : right;
   width: 70px;
   margin-right: 10px;
+}
+.newUlStyle {
+  list-style:none;
+}
+.saveEditedStyle {
+  width: 100%;
+  height: 70px;
+  background-color: aquamarine;
 }
 </style>
