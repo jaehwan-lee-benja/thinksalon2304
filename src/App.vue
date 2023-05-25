@@ -1,115 +1,120 @@
 <template>
-  <div class="unitDiv">
-    <div>
-      <h1>하류 - 돈이 나가는 영역</h1>
+  <div class="bodyDiv">
+    <div class="unitDiv">
       <div>
-        <span>결정값:</span>
-        <input v-model="showAmountOfTotalExpense" placeholder="입력">
-        <button @click="editExpenses">save</button>
-      </div>
-      <div>
-        <span>계산값: {{ totalExpenseBySum }}</span>
-      </div>
-    </div>
-    <div>
-      <div class="unitDiv">
-        <div>
-          <h2>과거형 지출</h2>
-          <div>
-            <span>결정값:</span>
-            <input v-model="showAmountOfPastExpense" placeholder="입력">
-          </div>
-          <div>
-            <span>계산값: {{ sumPastExpenses }}</span>
-          </div>
-        </div>
-        <ol>
-          <li v-for="expense in sortPastExpenses" :key="expense.id">
-              <input v-model="expense.category">
-              <span> : </span>
-              <!-- <input :class="amountStyle" v-model="expense.amount" @input="setComma(expense.id)" placeholder="Type here"> -->
-              <input :class="amountStyle" v-model="expense.amount" placeholder="0">
-              <button @click="removeExpense(expense)">X</button>
-          </li>
-        </ol>
+        <h1>하류 - 돈이 나가는 영역</h1>
         <ul>
-          <li>
-              <form @submit.prevent="addExpense('past')">
-                <input v-model="newCategoryPast" placeholder="입력">
-                <span> : </span>
-                <!-- <input :class="amountStyle" v-model="newAmountWithComma" placeholder="Type here"> -->
-                <input :class="amountStyle" v-model="newAmountPast" placeholder="0">
-                <button>save new</button>
-              </form>        
-          </li>
-        </ul>
-        <button v-if="isEdited" @click="editExpenses" >save</button>
-      </div>
-      <div class="unitDiv">
-        <div>
-          <h2>현재형 지출</h2>
-          <div>
-            <span>결정값:</span>
-            <input v-model="showAmountOfPresentExpense" placeholder="입력">
-          </div>
-          <div>
-            <span>계산값: {{ totalAmount }}</span>
-          </div>
-        </div>
-        <ol>
-          <li v-for="expense in sortPresentExpenses" :key="expense.id">
-              <input v-model="expense.category">
+          <li v-for="expense in sortTotalExpenses" :key="expense.id">
+              <span>결정값</span>
               <span> : </span>
-              <!-- <input :class="amountStyle" v-model="expense.amount" @input="setComma(expense.id)" placeholder="Type here"> -->
               <input :class="amountStyle" v-model="expense.amount" placeholder="0">
-              <button @click="removeExpense(expense)">X</button>
+              <button v-if="isEdited" @click="editExpenses" >저장</button>
           </li>
-        </ol>
-        <ul>
-          <li>
-              <form @submit.prevent="addExpense('present')">
-                <input v-model="newCategoryPresent" placeholder="입력">
-                <span> : </span>
-                <!-- <input :class="amountStyle" v-model="newAmountWithComma" placeholder="Type here"> -->
-                <input :class="amountStyle" v-model="newAmountPresent" placeholder="0">
-                <button>save new</button>
-              </form>        
-          </li>
+          <li>계산값 : {{ sumTotalExpenses }}</li>
         </ul>
-        <button v-if="isEdited" @click="editExpenses" >save</button>
-      </div>
-      <div class="unitDiv">
         <div>
-          <h2>미래형 지출</h2>
-          <div>
-            <span>결정값:</span>
-            <input v-model="showAmountOfFutureExpense" placeholder="입력">
-          </div>
-          <div>
-            <span>계산값: {{ sumFutureExpenses }}</span>
-          </div>
         </div>
-        <ol>
-          <li v-for="expense in sortFutureExpenses" :key="expense.id">
-              <input v-model="expense.category">
-              <span> : </span>
-              <!-- <input :class="amountStyle" v-model="expense.amount" @input="setComma(expense.id)" placeholder="Type here"> -->
-              <input :class="amountStyle" v-model="expense.amount" placeholder="0">
-              <button @click="removeExpense(expense)">X</button>
-          </li>
-        </ol>
-        <ul>
-          <li>
-              <form @submit.prevent="addExpense('future')">
-                <input v-model="newCategoryFuture" placeholder="입력">
+      </div>
+      <div class="subDiv">
+        <div class="unitDiv">
+          <div>
+            <h2>과거형 지출</h2>
+            <ul>
+              <li v-for="expense in sortPastExpenses" :key="expense.id">
+                  <span>결정값</span>
+                  <span> : </span>
+                  <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+                  <button v-if="isEdited" @click="editExpenses" >저장</button>
+              </li>
+              <li>계산값 : {{ sumPastExpenses }}</li>
+            </ul>
+          </div>
+          <ol>
+            <li v-for="expense in sortParentsPastExpenses" :key="expense.id">
+                <input :class="categoryStyle" v-model="expense.category">
                 <span> : </span>
-                <!-- <input :class="amountStyle" v-model="newAmountWithComma" placeholder="Type here"> -->
-                <input :class="amountStyle" v-model="newAmountFuture" placeholder="0">
-                <button>save new</button>
-              </form>        
-          </li>
-        </ul>
-        <button v-if="isEdited" @click="editExpenses" >save</button>
+                <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+                <button @click="removeExpense(expense)">X</button>
+            </li>
+          </ol>
+          <ul>
+            <li>
+                <form @submit.prevent="addExpense('past')">
+                  <input :class="categoryStyle" v-model="newCategoryPast" placeholder="입력">
+                  <span> : </span>
+                  <input :class="amountStyle" v-model="newAmountPast" placeholder="0">
+                  <button>저장</button>
+                </form>        
+            </li>
+          </ul>
+          <button v-if="isEdited" @click="editExpenses" >저장</button>
+        </div>
+        <div class="unitDiv">
+          <div>
+            <h2>현재형 지출</h2>
+            <ul>
+              <li v-for="expense in sortPresentExpenses" :key="expense.id">
+                  <span>결정값</span>
+                  <span> : </span>
+                  <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+                  <button v-if="isEdited" @click="editExpenses" >저장</button>
+              </li>
+              <li>계산값 : {{ sumPastExpenses }}</li>
+            </ul>
+          </div>
+          <ol>
+            <li v-for="expense in sortParentsPresentExpenses" :key="expense.id">
+                <input :class="categoryStyle" v-model="expense.category">
+                <span> : </span>
+                <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+                <button @click="removeExpense(expense)">X</button>
+            </li>
+          </ol>
+          <ul>
+            <li>
+                <form @submit.prevent="addExpense('present')">
+                  <input :class="categoryStyle" v-model="newCategoryPresent" placeholder="입력">
+                  <span> : </span>
+                  <input :class="amountStyle" v-model="newAmountPresent" placeholder="0">
+                  <button>저장</button>
+                </form>        
+            </li>
+          </ul>
+          <button v-if="isEdited" @click="editExpenses" >저장</button>
+        </div>
+        <div class="unitDiv">
+          <div>
+            <h2>미래형 지출</h2>
+            <ul>
+              <li v-for="expense in sortFutureExpenses" :key="expense.id">
+                  <span>결정값</span>
+                  <span> : </span>
+                  <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+                  <button v-if="isEdited" @click="editExpenses" >저장</button>
+              </li>
+              <li>계산값 : {{ sumPastExpenses }}</li>
+            </ul>
+          </div>
+          <ol>
+            <li v-for="expense in sortParentsFutureExpenses" :key="expense.id">
+                <input :class="categoryStyle" v-model="expense.category">
+                <span> : </span>
+                <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+                <button @click="removeExpense(expense)">X</button>
+            </li>
+          </ol>
+          <ul>
+            <li>
+                <form @submit.prevent="addExpense('future')">
+                  <input :class="categoryStyle" v-model="newCategoryFuture" placeholder="입력">
+                  <span> : </span>
+                  <input :class="amountStyle" v-model="newAmountFuture" placeholder="0">
+                  <button>저장</button>
+                </form>        
+            </li>
+          </ul>
+          <button v-if="isEdited" @click="editExpenses" >저장</button>
+        </div>
       </div>
     </div>
   </div>
@@ -131,6 +136,7 @@
           newAmountPast: '',
           newAmountPresent: '',
           newAmountFuture: '',
+          categoryStyle: 'categoryStyle',
           amountStyle: 'amountStyle',
         }
     },
@@ -138,78 +144,42 @@
       this.fetchData()
     },
     computed: {
+      sortTotalExpenses() {
+        return this.expenses.filter(e => e.category === "totalExpense")
+      },
       sortPastExpenses() {
-        const arr = [];
-        this.expenses.forEach(e => {
-          if(e.parentsCategory === "pastExpense") {
-            arr.push(e);
-          }
-        })
-        return arr
+        return this.expenses.filter(e => e.category === "pastExpense")
       },
       sortPresentExpenses() {
-        const arr = [];
-        this.expenses.forEach(e => {
-          if(e.parentsCategory === "presentExpense") {
-            arr.push(e);
-          }
-        })
-        return arr
+        return this.expenses.filter(e => e.category === "presentExpense")
       },
       sortFutureExpenses() {
+        return this.expenses.filter(e => e.category === "futureExpense")
+      },
+      sortParentsPastExpenses() {
+        return this.expenses.filter(e => e.parentsCategory === "pastExpense")
+      },
+      sortParentsPresentExpenses() {
+        return this.expenses.filter(e => e.parentsCategory === "presentExpense")
+      },
+      sortParentsFutureExpenses() {
         return this.expenses.filter(e => e.parentsCategory === "futureExpense")
+      },
+      sumPastExpenses() {
+        return this.expenses.filter(e => e.parentsCategory === "pastExpense")
+        .reduce((acc, item) => acc + Number(item.amount), 0);
+      },
+      sumPresentExpenses() {
+        return this.expenses.filter(e => e.parentsCategory === "presentExpense")
+        .reduce((acc, item) => acc + Number(item.amount), 0);
       },
       sumFutureExpenses() {
         return this.expenses.filter(e => e.parentsCategory === "futureExpense")
         .reduce((acc, item) => acc + Number(item.amount), 0);
       },
-      showAmountOfTotalExpense() {
-        let result = '';
-        this.expenses.forEach(e => {
-          if(e.category === "totalExpense") {
-            result = e.amount;
-          }
-        })
-        return result;
-      },
-      showAmountOfPastExpense() {
-        let result = '';
-        this.expenses.forEach(e => {
-          if(e.category === "pastExpense") {
-            result = e.amount;
-          }
-        })
-        return result;
-      },
-      showAmountOfPresentExpense() {
-        let result = '';
-        this.expenses.forEach(e => {
-          if(e.category === "presentExpense") {
-            result = e.amount;
-          }
-        })
-        return result;
-      },
-      showAmountOfFutureExpense() {
-        let result = '';
-        this.expenses.forEach(e => {
-          if(e.category === "futureExpense") {
-            result = e.amount;
-          }
-        })
-        return result;
-      },
-      totalExpenseBySum() {
-        return this.sumTotalExpense(this.expenses);
-      },
-      totalAmount() {
-        // const a = this.expenses.reduce((acc, item) => acc + Number(parseInt(item.amount.replace(/,/g , ''))), 0);
-        // const b = this.newAmount;
-        // const a2 = Number(a);
-        // const b2 = Number(b);
-        // const sum = a2 + b2;
-        // return sum.toLocaleString();
-        return this.expenses.reduce((acc, item) => acc + Number(item.amount), 0)
+      sumTotalExpenses() {
+        return this.expenses.filter(e => e.parentsCategory === "totalExpense")
+        .reduce((acc, item) => acc + Number(item.amount), 0);
       },
       isEdited() {
         const fetched = [];
@@ -230,22 +200,7 @@
 
         return ( JSON.stringify(fetched) || "" ) != ( JSON.stringify(edited) || "" )
 
-        // return ( JSON.stringify(this.fetchedExpenses) || "" ) != ( JSON.stringify(this.expenses) || "" )
-
-
-      },
-      // newAmountWithComma: {
-      //   get() {
-      //     if(this.newAmount > 0) {
-      //       return Number(this.newAmount).toLocaleString();
-      //     } else {
-      //       return 0;
-      //     }
-      //   },
-      //   set(value) {
-      //     this.newAmount = value.replace(/[^0-9.]/g, "");
-      //   }
-      // }
+      }
     },
     methods: {
       addExpense(parentsCategoryHere) {
@@ -269,9 +224,6 @@
               .order('order', { ascending: true })
           const { data } = a;
           this.expenses = data;
-          // this.expenses.forEach(e => {
-          //   e.amount = Number(e.amount).toLocaleString();
-          // })
           this.fetchedExpenses = JSON.parse(JSON.stringify(data));
       },
       async insertData(oHere) { 
@@ -325,13 +277,10 @@
           })
       },
       editExpenses() {
-        console.log("here!");
-        const editedExpenses = this.expenses;
         this.expenses.forEach(e => {
-          // e.amount = e.amount.replace(/[^0-9.]/g, "");
           this.updateData(e)
         })
-        this.fetchedExpenses = JSON.parse(JSON.stringify(editedExpenses));
+        this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
       },
       async updateData(expense) { 
         try {
@@ -368,22 +317,15 @@
         })
         const sum = arr.reduce((acc, item) => acc + Number(item), 0);
         return sum
-      },
-      // setComma(expenseId) {
-      //   const selectedExpense = this.expenses.find(e => e.id === expenseId);
-      //   const index = this.expenses.indexOf(selectedExpense)
-      //   const formattedAmount = parseInt(selectedExpense.amount.replace(/,/g , ''))
-      //   if(!isNaN(formattedAmount)){
-      //     this.expenses[index].amount = formattedAmount.toLocaleString();
-      //   } else {
-      //     this.expenses[index].amount = "0";
-      //   }
-      // }
+      }
     }
   }
 </script>
 
 <style>
+.categoryStyle {
+  width: 100px;
+}
 .amountStyle {
   text-align : right;
   width: 70px;
@@ -391,7 +333,16 @@
 }
 .unitDiv {
   border: 1px solid black;
-  padding: 10px;
+  padding: 20px;
   margin: 5px;
+}
+.bodyDiv {
+  min-width : 1200px
+}
+.subDiv {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 10px;
+    padding: 10px;
 }
 </style>
