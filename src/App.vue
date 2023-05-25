@@ -35,7 +35,7 @@
             <ul :class="newUlStyle">
               <li>
                   <form @submit.prevent="addExpense('past')">
-                    <input :class="categoryStyle" v-model="newCategory_past" placeholder="항목적기">
+                    <input :class="categoryStyle" v-model="newCategory_past" placeholder="새 리스트 적기">
                     <span> : </span>
                     <input :class="amountStyle" v-model="newAmount_past" placeholder="0">
                     <button>입력</button>
@@ -67,7 +67,7 @@
             <ul :class="newUlStyle">
               <li>
                   <form @submit.prevent="addExpense('present')">
-                    <input :class="categoryStyle" v-model="newCategory_present" placeholder="항목적기">
+                    <input :class="categoryStyle" v-model="newCategory_present" placeholder="새 리스트 적기">
                     <span> : </span>
                     <input :class="amountStyle" v-model="newAmount_present" placeholder="0">
                     <button>입력</button>
@@ -99,7 +99,7 @@
             <ul :class="newUlStyle">
               <li>
                   <form @submit.prevent="addExpense('future')">
-                    <input :class="categoryStyle" v-model="newCategory_future" placeholder="항목적기">
+                    <input :class="categoryStyle" v-model="newCategory_future" placeholder="새 리스트 적기">
                     <span> : </span>
                     <input :class="amountStyle" v-model="newAmount_future" placeholder="0">
                     <button>입력</button>
