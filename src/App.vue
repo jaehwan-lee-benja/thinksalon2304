@@ -1,5 +1,6 @@
 <template>
   <div :class="bodyDiv">
+    <button @click="readingMode">읽기모드</button>
     <div>
       <div>
         <h1>돈이 나가는 영역</h1>
@@ -8,7 +9,7 @@
               <span>결정값 : </span>
               <input :class="amountStyle" v-model="expense.amount" placeholder="0">
           </li>
-          <li>계산값 : <input :class="amountStyle" v-model="sumTotalExpenses"></li>
+          <li>계산값 : <input :class="amountStyle" v-model="sumTotalExpenses" readonly></li>
         </ul>
       </div>
       <div :class="subGrid">
@@ -20,15 +21,15 @@
                   <span>결정값 : </span>
                   <input :class="amountStyle" v-model="expense.amount" placeholder="0">
               </li>
-              <li>계산값 : <input :class="amountStyle" v-model="sumPastExpenses"></li>
+              <li>계산값 : <input :class="amountStyle" v-model="sumPastExpenses" readonly></li>
             </ul>
           </div>
           <div>
             <ol>
               <li v-for="expense in sortParentsPastExpenses" :key="expense.id">
-                  <input :class="categoryStyle" v-model="expense.category" @click="selected">
+                  <input :class="categoryStyle" v-model="expense.category">
                   <span> : </span>
-                  <input :class="amountStyle" v-model="expense.amount" @click="selected">
+                  <input :class="amountStyle" v-model="expense.amount">
                   <button @click="removeExpense(expense)">X</button>
               </li>
             </ol>
@@ -52,7 +53,7 @@
                   <span>결정값 : </span>
                   <input :class="amountStyle" v-model="expense.amount" placeholder="0">
               </li>
-              <li>계산값 : <input :class="amountStyle" v-model="sumPresentExpenses"></li>
+              <li>계산값 : <input :class="amountStyle" v-model="sumPresentExpenses" readonly></li>
             </ul>
           </div>
           <div>
@@ -84,7 +85,7 @@
                   <span>결정값 : </span>
                   <input :class="amountStyle" v-model="expense.amount" placeholder="0">
               </li>
-              <li>계산값 : <input :class="amountStyle" v-model="sumFutureExpenses"></li>
+              <li>계산값 : <input :class="amountStyle" v-model="sumFutureExpenses" readonly></li>
             </ul>
           </div>
           <div>
@@ -147,7 +148,6 @@
     },
     mounted() {
       this.fetchData()
-      this.setReadOnly()
     },
     computed: {
 
@@ -307,21 +307,6 @@
           console.error(error);
         }
       },
-      selected(event) {
-        const selectedElement = event.currentTarget;
-        console.log("selectedElement = ", selectedElement);
-        console.log("selectedElement.readOnly(1) = ", selectedElement.readOnly);
-        selectedElement.readOnly = false;
-        console.log("selectedElement.readOnly(2) = ", selectedElement.readOnly);
-      },
-      setReadOnly() {
-        const inputArr = Array.from(document.getElementsByTagName('input'));
-        // const inputArr = Array.prototype.slice.call(document.getElementsByTagName('input'));
-        console.log('inputArr = ', inputArr);
-        console.log('inputArr.length = ', inputArr.length);
-        inputArr.forEach(e => e.readOnly = true);
-      },
-
       getUuidv4() {
           return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
           (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
