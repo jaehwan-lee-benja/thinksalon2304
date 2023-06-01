@@ -322,50 +322,6 @@ export default {
 }
 </script>
 
-<style>
-body {
-  background-color:#f5efe9;
-}
-h1 {
-padding-left: 40px;
-}
-h2 {
-padding-left: 40px;
-}
-.unitDiv {
-border: 1px solid black;
-padding: 30px 10px;
-margin: 5px;
-}
-.bodyDiv {
-min-width : 1100px;
-padding: 20px;
-}
-.subGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 10px;
-  padding: 10px;
-}
-.categoryStyle {
-width: 100px;
-}
-.amountStyle {
-text-align : right;
-width: 70px;
-margin-right: 10px;
-}
-input:read-only {
-background-color: #cdcdcd;
-}
-.newUlStyle {
-list-style:none;
-}
-.saveEditedStyle {
-width: 100%;
-height: 40px;
-color: white;
-background-color: #3d3f45;
-}
-
+<style scoped>
+  @import '../style.css';
 </style>
