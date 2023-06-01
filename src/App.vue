@@ -1,8 +1,8 @@
 <template>
-  <nav>
+  <!-- <nav>
       <router-link to="/reading">읽기모드</router-link> 
       <router-link to="/editing">편집모드</router-link>
-  </nav>
+  </nav> -->
   <!-- <button @click="handlingMode"> mode </button>
 
     <div v-if="mode">
@@ -15,20 +15,35 @@
         <router-link to="/editing">편집모드</router-link>
       </nav>
     </div> -->
-  <router-view /> <!-- 실제 페이지가 보여질 위치 -->
+
+  <button @click="handlingMode"> 
+    <span v-if="mode">읽기모드</span>
+    <span v-else>편집모드</span> 
+  </button>
+
+  <ReadingView v-if="mode" />
+  <EditingView v-else />
+
 </template>
 
 <script>
+import ReadingView from './views/ReadingView.vue'
+import EditingView from './views/EditingView.vue'
+
 export default {
   data() {
     return {
       mode: true
     }
   },
+  components: {
+    ReadingView,
+    EditingView
+  },
   methods: {
     handlingMode() {
-      this.readingMode = !this.readingMode
-      console.log("this.readingMode = ", this.readingMode);
+      this.mode = !this.mode
+      console.log("this.mode = ", this.mode);
     }
   }
 }
