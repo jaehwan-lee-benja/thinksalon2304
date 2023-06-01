@@ -25,10 +25,22 @@ padding: 20px;
 .categoryStyle {
 width: 100px;
 }
+input:read-only.categoryStyle_readingMode {
+  background-color: white;
+  border: none;
+  width: 100px;
+}
 .amountStyle {
 text-align : right;
 width: 70px;
 margin-right: 10px;
+}
+input:read-only.amountStyle_readingMode  {
+  background-color: white;
+  border: none;
+  text-align : right;
+  width: 70px;
+  margin-right: 10px;
 }
 input:read-only {
 background-color: #cdcdcd;
