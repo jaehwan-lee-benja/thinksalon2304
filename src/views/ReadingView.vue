@@ -2,19 +2,19 @@
     <div :class="bodyDiv">
         <div>
             <div>
-            <h1>돈이 나가는 영역(읽기모드)</h1>
-            <ul>
-                <li v-for="expense in sortTotalExpenses" :key="expense.id">
-                    <span>결정값 : </span>
-                    <input :class="amountStyle" v-model="expense.amount" placeholder="0" readonly>
-                </li>
-                <li>계산값 : <input :class="amountStyle" v-model="sumTotalExpenses" readonly></li>
-            </ul>
+              <h2>돈이 나가는 영역</h2>
+              <ul>
+                  <li v-for="expense in sortTotalExpenses" :key="expense.id">
+                      <span>결정값 : </span>
+                      <input :class="amountStyle" v-model="expense.amount" placeholder="0" readonly>
+                  </li>
+                  <li>계산값 : <input :class="amountStyle" v-model="sumTotalExpenses" readonly></li>
+              </ul>
             </div>
             <div :class="subGrid">
               <div :class="unitDiv">
                   <div>
-                  <h2>과거형 지출</h2>
+                  <h3>과거형 지출</h3>
                   <ul>
                       <li v-for="expense in sortPastExpenses" :key="expense.id">
                           <span>결정값 : </span>
@@ -35,7 +35,7 @@
               </div>
               <div :class="unitDiv">
                   <div>
-                  <h2>현재형 지출</h2>
+                  <h3>현재형 지출</h3>
                   <ul>
                       <li v-for="expense in sortPresentExpenses" :key="expense.id">
                           <span>결정값 : </span>
@@ -56,7 +56,7 @@
               </div>
               <div :class="unitDiv">
                   <div>
-                  <h2>미래형 지출</h2>
+                  <h3>미래형 지출</h3>
                   <ul>
                       <li v-for="expense in sortFutureExpenses" :key="expense.id">
                           <span>결정값 : </span>

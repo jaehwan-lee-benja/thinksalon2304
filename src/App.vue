@@ -1,29 +1,24 @@
 <template>
-  <!-- <nav>
-      <router-link to="/reading">읽기모드</router-link> 
-      <router-link to="/editing">편집모드</router-link>
-  </nav> -->
-  <!-- <button @click="handlingMode"> mode </button>
-
-    <div v-if="mode">
-      <nav>
-        <router-link to="/reading">읽기모드</router-link> 
-      </nav>
+  <div :class="appBodyGrid">
+    <div :class="menuDiv">
+      <h1>
+        <div>현금흐름</div>
+        <div>관리하기</div>
+      </h1>
+      <button @click="handlingMode"> 
+        <span v-if="mode">편집하기</span>
+        <span v-else>뒤로가기</span> 
+      </button>
+      <div>
+        <span v-if="mode">'편집하기' 버튼을 누르면, 내용을 편집할 수 있습니다.</span>
+        <span v-else>'뒤로가기' 버튼을 누르면, 편집모드가 종료됩니다.(저장되지 않음)</span>
+      </div>
     </div>
-    <div v-else> 
-      <nav>
-        <router-link to="/editing">편집모드</router-link>
-      </nav>
-    </div> -->
-
-  <button @click="handlingMode"> 
-    <span v-if="mode">읽기모드</span>
-    <span v-else>편집모드</span> 
-  </button>
-
-  <ReadingView v-if="mode" />
-  <EditingView v-else />
-
+    <div>
+      <ReadingView v-if="mode" />
+      <EditingView v-else />
+    </div>
+  </div>
 </template>
 
 <script>
@@ -33,7 +28,9 @@ import EditingView from './views/EditingView.vue'
 export default {
   data() {
     return {
-      mode: true
+      mode: true,
+      appBodyGrid: 'appBodyGrid',
+      menuDiv: 'menuDiv'
     }
   },
   components: {
@@ -43,8 +40,11 @@ export default {
   methods: {
     handlingMode() {
       this.mode = !this.mode
-      console.log("this.mode = ", this.mode);
     }
   }
 }
 </script>
+
+<style scoped>
+  @import './style.css';
+</style>

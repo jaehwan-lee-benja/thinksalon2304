@@ -2,7 +2,7 @@
     <div :class="bodyDiv">
         <div>
             <div>
-            <h1>돈이 나가는 영역(편집모드)</h1>
+            <h2>돈이 나가는 영역(편집모드)</h2>
             <ul>
                 <li v-for="expense in sortTotalExpenses" :key="expense.id">
                     <span>결정값 : </span>
@@ -14,7 +14,7 @@
             <div :class="subGrid">
             <div :class="unitDiv">
                 <div>
-                <h2>과거형 지출</h2>
+                <h3>과거형 지출</h3>
                 <ul>
                     <li v-for="expense in sortPastExpenses" :key="expense.id">
                         <span>결정값 : </span>
@@ -46,7 +46,7 @@
             </div>
             <div :class="unitDiv">
                 <div>
-                <h2>현재형 지출</h2>
+                <h3>현재형 지출</h3>
                 <ul>
                     <li v-for="expense in sortPresentExpenses" :key="expense.id">
                         <span>결정값 : </span>
@@ -78,7 +78,7 @@
             </div>
             <div :class="unitDiv">
                 <div>
-                <h2>미래형 지출</h2>
+                <h3>미래형 지출</h3>
                 <ul>
                     <li v-for="expense in sortFutureExpenses" :key="expense.id">
                         <span>결정값 : </span>
@@ -225,14 +225,14 @@ export default {
         parentsCategory: parentsCategoryHere,
         category: this['newCategory_'+parentsCategoryHere], 
         amount: this['newAmount_'+parentsCategoryHere],
-        order: this.setOrder(parentsCategoryHere)
+        order: this.setOrder(parentsCategoryHere),
+        level: 2
       };
       this.expenses.push(o);
       this['newCategory_'+parentsCategoryHere] = ''
       this['newAmount_'+parentsCategoryHere] = ''
       this.fetchedExpenses.push(JSON.parse(JSON.stringify(o)));
       this.insertData(o);
-      console.log("o = ", o);
     },
     async insertData(oHere) { 
       try {
