@@ -1,7 +1,7 @@
 <template>
     <div :class="bodyDiv">
         <div>
-            <div>
+          <div :class="unitDiv">
             <h2>돈이 나가는 영역(편집모드)</h2>
             <ul>
                 <li v-for="expense in sortTotalExpenses" :key="expense.id">
@@ -219,7 +219,6 @@ export default {
   },
   methods: {
     addExpense(parentsCategoryHere) {
-      console.log("parentsCategoryHere = ", parentsCategoryHere);
       const o = {
         id: this.getUuidv4(), 
         parentsCategory: parentsCategoryHere,
@@ -263,7 +262,6 @@ export default {
       this.expenses.forEach(e => {
         const order = e.order;
         if(e.parentsCategory == parentsCategory) {
-          console.log("e.parentsCategory = ", e.parentsCategory);
           if(order > orderRemoved) {
             this.expenses[this.expenses.indexOf(e)].order = order - 1;
             this.updateData(e);

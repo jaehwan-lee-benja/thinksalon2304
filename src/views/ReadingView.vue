@@ -1,7 +1,7 @@
 <template>
     <div :class="bodyDiv">
         <div>
-            <div>
+            <div :class="unitDiv">
               <h2>돈이 나가는 영역</h2>
               <ul>
                   <li v-for="expense in sortTotalExpenses" :key="expense.id">
