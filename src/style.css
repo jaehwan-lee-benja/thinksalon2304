@@ -63,3 +63,17 @@ height: 40px;
 color: white;
 background-color: #3d3f45;
 }
+.loginDiv {
+  background-color: white;
+  border: 1px solid black;
+  padding: 3px;
+}
+.normalInput {
+  width: 80%;
+}
+.idPwInputDiv {
+  margin: 10px 0px;
+}
+.loginBtnDiv {
+  margin: 10px 0px;
+}
