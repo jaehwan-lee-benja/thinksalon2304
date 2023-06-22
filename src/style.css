@@ -77,3 +77,18 @@ background-color: #3d3f45;
 .loginBtnDiv {
   margin: 10px 0px;
 }
+.textBtn {
+  background-color: transparent;
+  border: 0px solid black;
+}
+.textBtn:hover {
+  color: aqua;
+  border: 0px solid black;
+}
+.pageHanderDiv {
+  padding: 10px 0px;
+  margin: 10px 0px;
+  height: 200px;
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+}
