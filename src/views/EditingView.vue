@@ -126,6 +126,7 @@ export default {
 
         expenses: [],
         fetchedExpenses: [],
+        updatedExpenses: [],
 
         newCategory_past: '',
         newCategory_present: '',
@@ -231,6 +232,7 @@ export default {
       this['newCategory_'+parentsCategoryHere] = ''
       this['newAmount_'+parentsCategoryHere] = ''
       this.fetchedExpenses.push(JSON.parse(JSON.stringify(o)));
+      // this.updatedExpenses.push(o);
       this.insertData(o);
     },
     async insertData(oHere) { 

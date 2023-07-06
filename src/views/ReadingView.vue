@@ -1,5 +1,14 @@
 <template>
     <div :class="bodyDiv">
+      <div>
+        <div v-if="loginMode" >
+          <button @click="loginGoogle">구글 로그인</button>
+          <span> *왼쪽 버튼을 눌러 로그인할 수 있습니다.</span>
+        </div>
+        <div v-else>
+          <button @click="signout">로그아웃</button>
+        </div>
+      </div>
         <div>
             <div :class="unitDiv">
               <h2>돈이 나가는 영역</h2>
@@ -102,7 +111,8 @@ export default {
         saveEditedStyle: 'saveEditedStyle',
 
         isNewUser: '',
-        session: ''
+        session: '',
+        loginMode: true,
 
       }
   },
@@ -157,6 +167,23 @@ export default {
     }
   },
   methods: {
+    async loginGoogle() {
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google'
+      })
+      console.log("data = ", data);
+      console.log("error = ", error);
+    },
+    async signout() {
+      const { error } = await supabase.auth.signOut()
+      console.log("error = ", error);
+      if(error == null) {
+        alert('로그아웃 되었습니다.')
+        window.location.reload(true); // 리로드 방식 expense를 []로
+      } else {
+        alert('checking..')
+      }
+    },
     async fetchData() {
 
         const fetchedData = await supabase
@@ -166,7 +193,14 @@ export default {
         const { data } = fetchedData;
         
         const session = this.session;
-        const userId = session.user.id;
+
+        let userId = "";
+
+        if(session !== null) {
+          userId = session.user.id;
+        } else {
+          userId = null;
+        }
 
         function whatId(el) {
           if(el.user_id === userId) {
@@ -183,7 +217,7 @@ export default {
           this.isNewUser = true;
         }
 
-        if(this.isNewUser) {
+        if(this.isNewUser && session !== null) {
           this.insertInitailData();
         }
 
@@ -192,9 +226,6 @@ export default {
 
     },
     insertInitailData(){
-      const session = this.session;
-      const userId = session.user.id;
-      console.log("userId @insertInitailData = ", userId);
       const initialDataArray = [
         {
           id: this.getUuidv4(),
@@ -245,7 +276,7 @@ export default {
     },
     async getSession() {
       const { data, error } = await supabase.auth.getSession()
-      console.log("data @getSession = ", data)
+      console.log("getSession = ", data)
       console.log("error = ", error)
       return data;
     },
@@ -253,7 +284,18 @@ export default {
       supabase.auth.onAuthStateChange((event, session) => {
         console.log("sessionListener = ", event, session)
         this.session = session;
+
+        this.loginBtnHandler();
+
       })
+    },
+    loginBtnHandler() {
+      const session = this.session;
+      if(session !== null) {
+        this.loginMode = false;
+      } else {
+        this.loginMode = true;
+      }
     },
     getUuidv4() {
         return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>

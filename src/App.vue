@@ -16,9 +16,6 @@
         </div>
       </div>
 
-      <button v-if="loginMode" @click="loginGoogle">구글 로그인</button>
-      <button v-else @click="signout">sign-out</button>
-
     </div>
     <div>
       <ReadingView v-if="mode" />
@@ -30,41 +27,24 @@
 <script>
 import ReadingView from './views/ReadingView.vue'
 import EditingView from './views/EditingView.vue'
-import { supabase } from './lib/supabaseClient.js'
+// import { supabase } from './lib/supabaseClient.js'
 
 export default {
   data() {
     return {
       users: '',
-      loginMode: true,
       mode: true,
       appBodyGrid: 'appBodyGrid',
       menuDiv: 'menuDiv',
       pageHanderDiv: 'pageHanderDiv',
     }
   },
+  mixins: [ReadingView],
   components: {
     ReadingView,
     EditingView
   },
   methods: {
-    async loginGoogle() {
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google'
-      })
-      console.log("data = ", data);
-      console.log("error = ", error);
-    },
-    async signout() {
-      const { error } = await supabase.auth.signOut()
-      console.log("error = ", error);
-      if(error == null) {
-        alert('로그아웃 되었습니다.')
-        window.location.reload(true); // 리로드 방식 expense를 []로
-      } else {
-        alert('checking..')
-      }
-    },
     handlingMode() {
       this.mode = !this.mode
     },
