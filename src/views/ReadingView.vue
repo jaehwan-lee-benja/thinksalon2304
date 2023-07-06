@@ -101,10 +101,14 @@ export default {
         newUlStyle: 'newUlStyle',
         saveEditedStyle: 'saveEditedStyle',
 
+        isNewUser: '',
+        session: ''
+
       }
   },
   mounted() {
-    this.fetchData()
+    this.fetchData(),
+    this.sessionListener()
   },
   computed: {
 
@@ -154,13 +158,107 @@ export default {
   },
   methods: {
     async fetchData() {
-        const a = await supabase
+
+        const fetchedData = await supabase
             .from('expense')
             .select()
             .order('order', { ascending: true })
-        const { data } = a;
+        const { data } = fetchedData;
+        
+        const session = this.session;
+        const userId = session.user.id;
+
+        function whatId(el) {
+          if(el.user_id === userId) {
+            return true
+          }
+        }
+
+        const dataById = fetchedData.data.filter(whatId);
+        const dataLength = dataById.length;
+
+        if(dataLength > 0) {
+          this.isNewUser = false;
+        } else {
+          this.isNewUser = true;
+        }
+
+        if(this.isNewUser) {
+          this.insertInitailData();
+        }
+
         data.forEach(e => e.amount = e.amount.toLocaleString());
         this.expenses = data;
+
+    },
+    insertInitailData(){
+      const session = this.session;
+      const userId = session.user.id;
+      console.log("userId @insertInitailData = ", userId);
+      const initialDataArray = [
+        {
+          id: this.getUuidv4(),
+          parentsCategory: null,
+          category: 'total',
+          amount: 0,
+          order: null,
+          level: 1,
+        },
+        {
+          id: this.getUuidv4(),
+          parentsCategory: 'total',
+          category: 'past',
+          amount: 0,
+          order: null,
+          level: 2,
+        },
+        {
+          id: this.getUuidv4(),
+          parentsCategory: 'total',
+          category: 'present',
+          amount: 0,
+          order: null,
+          level: 2,
+        },
+        {
+          id: this.getUuidv4(),
+          parentsCategory: 'total',
+          category: 'future',
+          amount: 0,
+          order: null,
+          level: 2,
+        },
+      ]
+      initialDataArray.forEach(eachData => this.insertData(eachData));
+    },
+    async insertData(dataHere) { 
+      try {
+            const { error } = await supabase
+                .from('expense')
+                .insert(dataHere)
+            if (error) {
+                throw error;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    },
+    async getSession() {
+      const { data, error } = await supabase.auth.getSession()
+      console.log("data @getSession = ", data)
+      console.log("error = ", error)
+      return data;
+    },
+    sessionListener() {
+      supabase.auth.onAuthStateChange((event, session) => {
+        console.log("sessionListener = ", event, session)
+        this.session = session;
+      })
+    },
+    getUuidv4() {
+        return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+        );
     },
   }
 }
