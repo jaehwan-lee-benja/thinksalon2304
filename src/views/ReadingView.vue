@@ -282,11 +282,9 @@ export default {
     },
     sessionListener() {
       supabase.auth.onAuthStateChange((event, session) => {
-        console.log("sessionListener = ", event, session)
+        // console.log("sessionListener = ", event, session)
         this.session = session;
-
         this.loginBtnHandler();
-
       })
     },
     loginBtnHandler() {

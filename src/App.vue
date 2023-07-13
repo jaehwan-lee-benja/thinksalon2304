@@ -18,8 +18,9 @@
 
     </div>
     <div>
-      <ReadingView v-if="mode" />
-      <EditingView v-else />
+      <!-- <ReadingView v-if="mode" />
+      <EditingView v-else /> -->
+      <EditingView />
     </div>
   </div>
 </template>
@@ -41,7 +42,7 @@ export default {
   },
   mixins: [ReadingView],
   components: {
-    ReadingView,
+    // ReadingView,
     EditingView
   },
   methods: {

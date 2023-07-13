@@ -126,7 +126,6 @@ export default {
 
         expenses: [],
         fetchedExpenses: [],
-        updatedExpenses: [],
 
         newCategory_past: '',
         newCategory_present: '',
@@ -232,8 +231,6 @@ export default {
       this['newCategory_'+parentsCategoryHere] = ''
       this['newAmount_'+parentsCategoryHere] = ''
       this.fetchedExpenses.push(JSON.parse(JSON.stringify(o)));
-      // this.updatedExpenses.push(o);
-      this.insertData(o);
     },
     async insertData(oHere) { 
       try {
@@ -266,26 +263,48 @@ export default {
         if(e.parentsCategory == parentsCategory) {
           if(order > orderRemoved) {
             this.expenses[this.expenses.indexOf(e)].order = order - 1;
-            this.updateData(e);
           }
         }
       });
 
       this.expenses = this.expenses.filter((t) => t !== expense)
-      this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
-      this.deleteData(expense);
+
     },
     editExpenses() {
+      // 삭제될 데이터는, expenses에는 없는 id인데, fetchedExpenses에는 있는 id인 경우에 해당
+      // 그외 데이터(upsert로 처리될 데이터)는, 위 id를 제외한 epenses에 있는 모든 id인 경우에 해당
+
+      console.log("this.fetchedExpenses = ", this.fetchedExpenses.length);
+      console.log("this.expenses = ", this.expenses.length);
+
+      // this.fetchedExpenses.forEach(e => {
+      //   console.log("! = ", this.expenses.filter((t) => t !== e))
+      // })
+
+      // const expensesIdArray = [];
+      // this.expenses.forEach(e => {
+      //   expensesIdArray.push({id: e.id})
+      // })
+      // console.log("expensesIdArray = ", expensesIdArray);
+
+      const expensesIdArray = this.expenses.map(e => e.id);
+
+      console.log("expensesIdArray = ", expensesIdArray);
+
+      const fetchedExpensesIdArray = this.fetchedExpenses.map(e => e.id);
+
+      console.log("fetchedExpensesIdArray = ", fetchedExpensesIdArray);
+
       this.expenses.forEach(e => {
-        this.updateData(e)
+        this.upsertData(e)
       })
       this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
     },
-    async updateData(expense) { 
+    async upsertData(expense) { 
       try {
         const { error } = await supabase
             .from('expense')
-            .update(expense)
+            .upsert(expense)
             .eq('id', expense.id)
         if (error) {
           throw error;
