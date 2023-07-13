@@ -230,7 +230,6 @@ export default {
       this.expenses.push(o);
       this['newCategory_'+parentsCategoryHere] = ''
       this['newAmount_'+parentsCategoryHere] = ''
-      this.fetchedExpenses.push(JSON.parse(JSON.stringify(o)));
     },
     async insertData(oHere) { 
       try {
@@ -271,34 +270,22 @@ export default {
 
     },
     editExpenses() {
-      // 삭제될 데이터는, expenses에는 없는 id인데, fetchedExpenses에는 있는 id인 경우에 해당
-      // 그외 데이터(upsert로 처리될 데이터)는, 위 id를 제외한 epenses에 있는 모든 id인 경우에 해당
 
-      console.log("this.fetchedExpenses = ", this.fetchedExpenses.length);
-      console.log("this.expenses = ", this.expenses.length);
+      const confirmValue = confirm("수정된 내용을 저장하시겠습니까?")
 
-      // this.fetchedExpenses.forEach(e => {
-      //   console.log("! = ", this.expenses.filter((t) => t !== e))
-      // })
+      if(confirmValue) {
+        const expensesIdArray = this.expenses.map(e => e.id);
+        const fetchedExpensesIdArray = this.fetchedExpenses.map(e => e.id);
+        const willBeDeletedIdArray = fetchedExpensesIdArray.filter(e => !expensesIdArray.includes(e));
 
-      // const expensesIdArray = [];
-      // this.expenses.forEach(e => {
-      //   expensesIdArray.push({id: e.id})
-      // })
-      // console.log("expensesIdArray = ", expensesIdArray);
+        willBeDeletedIdArray.forEach(e => this.deleteData(e));
+        this.expenses.forEach(e => this.upsertData(e))
 
-      const expensesIdArray = this.expenses.map(e => e.id);
+        this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
 
-      console.log("expensesIdArray = ", expensesIdArray);
+        alert('저장되었습니다.')
+      }
 
-      const fetchedExpensesIdArray = this.fetchedExpenses.map(e => e.id);
-
-      console.log("fetchedExpensesIdArray = ", fetchedExpensesIdArray);
-
-      this.expenses.forEach(e => {
-        this.upsertData(e)
-      })
-      this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
     },
     async upsertData(expense) { 
       try {
@@ -313,12 +300,12 @@ export default {
         console.error(error);
       }
     },
-    async deleteData(expense) {
+    async deleteData(expenseId) {
       try {
         const { error } = await supabase
           .from('expense')
           .delete()
-          .eq('id', expense['id'])
+          .eq('id', expenseId)
         if (error) {
           throw error;
         }
