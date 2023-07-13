@@ -1,5 +1,7 @@
 body {
+  margin: 20px;
   background-color:#f5efe9;
+  width: 1500px;
 }
 h2 {
   padding-left: 40px;
@@ -14,16 +16,20 @@ h3 {
   padding: 20px;
 }
 .menuDiv {
-  padding: 20px;
+  position: fixed;
+  width: 150px;
+  margin: 10px;
+  word-break: break-all;
+  backdrop-filter: blur(5px);
+}
+.mainViewGrid {
+  margin: 10px 20px 0px 170px;
+  padding-top: 10px;
+  width: 1000px;
 }
 .unitDiv {
 border: 1px solid black;
 padding: 30px 10px;
-margin: 5px;
-}
-.bodyDiv {
-min-width : 1100px;
-padding: 20px;
 }
 .subGrid {
   display: grid;
@@ -64,9 +70,17 @@ color: white;
 background-color: #3d3f45;
 }
 .pageHanderDiv {
-  padding: 10px 0px;
-  margin: 10px 0px;
-  height: 200px;
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
+  padding: 20px 0px;
+  margin: 10px;
+  height: 150px;
+}
+.loginMenuDiv {
+  font-size: 13px;
+  color: rgb(80, 80, 80);
+  border: 1px solid #505050;
+  padding: 10px;
+  margin: 10px;
+}
+.titleDiv{
+  margin: 0px 10px;
 }
