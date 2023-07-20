@@ -112,14 +112,14 @@
         </div>
         <div :class="saveEditedDiv">
           <button :class="{
-            'saveEditedStyle_active': isEditValue === true,
-            'saveEditedStyle_inactive': isEditValue === false
+            'saveEditedStyle_active': isEdited === true,
+            'saveEditedStyle_inactive': isEdited === false
           }"
           :disabled="isButtonDisabled" 
           @click="editExpenses">저장</button>
           <button :class="{
-            'cancelEditedStyle_active': isEditValue === true,
-            'cancelEditedStyle_inactive': isEditValue === false
+            'cancelEditedStyle_active': isEdited === true,
+            'cancelEditedStyle_inactive': isEdited === false
           }" 
           :disabled="isButtonDisabled"
           @click="cancelEditing">편집 취소</button>
@@ -231,6 +231,7 @@ export default {
           amount: Number(e.amount)
         })
       });
+      // map으로 해보기
 
       const fetchedData = JSON.stringify(fetched);
       const editedData = JSON.stringify(edited);
@@ -246,11 +247,12 @@ export default {
     monitorIsEdited() {
       console.log("monitorIsEdited here");
       if (this.isEdited) {
-        // 편집이 있는 경우
+        // 편집된 것이 있는 경우
         console.log("isEdited?(1) = ", this.isEdited);
         this.isEditValue = true;
         this.isButtonDisabled = false;
       } else {
+        // 편집된 것이 없는 경우
         console.log("isEdited?(2) = ", this.isEdited);
         this.isEditValue = false;
         this.isButtonDisabled = true;

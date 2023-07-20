@@ -13,7 +13,7 @@
   </template>
   
   <script>
-  import { Pie } from 'vue-chartjs/legacy'
+  import { Pie } from 'vue-chartjs'
   
   import {
     Chart as ChartJS,

@@ -83,7 +83,7 @@
 <script>
 
 import { supabase } from '../lib/supabaseClient.js'
-// import PieChart from './Pie.vue'
+import PieChart from './Pie.vue'
 
 export default {
 
@@ -294,9 +294,9 @@ export default {
       );
     },
   },
-  // components: {
-  //   PieChart
-  // }
+  components: {
+    PieChart
+  }
 }
 </script>
 
