@@ -9,7 +9,7 @@
         </li>
         <li>계산값 : <input :class="amountStyle" v-model="sumTotalExpenses" readonly></li>
       </ul>
-      <Bar :data="data" :options="options" />
+      <PieChart />
     </div>
     <div :class="subGrid">
       <div :class="unitDiv">
@@ -83,32 +83,12 @@
 <script>
 
 import { supabase } from '../lib/supabaseClient.js'
-
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  BarElement,
-  CategoryScale,
-  LinearScale
-} from 'chart.js'
-import { Bar } from 'vue-chartjs'
-
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
+// import PieChart from './Pie.vue'
 
 export default {
 
   data() {
     return {
-
-      data: {
-        labels: ['January', 'February', 'March'],
-        datasets: [{ data: [40, 20, 12] }]
-      },
-      options: {
-        responsive: true
-      },
 
       expenses: [],
 
@@ -314,9 +294,9 @@ export default {
       );
     },
   },
-  components: {
-    Bar
-  }
+  // components: {
+  //   PieChart
+  // }
 }
 </script>
 

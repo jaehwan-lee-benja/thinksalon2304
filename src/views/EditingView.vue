@@ -110,7 +110,20 @@
             </div>
             </div>
         </div>
-        <button :class="saveEditedStyle" v-if="isEdited" @click="editExpenses">저장</button>
+        <div :class="saveEditedDiv">
+          <button :class="{
+            'saveEditedStyle_active': isEditValue === true,
+            'saveEditedStyle_inactive': isEditValue === false
+          }"
+          :disabled="isButtonDisabled" 
+          @click="editExpenses">저장</button>
+          <button :class="{
+            'cancelEditedStyle_active': isEditValue === true,
+            'cancelEditedStyle_inactive': isEditValue === false
+          }" 
+          :disabled="isButtonDisabled"
+          @click="cancelEditing">편집 취소</button>
+        </div>
     </div>
 </template>
 
@@ -118,6 +131,7 @@
 <script>
   
 import { supabase } from '../lib/supabaseClient.js'
+// import { handlingMode } from '../App';
 
 export default {
 
@@ -142,15 +156,22 @@ export default {
         categoryStyle: 'categoryStyle',
         amountStyle: 'amountStyle',
         newUlStyle: 'newUlStyle',
-        saveEditedStyle: 'saveEditedStyle',
+        saveEditedStyle_active: 'saveEditedStyle_active',
+        saveEditedStyle_inactive: 'saveEditedStyle_inactive',
+        cancelEditedStyle_active: 'cancelEditedStyle_active',
+        cancelEditedStyle_inactive: 'cancelEditedStyle_inactive',
+        saveEditedDiv: 'saveEditedDiv',
+
+        isEditValue: true,
+        isButtonDisabled: false,
 
       }
   },
   mounted() {
-    this.fetchData()
+    this.fetchData(),
+    this.monitorIsEdited()
   },
   computed: {
-
     sortTotalExpenses() {
       return this.expenses.filter(e => e.category === "total")
     },
@@ -193,6 +214,8 @@ export default {
 
     isEdited() {
 
+      console.log("isEdited here! @computed");
+
       const fetched = [];
       this.fetchedExpenses.forEach(e => {
         fetched.push({
@@ -211,13 +234,28 @@ export default {
 
       const fetchedData = JSON.stringify(fetched);
       const editedData = JSON.stringify(edited);
+      const result = ( fetchedData || "" ) != ( editedData || "" )
+      console.log("result = ", result);
 
-      return ( fetchedData || "" ) != ( editedData || "" )
+      return result
 
-    }
+      },
 
   },
   methods: {
+    monitorIsEdited() {
+      console.log("monitorIsEdited here");
+      if (this.isEdited) {
+        // 편집이 있는 경우
+        console.log("isEdited?(1) = ", this.isEdited);
+        this.isEditValue = true;
+        this.isButtonDisabled = false;
+      } else {
+        console.log("isEdited?(2) = ", this.isEdited);
+        this.isEditValue = false;
+        this.isButtonDisabled = true;
+      }
+    },
     addExpense(parentsCategoryHere) {
       const o = {
         id: this.getUuidv4(), 
@@ -253,21 +291,28 @@ export default {
         this.fetchedExpenses = JSON.parse(JSON.stringify(data));
     },
     removeExpense(expense) {
+      const confirmValue = confirm("내용을 삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
 
-      const parentsCategory = expense.parentsCategory;
-      const orderRemoved = expense.order;
+      if(confirmValue) {
 
-      this.expenses.forEach(e => {
-        const order = e.order;
-        if(e.parentsCategory == parentsCategory) {
-          if(order > orderRemoved) {
-            this.expenses[this.expenses.indexOf(e)].order = order - 1;
+        const parentsCategory = expense.parentsCategory;
+        const orderRemoved = expense.order;
+
+        this.expenses.forEach(e => {
+          const order = e.order;
+          if(e.parentsCategory == parentsCategory) {
+            if(order > orderRemoved) {
+              this.expenses[this.expenses.indexOf(e)].order = order - 1;
+            }
           }
-        }
-      });
+        });
 
-      this.expenses = this.expenses.filter((t) => t !== expense)
+        this.expenses = this.expenses.filter((t) => t !== expense)
 
+      }
+    },
+    pointEditedData() {
+      
     },
     editExpenses() {
 
@@ -311,7 +356,7 @@ export default {
         }
       } catch (error) {
         console.error(error);
-      }
+      }      
     },
     getUuidv4() {
         return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -322,6 +367,14 @@ export default {
       const arr = this.expenses.filter(e => e.parentsCategory === parentsCategoryHere)
       const expenseLength = Object.keys(arr).length;
       return expenseLength+1 ;
+    },
+    cancelEditing() {
+      const confirmValue = confirm("편집을 취소하시겠습니까? 취소하면, 편집 중인 내용은 저장되지 않습니다.")
+
+      if(confirmValue) {
+        this.expenses = "";
+        this.expenses = JSON.parse(JSON.stringify(this.fetchedExpenses));
+      }
     }
 
   }

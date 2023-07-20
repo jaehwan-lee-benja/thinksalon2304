@@ -62,14 +62,10 @@ export default {
   },
   methods: {
     handlingMode() {
-      console.log("this.mode1 = ", this.mode);
       if(!this.mode) {
-        confirm("편집모드를 종료하시겠습니까? 수정 후 저장하지 않은 내용은 저장되지 않습니다.")
+        confirm("편집을 종료하시겠습니까? 수정 후 저장하지 않은 내용은 저장되지 않습니다.")
       }
-
       this.mode = !this.mode
-      
-      console.log("this.mode2 = ", this.mode);
     },
   }
 }
