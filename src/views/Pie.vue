@@ -14,6 +14,7 @@
   
   <script>
   import { Pie } from 'vue-chartjs'
+  import { customData } from './ReadingView.vue'; // ReadingView.vue에서 값을 가져옵니다.
   // import myMixin from './ReadingView.vue';
   
   import {
@@ -70,7 +71,7 @@
           datasets: [
             {
               backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
-              data: [40, 20, 80]
+              data: customData
             }
           ]
         },

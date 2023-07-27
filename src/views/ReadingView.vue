@@ -11,6 +11,7 @@
       </ul>
       <!-- 세가지 값 보여주기 -->
       <p>과거형 결정값: {{ getPastAmount }}</p>
+      <!-- <p>과거형 결정값: {{ (this.expenses.category = past).amount }}</p> -->
       <p>현재형 결정값: {{ getPresentAmount }}</p>
       <p>미래형 결정값: {{ getFutureAmount }}</p>
       <PieChart />
@@ -88,12 +89,15 @@
 
 import { supabase } from '../lib/supabaseClient.js'
 import PieChart from './Pie.vue'
+export const customData = [100, 200, 300];
+// export const customData = [this.expenses[0].amount, 200, 300];
+// export const customData = [this.getPastAmount, this.getPresentAmount, this.getFutureAmount];
 
 export default {
 
   data() {
     return {
-      
+
       expenses: [],
 
       bodyDiv: 'bodyDiv',
