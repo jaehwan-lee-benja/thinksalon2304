@@ -9,6 +9,10 @@
         </li>
         <li>계산값 : <input :class="amountStyle" v-model="sumTotalExpenses" readonly></li>
       </ul>
+      <!-- 세가지 값 보여주기 -->
+      <p>과거형 결정값: {{ getPastAmount }}</p>
+      <p>현재형 결정값: {{ getPresentAmount }}</p>
+      <p>미래형 결정값: {{ getFutureAmount }}</p>
       <PieChart />
     </div>
     <div :class="subGrid">
@@ -89,7 +93,7 @@ export default {
 
   data() {
     return {
-
+      
       expenses: [],
 
       bodyDiv: 'bodyDiv',
@@ -156,7 +160,30 @@ export default {
       return this.expenses.filter(e => e.parentsCategory === "future")
         .reduce((acc, item) => acc + Number(item.amount.replace(/,/g, "")), 0)
         .toLocaleString();
+    },
+
+    getPastAmount() {
+      const result1 = this.expenses.filter(e => e.category === "past");
+      const result2 = result1[0]
+      let result3 = "no data"
+      if(result1.length > 0 ){ result3 = result2.amount }
+      return result3;
+    },
+    getPresentAmount() {
+      const result1 = this.expenses.filter(e => e.category === "present");
+      const result2 = result1[0]
+      let result3 = "no data"
+      if(result1.length > 0 ){ result3 = result2.amount }
+      return result3;
+    },
+    getFutureAmount() {
+      const result1 = this.expenses.filter(e => e.category === "future");
+      const result2 = result1[0]
+      let result3 = "no data"
+      if(result1.length > 0 ){ result3 = result2.amount }
+      return result3;
     }
+    
   },
   methods: {
     async loginGoogle() {

@@ -14,6 +14,7 @@
   
   <script>
   import { Pie } from 'vue-chartjs'
+  // import myMixin from './ReadingView.vue';
   
   import {
     Chart as ChartJS,
@@ -27,6 +28,7 @@
   ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
   
   export default {
+    // mixins: [myMixin],
     name: 'PieChart',
     components: {
       Pie
@@ -64,11 +66,11 @@
     data() {
       return {
         chartData: {
-          labels: ['VueJs', 'EmberJs', 'ReactJs', 'AngularJs'],
+          labels: ['과거형 지출', '현재형 지출', '미래형 지출'],
           datasets: [
             {
-              backgroundColor: ['#41B883', '#E46651', '#00D8FF', '#DD1B16'],
-              data: [40, 20, 80, 10]
+              backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
+              data: [40, 20, 80]
             }
           ]
         },
