@@ -7,6 +7,7 @@
         <li v-for="expense in sortTotalExpenses" :key="expense.id">
           <span>결정값 : </span>
           <input :class="amountStyle" v-model="expense.amount" placeholder="0" readonly>
+          <input :class="amountStyle" v-model="this.getPastAmount2" placeholder="0" readonly>
         </li>
         <li>
           <input :class="amountStyle" v-model="pastAmount" placeholder="0" readonly>
@@ -21,19 +22,11 @@
       <p>현재형 결정값: {{ getPresentAmount }}</p>
       <p>미래형 결정값: {{ getFutureAmount }}</p>
 
-      <Pie
-        :chart-options="chartOptions"
-        :chart-data="chartData"
-        :chart-id="chartId"
-        :dataset-id-key="datasetIdKey"
-        :plugins="plugins"
-        :css-classes="cssClasses"
-        :styles="styles"
-        :width="width"
-        :height="height"
-      />
+      <!-- <Pie :chart-options="chartOptions" :chart-data="getChartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
+        :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" /> -->
 
-      <!-- <PieChart /> -->
+      <PieChart v-bind:expenses="expenses"/>
+
     </div>
     <div :class="subGrid">
       <div :class="unitDiv">
@@ -107,19 +100,19 @@
 <script>
 
 import { supabase } from '../lib/supabaseClient.js'
-// import PieChart from './Pie.vue'
-import { Pie } from 'vue-chartjs'
+import PieChart from './Pie.vue'
+// import { Pie } from 'vue-chartjs'
 
 import {
-    Chart as ChartJS,
-    Title,
-    Tooltip,
-    Legend,
-    ArcElement,
-    CategoryScale
-  } from 'chart.js'
-  
-  ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
+  Chart as ChartJS,
+  Title,
+  Tooltip,
+  Legend,
+  ArcElement,
+  CategoryScale
+} from 'chart.js'
+
+ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
 
 
 // export const customData = [100];
@@ -128,65 +121,65 @@ import {
 // export const customData = [this.getPastAmount, this.getPresentAmount, this.getFutureAmount];
 
 export function customData() {
-      const result1 = this.expenses.filter(e => e.category === "past");
-      const result2 = result1[0]
-      let result3 = "no data"
-      if(result1.length > 0 ){ result3 = result2.amount }
-      return [result3];
-    }
+  const result1 = this.expenses.filter(e => e.category === "past");
+  const result2 = result1[0]
+  let result3 = "no data"
+  if (result1.length > 0) { result3 = result2.amount }
+  return [result3];
+}
 
 export default {
-  name: 'PieChart',
-    components: {
-      Pie
-    },
-    props: {
-      chartId: {
-        type: String,
-        default: 'pie-chart'
-      },
-      datasetIdKey: {
-        type: String,
-        default: 'label'
-      },
-      width: {
-        type: Number,
-        default: 400
-      },
-      height: {
-        type: Number,
-        default: 400
-      },
-      cssClasses: {
-        default: '',
-        type: String
-      },
-      styles: {
-        type: Object,
-        default: () => {}
-      },
-      plugins: {
-        type: Array,
-        default: () => []
-      }
-    },
+  // name: 'PieChart',
+  // components: {
+  //   Pie
+  // },
+  // props: {
+  //   chartId: {
+  //     type: String,
+  //     default: 'pie-chart'
+  //   },
+  //   datasetIdKey: {
+  //     type: String,
+  //     default: 'label'
+  //   },
+  //   width: {
+  //     type: Number,
+  //     default: 400
+  //   },
+  //   height: {
+  //     type: Number,
+  //     default: 400
+  //   },
+  //   cssClasses: {
+  //     default: '',
+  //     type: String
+  //   },
+  //   styles: {
+  //     type: Object,
+  //     default: () => { }
+  //   },
+  //   plugins: {
+  //     type: Array,
+  //     default: () => []
+  //   }
+  // },
   data() {
     return {
 
       chartData: {
-          labels: ['과거형 지출', '현재형 지출', '미래형 지출'],
-          datasets: [
-            {
-              backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
-              data: this.getPastAmount2()
-              // data: [getPastAmount3()]
-            }
-          ]
-        },
-        chartOptions: {
-          responsive: true,
-          maintainAspectRatio: false
-        },
+        labels: ['과거형 지출', '현재형 지출', '미래형 지출'],
+        datasets: [
+          {
+            backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
+            data: [100, 200, 300]
+            // data: [getPastAmount3()]
+          }
+        ]
+      },
+      chartOptions: {
+        responsive: true,
+        maintainAspectRatio: false
+      },
 
       expenses: [],
       pastAmount: '',
@@ -210,8 +203,8 @@ export default {
   },
   mounted() {
     this.fetchData(),
-    this.sessionListener(),
-    this.searchPastAmout()
+      this.sessionListener(),
+      this.searchPastAmout()
   },
   computed: {
 
@@ -262,25 +255,40 @@ export default {
     getPastAmount() {
       const result1 = this.expenses.filter(e => e.category === "past");
       const result2 = result1[0]
-      let result3 = "no data"
-      if(result1.length > 0 ){ result3 = result2.amount }
-      return result3;
+      let result3 = ""
+      if (result1.length > 0) { result3 = result2.amount }
+      return Number(result3.replace(/,/g, ""))
     },
     getPresentAmount() {
       const result1 = this.expenses.filter(e => e.category === "present");
       const result2 = result1[0]
-      let result3 = "no data"
-      if(result1.length > 0 ){ result3 = result2.amount }
-      return result3;
+      let result3 = ""
+      if (result1.length > 0) { result3 = result2.amount }
+      return Number(result3.replace(/,/g, ""))
     },
     getFutureAmount() {
-      const result1 = this.expenses.filter(e => e.category === "future");
+      const result1 = this.expenses.filter(e => e.category === "future"); // filter대신 find써보기
       const result2 = result1[0]
-      let result3 = "no data"
-      if(result1.length > 0 ){ result3 = result2.amount }
-      return result3;
+      let result3 = ""
+      if (result1.length > 0) { result3 = result2.amount }
+      return Number(result3.replace(/,/g, ""))
+    },
+    getChartData() {
+      const chartData = {
+        labels: ['과거형 지출', '현재형 지출', '미래형 지출'],
+        datasets: [
+          {
+            backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
+            data: [this.getPastAmount, this.getPresentAmount, this.getFutureAmount]
+          }
+        ]
+      }
+      console.log("chartData = ", chartData);
+      let a = this.expenses.find(e => e.category === "future1")?.amount || ""
+      let b = Number(a.replace(/,/g, ""))
+      console.log("b = ", b);
+      return chartData
     }
-    
   },
   methods: {
     test() {
@@ -289,11 +297,11 @@ export default {
     getPastAmount2() {
       console.log("getPastAmount2 here!");
       console.log("this.expenses = ", this.expenses);
-      if(this.expenses != undefined) {
+      if (this.expenses != undefined) {
         const result1 = this.expenses.filter(e => e.category === "present");
         const result2 = result1[0]
         let result3 = "2"
-        if(result1.length > 0 ){ result3 = result2.amount }
+        if (result1.length > 0) { result3 = result2.amount }
         console.log("result3 = ", result3);
         return result3;
       }
@@ -310,24 +318,24 @@ export default {
       const result1 = this.expenses.filter(e => e.category === "present");
       const result2 = result1[0]
       let result3 = "no data"
-      if(result1.length > 0 ){ result3 = result2.amount }
+      if (result1.length > 0) { result3 = result2.amount }
       return result3;
     },
     getFutureAmount2() {
       const result1 = this.expenses.filter(e => e.category === "future");
       const result2 = result1[0]
       let result3 = "no data"
-      if(result1.length > 0 ){ result3 = result2.amount }
+      if (result1.length > 0) { result3 = result2.amount }
       return result3;
     },
     searchPastAmout() {
       console.log("searchPastAmout here!");
       console.log("this.expenses = ", this.expenses);
-      if(this.expenses != undefined) {
+      if (this.expenses != undefined) {
         const result1 = this.expenses.filter(e => e.category === "present");
         const result2 = result1[0]
         let result3 = "no data"
-        if(result1.length > 0 ){ result3 = result2.amount }
+        if (result1.length > 0) { result3 = result2.amount }
         return result3;
       }
       return "nothing!"
@@ -467,9 +475,9 @@ export default {
       );
     },
   },
-  // components: {
-  //   PieChart
-  // }
+  components: {
+    PieChart
+  }
 }
 </script>
 

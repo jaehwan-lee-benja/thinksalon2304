@@ -15,7 +15,7 @@
   
   <script>
   import { Pie } from 'vue-chartjs'
-  import { customData } from './ReadingView.vue'; // ReadingView.vue에서 값을 가져옵니다.
+  // import { customData } from './ReadingView.vue'; // ReadingView.vue에서 값을 가져옵니다.
   // import myMixin from './ReadingView.vue';
   
   import {
@@ -35,7 +35,15 @@
     components: {
       Pie
     },
+    mounted() {
+      console.log("props = ", this.props);
+      console.log("expenses = ", this.expenses);
+    },
     props: {
+      expenses: {
+        type: Array,
+        default: () => []
+      },
       chartId: {
         type: String,
         default: 'pie-chart'
@@ -72,7 +80,7 @@
           datasets: [
             {
               backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
-              data: customData
+              data: [100,200,300]
               // data: [getPastAmount3()]
             }
           ]
