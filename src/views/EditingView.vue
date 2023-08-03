@@ -5,16 +5,13 @@
             <h2>돈이 나가는 영역(편집모드)</h2>
             <ul>
                 <li v-for="expense in sortTotalExpenses" :key="expense.id">
-                    <span>결정값 : </span>
-                    <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+                  <span>결정값 : </span>
+                  <input :class="amountStyle" v-model="expense.amount" placeholder="0">
                 </li>
                 <li>
-                  <input :class="amountStyle" v-model="pastAmount" placeholder="0">
+                  <span>계산값 : </span>
+                  <input :class="amountStyle" v-model="sumTotalExpenses" readonly>
                 </li>
-                <li>
-                  <input :class="amountStyle" v-model="this.searchPastAmout" placeholder="0">
-                </li>
-                <li>계산값 : <input :class="amountStyle" v-model="sumTotalExpenses" readonly></li>
             </ul>
             </div>
             <div :class="subGrid">

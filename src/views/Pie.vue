@@ -1,4 +1,5 @@
 <template>
+    <!-- <p>과거형 결정값(3): {{ getPastAmount2() }}</p> -->
     <Pie
       :chart-options="chartOptions"
       :chart-data="chartData"
@@ -72,6 +73,7 @@
             {
               backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
               data: customData
+              // data: [getPastAmount3()]
             }
           ]
         },
