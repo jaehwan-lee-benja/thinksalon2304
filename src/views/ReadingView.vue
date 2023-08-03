@@ -250,44 +250,6 @@ export default {
       return this.expenses.filter(e => e.parentsCategory === "future")
         .reduce((acc, item) => acc + Number(item.amount.replace(/,/g, "")), 0)
         .toLocaleString();
-    },
-
-    getPastAmount() {
-      const result1 = this.expenses.filter(e => e.category === "past");
-      const result2 = result1[0]
-      let result3 = ""
-      if (result1.length > 0) { result3 = result2.amount }
-      return Number(result3.replace(/,/g, ""))
-    },
-    getPresentAmount() {
-      const result1 = this.expenses.filter(e => e.category === "present");
-      const result2 = result1[0]
-      let result3 = ""
-      if (result1.length > 0) { result3 = result2.amount }
-      return Number(result3.replace(/,/g, ""))
-    },
-    getFutureAmount() {
-      const result1 = this.expenses.filter(e => e.category === "future"); // filter대신 find써보기
-      const result2 = result1[0]
-      let result3 = ""
-      if (result1.length > 0) { result3 = result2.amount }
-      return Number(result3.replace(/,/g, ""))
-    },
-    getChartData() {
-      const chartData = {
-        labels: ['과거형 지출', '현재형 지출', '미래형 지출'],
-        datasets: [
-          {
-            backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
-            data: [this.getPastAmount, this.getPresentAmount, this.getFutureAmount]
-          }
-        ]
-      }
-      console.log("chartData = ", chartData);
-      let a = this.expenses.find(e => e.category === "future1")?.amount || ""
-      let b = Number(a.replace(/,/g, ""))
-      console.log("b = ", b);
-      return chartData
     }
   },
   methods: {
