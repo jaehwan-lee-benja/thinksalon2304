@@ -13,6 +13,7 @@
                   <input :class="amountStyle" v-model="sumTotalExpenses" readonly>
                 </li>
             </ul>
+            <PieChart v-bind:expenses="expenses" />
             </div>
             <div :class="subGrid">
             <div :class="unitDiv">
@@ -134,7 +135,7 @@
 <script>
   
 import { supabase } from '../lib/supabaseClient.js'
-// import { handlingMode } from '../App';
+import PieChart from './Pie.vue'
 
 export default {
 
@@ -143,7 +144,6 @@ export default {
                 
         expenses: [],
         fetchedExpenses: [],
-        pastAmount: this.searchPastAmout(),
 
         newCategory_past: '',
         newCategory_present: '',
@@ -245,23 +245,6 @@ export default {
 
   },
   methods: {
-    searchPastAmout() {
-      console.log("searchPastAmout here!");
-      console.log("this.expenses = ", this.expenses);
-      if(this.expenses != undefined) {
-        const result1 = this.expenses.filter(e => e.category === "present");
-        console.log("result1 = ", result1);
-        const result2 = result1[0]
-        console.log("result2 = ", result2);
-        // const resultId = result2.id;
-        // console.log("resultId = ", resultId);
-        let result3 = "no data"
-        if(result1.length > 0 ){ result3 = result2.amount }
-        console.log("result3 = ", result3);
-        return result3;
-      }
-      return "nothing!"
-    },
     monitorIsEdited() {
       if (this.isEdited) {
         // 편집된 것이 있는 경우
@@ -394,6 +377,9 @@ export default {
       }
     }
 
+  },
+  components: {
+    PieChart
   }
 }
 </script>

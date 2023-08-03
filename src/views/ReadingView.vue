@@ -1,33 +1,20 @@
 <template>
   <div>
     <div :class="unitDiv">
-      <button @click="test">test</button>
+      
       <h2>돈이 나가는 영역</h2>
       <ul>
         <li v-for="expense in sortTotalExpenses" :key="expense.id">
           <span>결정값 : </span>
           <input :class="amountStyle" v-model="expense.amount" placeholder="0" readonly>
-          <input :class="amountStyle" v-model="this.getPastAmount2" placeholder="0" readonly>
         </li>
         <li>
-          <input :class="amountStyle" v-model="pastAmount" placeholder="0" readonly>
-        </li>
-        <li>계산값 : <input :class="amountStyle" v-model="sumTotalExpenses" readonly></li>
+          <span>계산값 : </span>
+          <input :class="amountStyle" v-model="sumTotalExpenses" readonly></li>
       </ul>
-      <!-- 세가지 값 보여주기 -->
-      <p>과거형 결정값(1): {{ getPastAmount }}</p>
-      <p>과거형 결정값(2): {{ pastAmount }}</p>
-      <p>과거형 결정값(3): {{ getPastAmount2() }}</p>
-      <!-- <p>과거형 결정값: {{ (this.expenses.category = past).amount }}</p> -->
-      <p>현재형 결정값: {{ getPresentAmount }}</p>
-      <p>미래형 결정값: {{ getFutureAmount }}</p>
-
-      <!-- <Pie :chart-options="chartOptions" :chart-data="getChartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
-        :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" /> -->
-
-      <PieChart v-bind:expenses="expenses"/>
-
+      <PieChart v-bind:expenses="expenses" />
     </div>
+
     <div :class="subGrid">
       <div :class="unitDiv">
         <div>
@@ -101,89 +88,13 @@
 
 import { supabase } from '../lib/supabaseClient.js'
 import PieChart from './Pie.vue'
-// import { Pie } from 'vue-chartjs'
-
-import {
-  Chart as ChartJS,
-  Title,
-  Tooltip,
-  Legend,
-  ArcElement,
-  CategoryScale
-} from 'chart.js'
-
-ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
-
-
-// export const customData = [100];
-// export const customData = [this.expenses[0].amount, 200, 300];
-// export const customData = [this.searchPastAmout(), 200, 300];
-// export const customData = [this.getPastAmount, this.getPresentAmount, this.getFutureAmount];
-
-export function customData() {
-  const result1 = this.expenses.filter(e => e.category === "past");
-  const result2 = result1[0]
-  let result3 = "no data"
-  if (result1.length > 0) { result3 = result2.amount }
-  return [result3];
-}
 
 export default {
-  // name: 'PieChart',
-  // components: {
-  //   Pie
-  // },
-  // props: {
-  //   chartId: {
-  //     type: String,
-  //     default: 'pie-chart'
-  //   },
-  //   datasetIdKey: {
-  //     type: String,
-  //     default: 'label'
-  //   },
-  //   width: {
-  //     type: Number,
-  //     default: 400
-  //   },
-  //   height: {
-  //     type: Number,
-  //     default: 400
-  //   },
-  //   cssClasses: {
-  //     default: '',
-  //     type: String
-  //   },
-  //   styles: {
-  //     type: Object,
-  //     default: () => { }
-  //   },
-  //   plugins: {
-  //     type: Array,
-  //     default: () => []
-  //   }
-  // },
+
   data() {
     return {
 
-      chartData: {
-        labels: ['과거형 지출', '현재형 지출', '미래형 지출'],
-        datasets: [
-          {
-            backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
-            data: [100, 200, 300]
-            // data: [getPastAmount3()]
-          }
-        ]
-      },
-      chartOptions: {
-        responsive: true,
-        maintainAspectRatio: false
-      },
-
       expenses: [],
-      pastAmount: '',
-      customData2: [100, 200, 300],
 
       bodyDiv: 'bodyDiv',
       unitDiv: 'unitDiv',
@@ -203,8 +114,7 @@ export default {
   },
   mounted() {
     this.fetchData(),
-      this.sessionListener(),
-      this.searchPastAmout()
+      this.sessionListener()
   },
   computed: {
 
@@ -253,55 +163,6 @@ export default {
     }
   },
   methods: {
-    test() {
-      console.log("test = ", this.getFutureAmount2());
-    },
-    getPastAmount2() {
-      console.log("getPastAmount2 here!");
-      console.log("this.expenses = ", this.expenses);
-      if (this.expenses != undefined) {
-        const result1 = this.expenses.filter(e => e.category === "present");
-        const result2 = result1[0]
-        let result3 = "2"
-        if (result1.length > 0) { result3 = result2.amount }
-        console.log("result3 = ", result3);
-        return result3;
-      }
-      return 1
-    },
-    // getPastAmount2() {
-    //   const result1 = this.expenses.filter(e => e.category === "past");
-    //   const result2 = result1[0]
-    //   let result3 = "no data"
-    //   if(result1.length > 0 ){ result3 = result2.amount }
-    //   return result3;
-    // },
-    getPresentAmount2() {
-      const result1 = this.expenses.filter(e => e.category === "present");
-      const result2 = result1[0]
-      let result3 = "no data"
-      if (result1.length > 0) { result3 = result2.amount }
-      return result3;
-    },
-    getFutureAmount2() {
-      const result1 = this.expenses.filter(e => e.category === "future");
-      const result2 = result1[0]
-      let result3 = "no data"
-      if (result1.length > 0) { result3 = result2.amount }
-      return result3;
-    },
-    searchPastAmout() {
-      console.log("searchPastAmout here!");
-      console.log("this.expenses = ", this.expenses);
-      if (this.expenses != undefined) {
-        const result1 = this.expenses.filter(e => e.category === "present");
-        const result2 = result1[0]
-        let result3 = "no data"
-        if (result1.length > 0) { result3 = result2.amount }
-        return result3;
-      }
-      return "nothing!"
-    },
     async loginGoogle() {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google'
