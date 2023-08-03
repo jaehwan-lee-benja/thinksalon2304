@@ -8,6 +8,12 @@
                     <span>결정값 : </span>
                     <input :class="amountStyle" v-model="expense.amount" placeholder="0">
                 </li>
+                <li>
+                  <input :class="amountStyle" v-model="pastAmount" placeholder="0">
+                </li>
+                <li>
+                  <input :class="amountStyle" v-model="this.searchPastAmout" placeholder="0">
+                </li>
                 <li>계산값 : <input :class="amountStyle" v-model="sumTotalExpenses" readonly></li>
             </ul>
             </div>
@@ -140,6 +146,7 @@ export default {
                 
         expenses: [],
         fetchedExpenses: [],
+        pastAmount: this.searchPastAmout(),
 
         newCategory_past: '',
         newCategory_present: '',
@@ -214,8 +221,6 @@ export default {
 
     isEdited() {
 
-      console.log("isEdited here! @computed");
-
       const fetched = [];
       this.fetchedExpenses.forEach(e => {
         fetched.push({
@@ -236,7 +241,6 @@ export default {
       const fetchedData = JSON.stringify(fetched);
       const editedData = JSON.stringify(edited);
       const result = ( fetchedData || "" ) != ( editedData || "" )
-      console.log("result = ", result);
 
       return result
 
@@ -244,16 +248,30 @@ export default {
 
   },
   methods: {
+    searchPastAmout() {
+      console.log("searchPastAmout here!");
+      console.log("this.expenses = ", this.expenses);
+      if(this.expenses != undefined) {
+        const result1 = this.expenses.filter(e => e.category === "present");
+        console.log("result1 = ", result1);
+        const result2 = result1[0]
+        console.log("result2 = ", result2);
+        // const resultId = result2.id;
+        // console.log("resultId = ", resultId);
+        let result3 = "no data"
+        if(result1.length > 0 ){ result3 = result2.amount }
+        console.log("result3 = ", result3);
+        return result3;
+      }
+      return "nothing!"
+    },
     monitorIsEdited() {
-      console.log("monitorIsEdited here");
       if (this.isEdited) {
         // 편집된 것이 있는 경우
-        console.log("isEdited?(1) = ", this.isEdited);
         this.isEditValue = true;
         this.isButtonDisabled = false;
       } else {
         // 편집된 것이 없는 경우
-        console.log("isEdited?(2) = ", this.isEdited);
         this.isEditValue = false;
         this.isButtonDisabled = true;
       }

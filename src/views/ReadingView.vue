@@ -7,10 +7,14 @@
           <span>결정값 : </span>
           <input :class="amountStyle" v-model="expense.amount" placeholder="0" readonly>
         </li>
+        <li>
+          <input :class="amountStyle" v-model="pastAmount" placeholder="0" readonly>
+        </li>
         <li>계산값 : <input :class="amountStyle" v-model="sumTotalExpenses" readonly></li>
       </ul>
       <!-- 세가지 값 보여주기 -->
-      <p>과거형 결정값: {{ getPastAmount }}</p>
+      <p>과거형 결정값(1): {{ getPastAmount }}</p>
+      <p>과거형 결정값(2): {{ pastAmount }}</p>
       <!-- <p>과거형 결정값: {{ (this.expenses.category = past).amount }}</p> -->
       <p>현재형 결정값: {{ getPresentAmount }}</p>
       <p>미래형 결정값: {{ getFutureAmount }}</p>
@@ -99,6 +103,7 @@ export default {
     return {
 
       expenses: [],
+      pastAmount: '',
 
       bodyDiv: 'bodyDiv',
       unitDiv: 'unitDiv',
@@ -118,7 +123,8 @@ export default {
   },
   mounted() {
     this.fetchData(),
-      this.sessionListener()
+    this.sessionListener(),
+    this.searchPastAmout()
   },
   computed: {
 
@@ -190,6 +196,13 @@ export default {
     
   },
   methods: {
+    searchPastAmout() {
+      const result1 = this.expenses.filter(e => e.category === "present");
+      const result2 = result1[0]
+      let result3 = "no data"
+      if(result1.length > 0 ){ result3 = result2.amount }
+      this.pastAmount = result3;
+    },
     async loginGoogle() {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google'
