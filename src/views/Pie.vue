@@ -37,11 +37,11 @@ export default {
     },
     width: {
       type: Number,
-      default: 400
+      default: 250
     },
     height: {
       type: Number,
-      default: 400
+      default: 250
     },
     cssClasses: {
       default: '',
@@ -86,7 +86,7 @@ export default {
         labels: ['과거형 지출', '현재형 지출', '미래형 지출'],
         datasets: [
           {
-            backgroundColor: ['#41B883', '#E46651', '#00D8FF'],
+            backgroundColor: ['#D1C3B7', '#AC9D8E', '#836835'],
             data: [this.getPastAmount, this.getPresentAmount, this.getFutureAmount]
           }
         ]

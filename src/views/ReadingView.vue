@@ -1,18 +1,24 @@
 <template>
   <div>
     <div :class="unitDiv">
+      <div :class="graphGrid">
+        <div>
+          <h2>돈이 나가는 영역</h2>
+          <ul>
+            <li v-for="expense in sortTotalExpenses" :key="expense.id">
+              <span>결정값 : </span>
+              <input :class="amountStyle" v-model="expense.amount" placeholder="0" readonly>
+            </li>
+            <li>
+              <span>계산값 : </span>
+              <input :class="amountStyle" v-model="sumTotalExpenses" readonly></li>
+          </ul>
+        </div>
+        <div :class="graphDiv">
+          <PieChart v-bind:expenses="expenses" />
+        </div>
+      </div>
       
-      <h2>돈이 나가는 영역</h2>
-      <ul>
-        <li v-for="expense in sortTotalExpenses" :key="expense.id">
-          <span>결정값 : </span>
-          <input :class="amountStyle" v-model="expense.amount" placeholder="0" readonly>
-        </li>
-        <li>
-          <span>계산값 : </span>
-          <input :class="amountStyle" v-model="sumTotalExpenses" readonly></li>
-      </ul>
-      <PieChart v-bind:expenses="expenses" />
     </div>
 
     <div :class="subGrid">
@@ -99,6 +105,8 @@ export default {
       bodyDiv: 'bodyDiv',
       unitDiv: 'unitDiv',
       subGrid: 'subGrid',
+      graphGrid: 'graphGrid',
+      graphDiv: 'graphDiv',
 
       categoryStyle: 'categoryStyle_readingMode',
       amountStyle: 'amountStyle_readingMode',

@@ -2,20 +2,26 @@
     <div :class="bodyDiv">
         <div>
           <div :class="unitDiv">
-            <h2>돈이 나가는 영역(편집모드)</h2>
-            <ul>
-                <li v-for="expense in sortTotalExpenses" :key="expense.id">
-                  <span>결정값 : </span>
-                  <input :class="amountStyle" v-model="expense.amount" placeholder="0">
-                </li>
-                <li>
-                  <span>계산값 : </span>
-                  <input :class="amountStyle" v-model="sumTotalExpenses" readonly>
-                </li>
-            </ul>
-            <PieChart v-bind:expenses="expenses" />
+            <div :class="graphGrid">
+              <div>
+                <h2>돈이 나가는 영역(편집모드)</h2>
+                <ul>
+                    <li v-for="expense in sortTotalExpenses" :key="expense.id">
+                      <span>결정값 : </span>
+                      <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+                    </li>
+                    <li>
+                      <span>계산값 : </span>
+                      <input :class="amountStyle" v-model="sumTotalExpenses" readonly>
+                    </li>
+                </ul>
+              </div>
+              <div :class="graphDiv">
+                <PieChart v-bind:expenses="expenses" />
+              </div>
             </div>
-            <div :class="subGrid">
+          </div>
+          <div :class="subGrid">
             <div :class="unitDiv">
                 <div>
                 <h3>과거형 지출</h3>
@@ -119,13 +125,13 @@
             'saveEditedStyle_active': isEdited === true,
             'saveEditedStyle_inactive': isEdited === false
           }"
-          :disabled="isButtonDisabled" 
+          :disabled="!isEdited" 
           @click="editExpenses">저장</button>
           <button :class="{
             'cancelEditedStyle_active': isEdited === true,
             'cancelEditedStyle_inactive': isEdited === false
           }" 
-          :disabled="isButtonDisabled"
+          :disabled="!isEdited"
           @click="cancelEditing">편집 취소</button>
         </div>
     </div>
@@ -156,6 +162,8 @@ export default {
         bodyDiv: 'bodyDiv',
         unitDiv: 'unitDiv',
         subGrid: 'subGrid',
+        graphGrid: 'graphGrid',
+        graphDiv: 'graphDiv',
 
         categoryStyle: 'categoryStyle',
         amountStyle: 'amountStyle',
@@ -167,7 +175,6 @@ export default {
         saveEditedDiv: 'saveEditedDiv',
 
         isEditValue: true,
-        isButtonDisabled: false,
 
       }
   },
@@ -249,11 +256,9 @@ export default {
       if (this.isEdited) {
         // 편집된 것이 있는 경우
         this.isEditValue = true;
-        this.isButtonDisabled = false;
       } else {
         // 편집된 것이 없는 경우
         this.isEditValue = false;
-        this.isButtonDisabled = true;
       }
     },
     addExpense(parentsCategoryHere) {
