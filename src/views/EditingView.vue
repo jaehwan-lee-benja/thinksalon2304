@@ -261,7 +261,7 @@ export default {
         category: this['newCategory_' + parentsCategoryHere],
         amount: this['newAmount_' + parentsCategoryHere],
         order: this.setOrder(parentsCategoryHere),
-        level: 2
+        level: 3
       };
       this.expenses.push(o);
       this['newCategory_' + parentsCategoryHere] = ''
