@@ -86,7 +86,6 @@
   </div>
 </template>
 
-
 <script>
 
 import { supabase } from '../lib/supabaseClient.js'
@@ -283,9 +282,8 @@ export default {
     },
     sessionListener() {
       supabase.auth.onAuthStateChange((event, session) => {
-        // console.log("sessionListener = ", event, session)
         this.session = session;
-        this.email = session.user.email;
+        this.email = session?.user.email;
         this.loginBtnHandler();
       })
     },

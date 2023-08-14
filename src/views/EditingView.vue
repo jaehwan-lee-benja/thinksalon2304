@@ -2,7 +2,7 @@
   <div :class="unitDiv">
     <div :class="graphGrid">
       <div>
-        <h2>돈이 나가는 영역(편집모드)</h2>
+        <h2>돈이 나가는 영역</h2>
         <ul>
           <li v-for="expense in sortTotalExpenses" :key="expense.id">
             <span>결정값 : </span>

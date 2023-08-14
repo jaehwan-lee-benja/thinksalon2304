@@ -40,7 +40,6 @@
 <script>
 import ReadingView from './views/ReadingView.vue'
 import EditingView from './views/EditingView.vue'
-// import { supabase } from './lib/supabaseClient.js'
 
 export default {
   data() {

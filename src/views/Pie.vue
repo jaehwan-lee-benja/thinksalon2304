@@ -86,7 +86,7 @@ export default {
         labels: ['과거형 지출', '현재형 지출', '미래형 지출'],
         datasets: [
           {
-            backgroundColor: ['#D1C3B7', '#AC9D8E', '#836835'],
+            backgroundColor: ['#c68036', '#6fa468', '#5eaab4'],
             data: [this.getPastAmount, this.getPresentAmount, this.getFutureAmount]
           }
         ]
