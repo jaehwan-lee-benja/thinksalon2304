@@ -1,4 +1,5 @@
 <template>
+
   <div :class="sectionGrid">
     <div :class="listViewDiv">
       <h2>리스트 뷰</h2>
@@ -8,9 +9,7 @@
             <input :class="categoryStyle" v-model="expense.category" readonly>
             <span> : </span>
             <input :class="amountStyle" v-model="expense.amount" readonly>
-            <span> | </span>
-            <select :class="amountStyle" v-model="expense.parentsCategory" readonly>
-            </select>
+            <input :class="categoryStyle" v-model="expense.parentsCategory" readonly>
           </li>
         </ol>
       </div>
@@ -104,7 +103,6 @@
       </div>
     </div>
   </div>
-
 </template>
 
 <script>
@@ -143,13 +141,10 @@ export default {
   },
   mounted() {
     this.fetchData(),
-      this.sessionListener()
+    this.sessionListener()
   },
   computed: {
 
-    sortLevel3() {
-      return this.expenses.filter(e => e.level === 3)
-    },
     sortTotalExpenses() {
       return this.expenses.filter(e => e.category === "total")
     },

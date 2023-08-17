@@ -31,8 +31,10 @@
       
     </div>
     <div :class="mainViewDiv">
-      <ReadingView v-if="mode" />
-      <EditingView v-else />
+      <!-- <ReadingView v-if="mode" />
+      <EditingView v-else /> -->
+      <EditingView v-if="mode" />
+      <ReadingView v-else />
     </div>
   </div>
 </template>

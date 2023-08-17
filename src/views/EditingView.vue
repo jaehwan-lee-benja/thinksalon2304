@@ -1,123 +1,149 @@
 <template>
-  <div :class="unitDiv">
-    <div :class="graphGrid">
-      <div>
-        <h2>돈이 나가는 영역</h2>
+  <div :class="sectionGrid">
+    <div :class="listViewDiv">
+      <h2>리스트 뷰</h2>
+      <div :class="listViewItemDiv">
         <ul>
-          <li v-for="expense in sortTotalExpenses" :key="expense.id">
+          <li v-for="expense in sortLevel2" :key="expense.id">
+            <span>{{ expense.category }}</span>
             <span>결정값 : </span>
-            <input :class="amountStyle" v-model="expense.amount" placeholder="0">
-          </li>
-          <li>
+              <input :class="amountStyle" v-model="sortExpenses(expense.category)[0].amount">
             <span>계산값 : </span>
-            <input :class="amountStyle" v-model="sumTotalExpenses" readonly>
+              <!-- <input :class="amountStyle" v-model="sumExpenses"> -->
+            <ol>
+              <li v-for="expense2 in filteredExpenses(expense.category)" :key="expense2.id" @click="getLiId(expense2.id)">
+                <div :class="listViewLiDiv">
+                  <input :class="categoryStyle" v-model="expense2.category">
+                  <span> : </span>
+                  <input :class="amountStyle" v-model="expense2.amount">
+                </div>
+              </li>
+            </ol>
           </li>
         </ul>
       </div>
-      <div :class="graphDiv">
-        <PieChart v-bind:expenses="expenses" />
+    </div>
+    <div :class="flowViewDiv">
+      <div :class="unitDiv">
+        <div :class="graphGrid">
+          <div>
+            <h2>돈이 나가는 영역</h2>
+            <ul>
+              <li v-for="expense in sortTotalExpenses" :key="expense.id">
+                <span>결정값 : </span>
+                <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+              </li>
+              <li>
+                <span>계산값 : </span>
+                <input :class="amountStyle" v-model="sumTotalExpenses" readonly>
+              </li>
+            </ul>
+          </div>
+          <div :class="graphDiv">
+            <PieChart v-bind:expenses="expenses" />
+          </div>
+        </div>
+      </div>
+      <div :class="subGrid">
+        <div :class="unitDiv">
+          <div>
+            <h3>과거형 지출</h3>
+            <ul>
+              <li v-for="expense in sortPastExpenses" :key="expense.id">
+                <span>결정값 : </span>
+                <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+              </li>
+              <li>계산값 : <input :class="amountStyle" v-model="sumPastExpenses" readonly></li>
+            </ul>
+          </div>
+          <div>
+            <ol>
+              <li v-for="expense in sortParentsPastExpenses" :key="expense.id">
+                <input :class="categoryStyle" v-model="expense.category">
+                <span> : </span>
+                <input :class="amountStyle" v-model="expense.amount">
+                <button @click="removeExpense(expense)">X</button>
+              </li>
+            </ol>
+            <ul :class="newUlStyle">
+              <li>
+                <form @submit.prevent="addExpense('past')">
+                  <input :class="categoryStyle" v-model="newCategory_past" placeholder="새 리스트 적기">
+                  <span> : </span>
+                  <input :class="amountStyle" v-model="newAmount_past" placeholder="0">
+                  <button>입력</button>
+                </form>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div :class="unitDiv">
+          <div>
+            <h3>현재형 지출</h3>
+            <ul>
+              <li v-for="expense in sortPresentExpenses" :key="expense.id">
+                <span>결정값 : </span>
+                <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+              </li>
+              <li>계산값 : <input :class="amountStyle" v-model="sumPresentExpenses" readonly></li>
+            </ul>
+          </div>
+          <div>
+            <ol>
+              <li v-for="expense in sortParentsPresentExpenses" :key="expense.id">
+                <input :class="categoryStyle" v-model="expense.category">
+                <span> : </span>
+                <input :class="amountStyle" v-model="expense.amount">
+                <button @click="removeExpense(expense)">X</button>
+              </li>
+            </ol>
+            <ul :class="newUlStyle">
+              <li>
+                <form @submit.prevent="addExpense('present')">
+                  <input :class="categoryStyle" v-model="newCategory_present" placeholder="새 리스트 적기">
+                  <span> : </span>
+                  <input :class="amountStyle" v-model="newAmount_present" placeholder="0">
+                  <button>입력</button>
+                </form>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div :class="unitDiv">
+          <div>
+            <h3>미래형 지출</h3>
+            <ul>
+              <li v-for="expense in sortFutureExpenses" :key="expense.id">
+                <span>결정값 : </span>
+                <input :class="amountStyle" v-model="expense.amount" placeholder="0">
+              </li>
+              <li>계산값 : <input :class="amountStyle" v-model="sumFutureExpenses" readonly></li>
+            </ul>
+          </div>
+          <div>
+            <ol>
+              <li v-for="expense in sortParentsFutureExpenses" :key="expense.id">
+                <input :class="categoryStyle" v-model="expense.category">
+                <span> : </span>
+                <input :class="amountStyle" v-model="expense.amount">
+                <button @click="removeExpense(expense)">X</button>
+              </li>
+            </ol>
+            <ul :class="newUlStyle">
+              <li>
+                <form @submit.prevent="addExpense('future')">
+                  <input :class="categoryStyle" v-model="newCategory_future" placeholder="새 리스트 적기">
+                  <span> : </span>
+                  <input :class="amountStyle" v-model="newAmount_future" placeholder="0">
+                  <button>입력</button>
+                </form>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-  <div :class="subGrid">
-    <div :class="unitDiv">
-      <div>
-        <h3>과거형 지출</h3>
-        <ul>
-          <li v-for="expense in sortPastExpenses" :key="expense.id">
-            <span>결정값 : </span>
-            <input :class="amountStyle" v-model="expense.amount" placeholder="0">
-          </li>
-          <li>계산값 : <input :class="amountStyle" v-model="sumPastExpenses" readonly></li>
-        </ul>
-      </div>
-      <div>
-        <ol>
-          <li v-for="expense in sortParentsPastExpenses" :key="expense.id">
-            <input :class="categoryStyle" v-model="expense.category">
-            <span> : </span>
-            <input :class="amountStyle" v-model="expense.amount">
-            <button @click="removeExpense(expense)">X</button>
-          </li>
-        </ol>
-        <ul :class="newUlStyle">
-          <li>
-            <form @submit.prevent="addExpense('past')">
-              <input :class="categoryStyle" v-model="newCategory_past" placeholder="새 리스트 적기">
-              <span> : </span>
-              <input :class="amountStyle" v-model="newAmount_past" placeholder="0">
-              <button>입력</button>
-            </form>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div :class="unitDiv">
-      <div>
-        <h3>현재형 지출</h3>
-        <ul>
-          <li v-for="expense in sortPresentExpenses" :key="expense.id">
-            <span>결정값 : </span>
-            <input :class="amountStyle" v-model="expense.amount" placeholder="0">
-          </li>
-          <li>계산값 : <input :class="amountStyle" v-model="sumPresentExpenses" readonly></li>
-        </ul>
-      </div>
-      <div>
-        <ol>
-          <li v-for="expense in sortParentsPresentExpenses" :key="expense.id">
-            <input :class="categoryStyle" v-model="expense.category">
-            <span> : </span>
-            <input :class="amountStyle" v-model="expense.amount">
-            <button @click="removeExpense(expense)">X</button>
-          </li>
-        </ol>
-        <ul :class="newUlStyle">
-          <li>
-            <form @submit.prevent="addExpense('present')">
-              <input :class="categoryStyle" v-model="newCategory_present" placeholder="새 리스트 적기">
-              <span> : </span>
-              <input :class="amountStyle" v-model="newAmount_present" placeholder="0">
-              <button>입력</button>
-            </form>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div :class="unitDiv">
-      <div>
-        <h3>미래형 지출</h3>
-        <ul>
-          <li v-for="expense in sortFutureExpenses" :key="expense.id">
-            <span>결정값 : </span>
-            <input :class="amountStyle" v-model="expense.amount" placeholder="0">
-          </li>
-          <li>계산값 : <input :class="amountStyle" v-model="sumFutureExpenses" readonly></li>
-        </ul>
-      </div>
-      <div>
-        <ol>
-          <li v-for="expense in sortParentsFutureExpenses" :key="expense.id">
-            <input :class="categoryStyle" v-model="expense.category">
-            <span> : </span>
-            <input :class="amountStyle" v-model="expense.amount">
-            <button @click="removeExpense(expense)">X</button>
-          </li>
-        </ol>
-        <ul :class="newUlStyle">
-          <li>
-            <form @submit.prevent="addExpense('future')">
-              <input :class="categoryStyle" v-model="newCategory_future" placeholder="새 리스트 적기">
-              <span> : </span>
-              <input :class="amountStyle" v-model="newAmount_future" placeholder="0">
-              <button>입력</button>
-            </form>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-
   <div :class="saveEditedDiv">
     <button :class="{
       'saveEditedStyle_active': isEdited === true,
@@ -128,9 +154,7 @@
       'cancelEditedStyle_inactive': isEdited === false
     }" :disabled="!isEdited" @click="cancelEditing">편집 취소</button>
   </div>
-  
 </template>
-
 
 <script>
 
@@ -157,6 +181,11 @@ export default {
       subGrid: 'subGrid',
       graphGrid: 'graphGrid',
       graphDiv: 'graphDiv',
+      sectionGrid: 'sectionGrid',
+      flowViewDiv: 'flowViewDiv',
+      listViewDiv: 'listViewDiv',
+      listViewItemDiv: 'listViewItemDiv',
+      listViewLiDiv: 'listViewLiDiv',
 
       categoryStyle: 'categoryStyle',
       amountStyle: 'amountStyle',
@@ -176,6 +205,17 @@ export default {
       this.monitorIsEdited()
   },
   computed: {
+    sumExpenses(category) {
+      console.log("check!")
+      return this.expenses.filter(e => e.parentsCategory === category)
+        .reduce((acc, item) => acc + Number(item.amount), 0);
+    },
+    sortLevel2() {
+      return this.expenses.filter(e => e.level === 2)
+    },
+    sortLevel3() {
+      return this.expenses.filter(e => e.level === 3)
+    },
     sortTotalExpenses() {
       return this.expenses.filter(e => e.category === "total")
     },
@@ -240,11 +280,25 @@ export default {
       const result = (fetchedData || "") != (editedData || "")
 
       return result
-
+ 
     },
 
   },
   methods: {
+    // sumExpenses(category) {
+    //   console.log("check!")
+    //   return this.expenses.filter(e => e.parentsCategory === category)
+    //     .reduce((acc, item) => acc + Number(item.amount), 0);
+    // },
+    sortExpenses(category) {
+      return this.expenses.filter(expense => expense.category === category);
+    },
+    getLiId(id) {
+      console.log("id = ", id);
+    },
+    filteredExpenses(category) {
+      return this.expenses.filter(expense => expense.parentsCategory === category);
+    },
     monitorIsEdited() {
       if (this.isEdited) {
         // 편집된 것이 있는 경우
