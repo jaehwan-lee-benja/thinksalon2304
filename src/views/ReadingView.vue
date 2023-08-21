@@ -192,7 +192,10 @@ export default {
   methods: {
     async loginGoogle() {
       const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google'
+        provider: 'google',
+        options: {
+        redirectTo: 'https://thinksalon.github.io/moneyflow/'
+      }
       })
       console.log("data = ", data);
       console.log("error = ", error);
