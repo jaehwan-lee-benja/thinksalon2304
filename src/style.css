@@ -1,11 +1,18 @@
 body {
-  background-color:white;
+  background-color:#f5efe9;
 }
 h2 {
   padding-left: 40px;
 }
 h3 {
   padding-left: 40px;
+}
+button {
+  border: 1px solid #575757;
+  color: #575757;
+  min-width: 30px;
+  padding: 5px;
+  margin: 0 10px;
 }
 button:hover{
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.1);
@@ -26,7 +33,7 @@ button:hover{
 }
 .sectionGrid {
   display: grid;
-  grid-template-columns: 3fr 5fr;
+  grid-template-columns: 3fr 1fr;
   grid-gap: 10px;
 }
 .subMenuGrid {
@@ -44,6 +51,7 @@ button:hover{
   overflow-x: scroll;
 }
 .listViewDiv {
+  min-width: 600px;
   background-color:#f5efe9;
   padding: 10px;
   overflow-x: scroll;
@@ -70,12 +78,11 @@ button:hover{
   width: 100px;
 }
 input {
-  padding: 3px 7px;
-  margin: 2px 0px;
+  padding: 4px 7px;
+  margin: 4px 0px;
+  border: 0px solid white;
 }
 input:read-only.categoryStyle_readingMode {
-  background-color: white;
-  border: none;
   width: 100px;
 }
 .amountStyle {
@@ -84,14 +91,14 @@ input:read-only.categoryStyle_readingMode {
   margin-right: 10px;
 }
 input:read-only.amountStyle_readingMode  {
-  background-color: white;
-  border: none;
   text-align : right;
   width: 70px;
   margin-right: 10px;
 }
 input:read-only {
-  background-color: #cdcdcd;
+  background-color: #e0e0e0;
+  border: 0px solid white;
+  color: #575757;
 }
 .newUlStyle {
   list-style:none;
@@ -155,11 +162,20 @@ input:read-only {
   margin: 20px;
 }
 .listViewLiDiv {
-  padding: 3px;
-  border: 1px solid black;
-  border-radius: 5px;
-  margin: 2px;
+  padding: 5px;
+  border: 0px solid white;
+  border-radius: 2px;
+  background-color: white;
+  margin: 5px;
+  max-width: 300px;
+  display: inline;
 }
 .listViewLiDiv:hover {
   box-shadow: 0 4px 8px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
+}
+.listViewLiStyle {
+  line-height: 250%;
+}
+.listViewOlStyle {
+  margin-bottom: 30px;
 }

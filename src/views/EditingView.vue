@@ -3,26 +3,28 @@
     <div :class="listViewDiv">
       <h2>리스트 뷰</h2>
       <div :class="listViewItemDiv">
-        <ul>
-          <li v-for="expense in sortLevel2" :key="expense.id">
-            <span>{{ expense.category }}</span>
-            <button @click="removeExpense(expense)">X</button>
-            <span>결정값 : </span>
+        <ol>
+          <li :class="listViewLiStyle" v-for="expense in sortLevel2" :key="expense.id">
+            <div :class="listViewLiDiv">
+              <input :class="categoryStyle" v-model="expense.category">
+              <span> : </span>
               <input :class="amountStyle" v-model="sortExpenses(expense.category)[0].amount">
-            <span>계산값 : </span>
-              <!-- <input :class="amountStyle" v-model="sumExpenses"> -->
-            <ol>
-              <li v-for="expense2 in filteredExpenses(expense.category)" :key="expense2.id" @click="getLiId(expense2.id)">
+            </div>
+            <button @click="removeExpense(expense)">X</button>
+            <span> *참고 합계 : </span>
+            <input :class="amountStyle" v-model="sumExpenses(expense.category)[0]" readonly>
+            <ol :class="listViewOlStyle">
+              <li :class="listViewLiStyle" v-for="expense2 in filteredExpenses(expense.category)" :key="expense2.id" @click="getLiId(expense2.id)">
                 <div :class="listViewLiDiv">
                   <input :class="categoryStyle" v-model="expense2.category">
                   <span> : </span>
                   <input :class="amountStyle" v-model="expense2.amount">
-                  <button @click="removeExpense(expense2)">X</button>
                 </div>
+                <button @click="removeExpense(expense2)">X</button>
               </li>
             </ol>
           </li>
-        </ul>
+        </ol>
       </div>
       <div>
         <ul :class="newUlStyle">
@@ -232,6 +234,8 @@ export default {
       cancelEditedStyle_active: 'cancelEditedStyle_active',
       cancelEditedStyle_inactive: 'cancelEditedStyle_inactive',
       saveEditedDiv: 'saveEditedDiv',
+      listViewLiStyle: 'listViewLiStyle',
+      listViewOlStyle: 'listViewOlStyle',
 
       isEditValue: true,
 
@@ -242,11 +246,6 @@ export default {
       this.monitorIsEdited()
   },
   computed: {
-    sumExpenses(category) {
-      console.log("check!")
-      return this.expenses.filter(e => e.parentsCategory === category)
-        .reduce((acc, item) => acc + Number(item.amount), 0);
-    },
     sortLevel2() {
       return this.expenses.filter(e => e.level === 2)
     },
@@ -322,10 +321,13 @@ export default {
 
   },
   methods: {
-    // sumExpenses(category) {
-    //   return this.expenses.filter(e => e.parentsCategory === category)
-    //     .reduce((acc, item) => acc + Number(item.amount), 0);
-    // },
+    sumExpenses(category) {
+      console.log("category =", category);
+      const sum = this.expenses.filter(e => e.parentsCategory === category)
+      .reduce((acc, item) => acc + Number(item.amount), 0);
+      console.log("sum = ", sum);
+      return [sum]
+    },
     updateSelectbox(event) {
       this.selectedCategory = event.target.value;
       console.log("this.selectedCategory = ", this.selectedCategory);
