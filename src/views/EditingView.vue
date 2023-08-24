@@ -27,10 +27,17 @@
       <div>
         <ul :class="newUlStyle">
           <li>
-            <form @submit.prevent="addExpense('past')">
-              <input :class="categoryStyle" v-model="newCategory_past" placeholder="새 리스트 적기">
+            <span>카테고리 선택하기: </span>
+            <select :class="categoryStyle" :value="selectedCategory" @change="updateSelectbox($event)">
+              <option :key="index" :value="item.category" v-for="(item, index) in sortLevel2">{{ item.category }}</option>
+            </select>
+          </li>
+          <li>
+            <span>내용 입력하기</span>
+            <form @submit.prevent="addExpenseListView()">
+              <input :class="categoryStyle" v-model="newCategory" placeholder="새 리스트 적기">
               <span> : </span>
-              <input :class="amountStyle" v-model="newAmount_past" placeholder="0">
+              <input :class="amountStyle" v-model="newAmount" placeholder="0">
               <button>입력</button>
             </form>
           </li>
@@ -38,8 +45,8 @@
         <ul :class="newUlStyle">
           <li>
             <form @submit.prevent="addCategory()">
-              <span>카테고리 : </span>
-              <input :class="categoryStyle" v-model="newCategory" placeholder="새 카테고리 적기">
+              <span>새로운 카테고리 만들기 : </span>
+              <input :class="categoryStyle" v-model="newCategoryList" placeholder="새 카테고리 적기">
               <button>입력</button>
             </form>
           </li>
@@ -172,7 +179,7 @@
     <button :class="{
       'saveEditedStyle_active': isEdited === true,
       'saveEditedStyle_inactive': isEdited === false
-    }" :disabled="!isEdited" @click="editExpenses">저장</button>
+    }" :disabled="!isEdited" @click="editExpenses">편집한 내용 저장</button>
     <button :class="{
       'cancelEditedStyle_active': isEdited === true,
       'cancelEditedStyle_inactive': isEdited === false
@@ -193,11 +200,16 @@ export default {
       expenses: [],
       fetchedExpenses: [],
 
-      newCategory:'',
+      selectedCategory: '',
+      selectboxFirst: null,
+
+      newCategoryList:'',
+      newCategory: '',
       newCategory_past: '',
       newCategory_present: '',
       newCategory_future: '',
 
+      newAmount: '',
       newAmount_past: '',
       newAmount_present: '',
       newAmount_future: '',
@@ -311,15 +323,18 @@ export default {
   },
   methods: {
     // sumExpenses(category) {
-    //   console.log("check!")
     //   return this.expenses.filter(e => e.parentsCategory === category)
     //     .reduce((acc, item) => acc + Number(item.amount), 0);
     // },
+    updateSelectbox(event) {
+      this.selectedCategory = event.target.value;
+      console.log("this.selectedCategory = ", this.selectedCategory);
+    },
     addCategory() {
       const o = {
         id: this.getUuidv4(),
-        parentsCategory: 'categories',
-        category: this.newCategory,
+        parentsCategory: 'total',
+        category: this.newCategoryList,
         amount: null,
         order: this.setOrder('categories'),
         level: 2
@@ -331,7 +346,7 @@ export default {
       return this.expenses.filter(expense => expense.category === category);
     },
     getLiId(id) {
-      console.log("id = ", id);
+      return id;
     },
     filteredExpenses(category) {
       return this.expenses.filter(expense => expense.parentsCategory === category);
@@ -343,6 +358,23 @@ export default {
       } else {
         // 편집된 것이 없는 경우
         this.isEditValue = false;
+      }
+    },
+    addExpenseListView() {
+      if(this.selectedCategory) {
+        const o = {
+          id: this.getUuidv4(),
+          parentsCategory: this.selectedCategory,
+          category: this.newCategory,
+          amount: this.newAmount,
+          order: this.setOrder(this.selectedCategory),
+          level: 3
+        };
+        this.expenses.push(o);
+        this.newCategory = ''
+        this.newAmount = ''
+      } else {
+        alert("상위폴더를 선택해주시기 바랍니다.")
       }
     },
     addExpense(parentsCategoryHere) {
@@ -397,6 +429,10 @@ export default {
         });
 
         this.expenses = this.expenses.filter((t) => t !== expense)
+
+        if(expense.level == 2) {
+          this.expenses = this.expenses.filter((t) => t.parentsCategory !== expense.category)
+        }
 
       }
     },

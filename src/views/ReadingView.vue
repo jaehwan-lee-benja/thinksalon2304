@@ -250,7 +250,11 @@ export default {
         this.insertInitailData();
       }
 
-      data.forEach(e => e.amount = e.amount.toLocaleString());
+      data.forEach(e => {
+        if(e.amount !== null) {
+          e.amount = e.amount.toLocaleString()
+        }
+      });
       this.expenses = data;
 
     },
@@ -269,7 +273,7 @@ export default {
           parentsCategory: 'total',
           category: 'past',
           amount: 0,
-          order: null,
+          order: 1,
           level: 2,
         },
         {
@@ -277,7 +281,7 @@ export default {
           parentsCategory: 'total',
           category: 'present',
           amount: 0,
-          order: null,
+          order: 2,
           level: 2,
         },
         {
@@ -285,7 +289,7 @@ export default {
           parentsCategory: 'total',
           category: 'future',
           amount: 0,
-          order: null,
+          order: 3,
           level: 2,
         },
       ]
