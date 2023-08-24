@@ -6,6 +6,7 @@
         <ul>
           <li v-for="expense in sortLevel2" :key="expense.id">
             <span>{{ expense.category }}</span>
+            <button @click="removeExpense(expense)">X</button>
             <span>결정값 : </span>
               <input :class="amountStyle" v-model="sortExpenses(expense.category)[0].amount">
             <span>계산값 : </span>
@@ -16,14 +17,37 @@
                   <input :class="categoryStyle" v-model="expense2.category">
                   <span> : </span>
                   <input :class="amountStyle" v-model="expense2.amount">
+                  <button @click="removeExpense(expense2)">X</button>
                 </div>
               </li>
             </ol>
           </li>
         </ul>
       </div>
+      <div>
+        <ul :class="newUlStyle">
+          <li>
+            <form @submit.prevent="addExpense('past')">
+              <input :class="categoryStyle" v-model="newCategory_past" placeholder="새 리스트 적기">
+              <span> : </span>
+              <input :class="amountStyle" v-model="newAmount_past" placeholder="0">
+              <button>입력</button>
+            </form>
+          </li>
+        </ul>
+        <ul :class="newUlStyle">
+          <li>
+            <form @submit.prevent="addCategory()">
+              <span>카테고리 : </span>
+              <input :class="categoryStyle" v-model="newCategory" placeholder="새 카테고리 적기">
+              <button>입력</button>
+            </form>
+          </li>
+        </ul>
+      </div>
     </div>
     <div :class="flowViewDiv">
+      <h2>플로우 뷰</h2>
       <div :class="unitDiv">
         <div :class="graphGrid">
           <div>
@@ -169,6 +193,7 @@ export default {
       expenses: [],
       fetchedExpenses: [],
 
+      newCategory:'',
       newCategory_past: '',
       newCategory_present: '',
       newCategory_future: '',
@@ -290,6 +315,18 @@ export default {
     //   return this.expenses.filter(e => e.parentsCategory === category)
     //     .reduce((acc, item) => acc + Number(item.amount), 0);
     // },
+    addCategory() {
+      const o = {
+        id: this.getUuidv4(),
+        parentsCategory: 'categories',
+        category: this.newCategory,
+        amount: null,
+        order: this.setOrder('categories'),
+        level: 2
+      };
+      this.expenses.push(o);
+      this.newCategory = ''
+    },
     sortExpenses(category) {
       return this.expenses.filter(expense => expense.category === category);
     },
