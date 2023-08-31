@@ -33,8 +33,9 @@ button:hover{
 }
 .sectionGrid {
   display: grid;
-  grid-template-columns: 3fr 1fr;
+  grid-template-columns: 5fr 1fr;
   grid-gap: 10px;
+  padding-bottom: 30px;
 }
 .subMenuGrid {
   display: grid;
@@ -46,16 +47,33 @@ button:hover{
 }
 .flowViewDiv {
   min-width: 600px;
-  background-color:#f5efe9;
+  background-color:white;
   padding: 10px;
   overflow-x: scroll;
+  border-radius: 10px;
+
+  -ms-overflow-style: none; /* 인터넷 익스플로러 */
+  scrollbar-width: none; /* 파이어폭스 */
 }
+
+.flowViewDiv::-webkit-scrollbar {
+  display: none; /* 크롬, 사파리, 오페라, 엣지 */
+}
+
 .listViewDiv {
-  min-width: 600px;
+  min-width: 800px;
   background-color:#f5efe9;
   padding: 10px;
   overflow-x: scroll;
+
+  -ms-overflow-style: none; /* 인터넷 익스플로러 */
+  scrollbar-width: none; /* 파이어폭스 */
 }
+
+.listViewDiv::-webkit-scrollbar {
+  display: none; /* 크롬, 사파리, 오페라, 엣지 */
+}
+
 .listViewItemDiv {
   width: 90%;
 }
@@ -102,6 +120,9 @@ input:read-only {
 }
 .newUlStyle {
   list-style:none;
+  border: 1px solid #575757;
+  width: 80%;
+  padding: 20px;
 }
 .saveEditedStyle_active {
   width: 49%;

@@ -33,7 +33,7 @@
     <div :class="mainViewDiv">
       <!-- <ReadingView v-if="mode" />
       <EditingView v-else /> -->
-      <EditingView v-if="mode" />
+      <ListEditingView v-if="mode" />
       <ReadingView v-else />
     </div>
   </div>
@@ -41,7 +41,8 @@
 
 <script>
 import ReadingView from './views/ReadingView.vue'
-import EditingView from './views/EditingView.vue'
+// import EditingView from './views/EditingView.vue'
+import ListEditingView from './views/ListEditingView.vue'
 
 export default {
   data() {
@@ -59,7 +60,8 @@ export default {
   mixins: [ReadingView],
   components: {
     ReadingView,
-    EditingView
+    // EditingView,
+    ListEditingView
   },
   methods: {
     handlingMode() {
