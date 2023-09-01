@@ -4,22 +4,19 @@
             <h2>리스트 뷰</h2>
             <div :class="listViewItemDiv">
                 <ol>
-                    <li :class="listViewLiStyle" v-for="expense in sortLevel1" :key="expense.id">
+                    <li :class="listViewLiStyle" v-for="expense in sortLevel1" :key="expense.order">
                         <div :class="listViewLiDiv">
                             <input :class="categoryStyle" v-model="expense.category">
                             <span> : </span>
                             <input :class="amountStyle" v-model="expense.amount">
                         </div>
-                        <button @click="removeExpense(expense)">X</button>
                         <span> *하위 합계 : </span>
                         <input :class="amountStyle" v-model="sumExpenses(expense.category)[0]" readonly>
 
-                        <button @click="toggleSubList(expense)">
-                            {{ expense.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
-                        </button>
-
-                        <ol v-if="expense.show_sub_list">
-                            <!-- <li :class="listViewLiStyle" v-for="subExpense in sortLevelAndCategory(expense.category, expense.level)" :key="subExpense.id">
+                        <ol>
+                            <li :class="listViewLiStyle"
+                                v-for="subExpense in sortLevelAndCategory(expense.category, expense.level)"
+                                :key="subExpense.order">
                                 <div :class="listViewLiDiv">
                                     <input :class="categoryStyle" v-model="subExpense.category">
                                     <span> : </span>
@@ -28,17 +25,67 @@
                                 <button @click="removeExpense(subExpense)">X</button>
                                 <span> *하위 합계 : </span>
                                 <input :class="amountStyle" v-model="sumExpenses(subExpense.category)[0]" readonly>
-                                <button @click="toggleSubList(expense)">
-                                    {{ expense.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
-                                </button>                   
-                            </li> -->
-                            <li v-for="subExpense in sortLevelAndCategory(expense.category, expense.level)" :key="subExpense.id">
-                                <ListItem :sub-expense="subExpense"></ListItem>
-                            </li>
-                        </ol>
-                    </li>
-                </ol>
 
+                                <button @click="toggleSubList(subExpense)">
+                                    {{ subExpense.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
+                                </button>
+
+                                <div v-if="subExpense.show_sub_list">
+                                    <ol>
+                                        <li :class="listViewLiStyle"
+                                            v-for="subExpense2 in sortLevelAndCategory(subExpense.category, subExpense.level)"
+                                            :key="subExpense2.order">
+                                            <div :class="listViewLiDiv">
+                                                <input :class="categoryStyle" v-model="subExpense2.category">
+                                                <span> : </span>
+                                                <input :class="amountStyle" v-model="subExpense2.amount">
+                                            </div>
+                                            <button @click="removeExpense(subExpense2)">X</button>
+                                            <span> *하위 합계 : </span>
+                                            <input :class="amountStyle" v-model="sumExpenses(subExpense2.category)[0]"
+                                                readonly>
+
+                                            <button @click="toggleSubList(subExpense2)">
+                                                {{ subExpense2.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
+                                            </button>
+
+                                            <div v-if="subExpense2.show_sub_list">
+
+                                            </div>
+
+                                        </li>
+                                        <form @submit.prevent="createNewExpense(subExpense.category, subExpense.level, subExpense.id)">
+                                            <div :class="listViewLiDiv">
+                                                <input :class="categoryStyle" v-model="this.inputBoxesForCategory[subExpense.id]"
+                                                    placeholder="새 리스트 적기">
+                                                <span> : </span>
+                                                <input :class="amountStyle" v-model="this.inputBoxesForAmount[subExpense.id]"
+                                                    placeholder="0">
+                                            </div>
+                                            <button>입력</button>
+                                        </form>
+                                    </ol>
+
+                                </div>
+
+                            </li>
+                            <form @submit.prevent="createNewExpense(expense.category, expense.level, expense.id)">
+                                <div :class="listViewLiDiv">
+                                    <input :class="categoryStyle" v-model="this.inputBoxesForCategory[expense.id]"
+                                        placeholder="새 리스트 적기">
+                                    <span> : </span>
+                                    <input :class="amountStyle" v-model="this.inputBoxesForAmount[expense.id]"
+                                        placeholder="0">
+                                </div>
+                                <button>입력</button>
+                            </form>
+                        </ol>
+
+                    </li>
+
+
+
+                </ol>
             </div>
             <div>
                 <ul :class="newUlStyle">
@@ -101,19 +148,15 @@ export default {
             expenses: [],
             fetchedExpenses: [],
 
+            inputBoxesForCategory: {},
+            inputBoxesForAmount: {},
+
             selectedCategory: '',
             selectboxFirst: null,
 
             newCategoryList: '',
             newCategory: '',
-            newCategory_past: '',
-            newCategory_present: '',
-            newCategory_future: '',
-
             newAmount: '',
-            newAmount_past: '',
-            newAmount_present: '',
-            newAmount_future: '',
 
             unitDiv: 'unitDiv',
             subGrid: 'subGrid',
@@ -145,9 +188,16 @@ export default {
             this.monitorIsEdited()
     },
     computed: {
-
+        updateInputboxes() {
+            this.expenses.forEach(e => {
+                this.inputBoxesForCategory[e.id] = ""
+                this.inputBoxesForAmount[e.id] = ""
+            })
+            return console.log("updated Inputboxes");
+        },
         sortLevel1() {
-            return this.expenses.filter(e => e.level === 1)
+            const sorted = this.expenses.filter(e => e.level === 1)
+            return sorted
         },
 
         sortLevel2() {
@@ -183,12 +233,14 @@ export default {
 
     },
     methods: {
+
         sortLevelAndCategory(parentCategory, level) {
             return this.expenses.filter(expense => expense.parentsCategory === parentCategory && expense.level === level + 1);
         },
         toggleSubList(expense) {
-            // console.log("expense = ", expense)
             expense.show_sub_list = !expense.show_sub_list;
+            // this.clickedSubButton.push({[expense.id]:"good"})
+            // console.log("this.clickedSubButton = ", this.clickedSubButton);
         },
         sumExpenses(category) {
             const sum = this.expenses.filter(e => e.parentsCategory === category)
@@ -239,6 +291,22 @@ export default {
             } else {
                 alert("상위폴더를 선택해주시기 바랍니다.")
             }
+        },
+        createNewExpense(parentsCategoryHere, parentsLevelHere, parentsIdHere) {
+            console.log("parentsIdHere = ", parentsIdHere);
+            const levelForO = parentsLevelHere + 1;
+            const o = {
+                id: this.getUuidv4(),
+                parentsCategory: parentsCategoryHere,
+                category: this.inputBoxesForCategory[parentsIdHere],
+                amount: this.inputBoxesForAmount[parentsIdHere],
+                order: this.setOrder(parentsCategoryHere),
+                level: levelForO
+            };
+            console.log("o = ", o);
+            this.expenses.push(o);
+            this.inputBoxesForCategory[parentsIdHere] = ''
+            this.inputBoxesForAmount[parentsIdHere] = ''
         },
         async fetchData() {
             const a = await supabase
@@ -340,32 +408,8 @@ export default {
     },
     components: {
         //   PieChart
-        ListItem: {
-            props: ["subExpense"],
-            template: `
-                <span>test</span>
-                <div :class="listViewLiDiv">
-                    <input :class="categoryStyle" v-model="subExpense.category">
-                    <span> : </span>
-                    <input :class="amountStyle" v-model="subExpense.amount">
-                </div>
-                <button @click="removeExpense(subExpense)">X</button>
-                <span> *하위 합계 : </span>
-                <input :class="amountStyle" v-model="sumExpenses(subExpense.category)[0]" readonly>
-                <button @click="toggleSubList(expense)">
-                    {{ expense.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
-                </button>
-            `,
-            methods: {
-                toggleSubList(subExpense) {
-                this.$emit("toggle-sub-list", subExpense);
-                }
-            }
-        }
     }
 }
 </script>
   
-<style scoped>
-@import '../style.css';
-</style>
+<style scoped>@import '../style.css';</style>
