@@ -1,10 +1,12 @@
 <template>
+    <button @click="test()">test</button>
     <div :class="sectionGrid">
         <div :class="listViewDiv">
             <h2>리스트 뷰</h2>
             <div :class="listViewItemDiv">
                 <ol>
                     <li :class="listViewLiStyle" v-for="expense in sortLevel1" :key="expense.order">
+
                         <div :class="listViewLiDiv">
                             <input :class="categoryStyle" v-model="expense.category">
                             <span> : </span>
@@ -12,6 +14,7 @@
                         </div>
                         <span> *하위 합계 : </span>
                         <input :class="amountStyle" v-model="sumExpenses(expense.category)[0]" readonly>
+
                         <ol>
                             <li :class="listViewLiStyle"
                                 v-for="subExpense in sortCategoryAndLevel(expense.category, expense.level)"
@@ -70,6 +73,7 @@
                                 </div>
 
                             </li>
+
                             <form @submit.prevent="createNewExpense(expense.category, expense.level, expense.id)">
                                 <div :class="listViewLiDiv">
                                     <input :class="categoryStyle" v-model="this.inputBoxesForCategory[expense.id]"
@@ -80,7 +84,9 @@
                                 </div>
                                 <button>입력</button>
                             </form>
+
                         </ol>
+
                     </li>
                 </ol>
             </div>
@@ -154,18 +160,6 @@ export default {
             })
             return 0;
         },
-        getTotalCategory() {
-            const total = this.expenses.filter(e => e.category === "total")
-            return total.map(e => e.category);
-        },
-        getTotalAmount() {
-            const total = this.expenses.filter(e => e.category === "total")
-            return total.map(e => e.amount);
-        },
-        getTotalId() {
-            const total = this.expenses.filter(e => e.category === "total")
-            return total.map(e => e.id);
-        },
         sortLevel1() {
             return this.expenses.filter(e => e.level === 1)
         },
@@ -201,8 +195,38 @@ export default {
 
     },
     methods: {
-        sortCategoryAndLevel(parentCategory, level) {
-            return this.expenses.filter(expense => expense.parentsCategory === parentCategory && expense.level === level + 1);
+        test() {
+          console.log("test!")
+          const arr = []
+          this.expenses.forEach(e1 => {
+            const filter = this.expenses.filter(expense => expense.parentsCategory === e1.category)
+            if(filter.length > 0) {
+                arr.push({
+                    "childrenId": filter.map(e2 => e2.id),
+                    "parentsId": e1.id
+                })
+            }
+          })
+          console.log("arr = ", arr);
+          arr.forEach(e2 => {
+            // console.log("e2 = ", e2)
+            // console.log("e.childrenId = ", e2.childrenId)
+            e2.childrenId.forEach(childrenId => {
+                const parentsId = e2.parentsId
+                // console.log("parentsId = ", parentsId)
+                // console.log("childrenId = ", childrenId)
+                this.expenses.forEach(each => {
+                    if(each.id === childrenId) {
+                        each.parents_id = parentsId
+                        console.log("each = ", each);
+                        this.upsertData(each)
+                    }
+                })
+            })
+          })
+        },
+        sortCategoryAndLevel(parentCategoryHere, levelHere) {
+            return this.expenses.filter(expense => expense.parentsCategory === parentCategoryHere && expense.level === levelHere + 1);
         },
         toggleSubList(expense) {
             expense.show_sub_list = !expense.show_sub_list;
