@@ -12,10 +12,9 @@
                         </div>
                         <span> *하위 합계 : </span>
                         <input :class="amountStyle" v-model="sumExpenses(expense.category)[0]" readonly>
-
                         <ol>
                             <li :class="listViewLiStyle"
-                                v-for="subExpense in sortLevelAndCategory(expense.category, expense.level)"
+                                v-for="subExpense in sortCategoryAndLevel(expense.category, expense.level)"
                                 :key="subExpense.order">
                                 <div :class="listViewLiDiv">
                                     <input :class="categoryStyle" v-model="subExpense.category">
@@ -33,7 +32,7 @@
                                 <div v-if="subExpense.show_sub_list">
                                     <ol>
                                         <li :class="listViewLiStyle"
-                                            v-for="subExpense2 in sortLevelAndCategory(subExpense.category, subExpense.level)"
+                                            v-for="subExpense2 in sortCategoryAndLevel(subExpense.category, subExpense.level)"
                                             :key="subExpense2.order">
                                             <div :class="listViewLiDiv">
                                                 <input :class="categoryStyle" v-model="subExpense2.category">
@@ -54,13 +53,15 @@
                                             </div>
 
                                         </li>
-                                        <form @submit.prevent="createNewExpense(subExpense.category, subExpense.level, subExpense.id)">
+                                        <form
+                                            @submit.prevent="createNewExpense(subExpense.category, subExpense.level, subExpense.id)">
                                             <div :class="listViewLiDiv">
-                                                <input :class="categoryStyle" v-model="this.inputBoxesForCategory[subExpense.id]"
+                                                <input :class="categoryStyle"
+                                                    v-model="this.inputBoxesForCategory[subExpense.id]"
                                                     placeholder="새 리스트 적기">
                                                 <span> : </span>
-                                                <input :class="amountStyle" v-model="this.inputBoxesForAmount[subExpense.id]"
-                                                    placeholder="0">
+                                                <input :class="amountStyle"
+                                                    v-model="this.inputBoxesForAmount[subExpense.id]" placeholder="0">
                                             </div>
                                             <button>입력</button>
                                         </form>
@@ -80,43 +81,8 @@
                                 <button>입력</button>
                             </form>
                         </ol>
-
                     </li>
-
-
-
                 </ol>
-            </div>
-            <div>
-                <ul :class="newUlStyle">
-                    <p>[새 항목 작성하기]</p>
-                    <li>
-                        <span>카테고리 선택하기: </span>
-                        <select :class="categoryStyle" :value="selectedCategory" @change="updateSelectbox($event)">
-                            <option :key="index" :value="item.category" v-for="(item, index) in sortLevel2">{{ item.category
-                            }}</option>
-                        </select>
-                    </li>
-                    <li>
-                        <span>내용 입력하기</span>
-                        <form @submit.prevent="addExpenseListView()">
-                            <input :class="categoryStyle" v-model="newCategory" placeholder="새 리스트 적기">
-                            <span> : </span>
-                            <input :class="amountStyle" v-model="newAmount" placeholder="0">
-                            <button>입력</button>
-                        </form>
-                    </li>
-                </ul>
-                <ul :class="newUlStyle">
-                    <li>
-                        <form @submit.prevent="addCategory()">
-                            <p>[새 카테고리 만들기]</p>
-                            <span>카테고리 입력하기: </span>
-                            <input :class="categoryStyle" v-model="newCategoryList" placeholder="새 카테고리 적기">
-                            <button>입력</button>
-                        </form>
-                    </li>
-                </ul>
             </div>
         </div>
         <div :class="flowViewDiv">
@@ -150,13 +116,6 @@ export default {
 
             inputBoxesForCategory: {},
             inputBoxesForAmount: {},
-
-            selectedCategory: '',
-            selectboxFirst: null,
-
-            newCategoryList: '',
-            newCategory: '',
-            newAmount: '',
 
             unitDiv: 'unitDiv',
             subGrid: 'subGrid',
@@ -193,17 +152,26 @@ export default {
                 this.inputBoxesForCategory[e.id] = ""
                 this.inputBoxesForAmount[e.id] = ""
             })
-            return console.log("updated Inputboxes");
+            return 0;
+        },
+        getTotalCategory() {
+            const total = this.expenses.filter(e => e.category === "total")
+            return total.map(e => e.category);
+        },
+        getTotalAmount() {
+            const total = this.expenses.filter(e => e.category === "total")
+            return total.map(e => e.amount);
+        },
+        getTotalId() {
+            const total = this.expenses.filter(e => e.category === "total")
+            return total.map(e => e.id);
         },
         sortLevel1() {
-            const sorted = this.expenses.filter(e => e.level === 1)
-            return sorted
+            return this.expenses.filter(e => e.level === 1)
         },
-
         sortLevel2() {
             return this.expenses.filter(e => e.level === 2)
         },
-
         isEdited() {
 
             const fetched = [];
@@ -233,22 +201,17 @@ export default {
 
     },
     methods: {
-
-        sortLevelAndCategory(parentCategory, level) {
+        sortCategoryAndLevel(parentCategory, level) {
             return this.expenses.filter(expense => expense.parentsCategory === parentCategory && expense.level === level + 1);
         },
         toggleSubList(expense) {
             expense.show_sub_list = !expense.show_sub_list;
-            // this.clickedSubButton.push({[expense.id]:"good"})
-            // console.log("this.clickedSubButton = ", this.clickedSubButton);
+            this.upsertData(expense)
         },
         sumExpenses(category) {
             const sum = this.expenses.filter(e => e.parentsCategory === category)
                 .reduce((acc, item) => acc + Number(item.amount), 0);
             return [sum]
-        },
-        updateSelectbox(event) {
-            this.selectedCategory = event.target.value;
         },
         addCategory() {
             const o = {
@@ -263,7 +226,6 @@ export default {
             this.newCategory = ''
         },
         sortExpenses(category) {
-            // console.log("category = ", category)
             return this.expenses.filter(expense => expense.category === category);
         },
         monitorIsEdited() {
@@ -275,25 +237,7 @@ export default {
                 this.isEditValue = false;
             }
         },
-        addExpenseListView() {
-            if (this.selectedCategory) {
-                const o = {
-                    id: this.getUuidv4(),
-                    parentsCategory: this.selectedCategory,
-                    category: this.newCategory,
-                    amount: this.newAmount,
-                    order: this.setOrder(this.selectedCategory),
-                    level: 3
-                };
-                this.expenses.push(o);
-                this.newCategory = ''
-                this.newAmount = ''
-            } else {
-                alert("상위폴더를 선택해주시기 바랍니다.")
-            }
-        },
         createNewExpense(parentsCategoryHere, parentsLevelHere, parentsIdHere) {
-            console.log("parentsIdHere = ", parentsIdHere);
             const levelForO = parentsLevelHere + 1;
             const o = {
                 id: this.getUuidv4(),
@@ -303,7 +247,6 @@ export default {
                 order: this.setOrder(parentsCategoryHere),
                 level: levelForO
             };
-            console.log("o = ", o);
             this.expenses.push(o);
             this.inputBoxesForCategory[parentsIdHere] = ''
             this.inputBoxesForAmount[parentsIdHere] = ''
@@ -412,4 +355,6 @@ export default {
 }
 </script>
   
-<style scoped>@import '../style.css';</style>
+<style scoped>
+@import '../style.css';
+</style>
