@@ -1,5 +1,4 @@
 <template>
-    <button @click="test()">test</button>
     <div :class="sectionGrid">
         <div :class="listViewDiv">
             <h2>리스트 뷰</h2>
@@ -13,11 +12,11 @@
                             <input :class="amountStyle" v-model="expense.amount">
                         </div>
                         <span> *하위 합계 : </span>
-                        <input :class="amountStyle" v-model="sumExpenses(expense.category)[0]" readonly>
+                        <input :class="amountStyle" v-model="sumExpenses(expense.id)[0]" readonly>
 
                         <ol>
                             <li :class="listViewLiStyle"
-                                v-for="subExpense in sortCategoryAndLevel(expense.category, expense.level)"
+                                v-for="subExpense in sortIdAndLevel(expense.id, expense.level)"
                                 :key="subExpense.order">
                                 <div :class="listViewLiDiv">
                                     <input :class="categoryStyle" v-model="subExpense.category">
@@ -26,7 +25,7 @@
                                 </div>
                                 <button @click="removeExpense(subExpense)">X</button>
                                 <span> *하위 합계 : </span>
-                                <input :class="amountStyle" v-model="sumExpenses(subExpense.category)[0]" readonly>
+                                <input :class="amountStyle" v-model="sumExpenses(subExpense.id)[0]" readonly>
 
                                 <button @click="toggleSubList(subExpense)">
                                     {{ subExpense.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
@@ -35,7 +34,7 @@
                                 <div v-if="subExpense.show_sub_list">
                                     <ol>
                                         <li :class="listViewLiStyle"
-                                            v-for="subExpense2 in sortCategoryAndLevel(subExpense.category, subExpense.level)"
+                                            v-for="subExpense2 in sortIdAndLevel(subExpense.id, subExpense.level)"
                                             :key="subExpense2.order">
                                             <div :class="listViewLiDiv">
                                                 <input :class="categoryStyle" v-model="subExpense2.category">
@@ -44,7 +43,7 @@
                                             </div>
                                             <button @click="removeExpense(subExpense2)">X</button>
                                             <span> *하위 합계 : </span>
-                                            <input :class="amountStyle" v-model="sumExpenses(subExpense2.category)[0]"
+                                            <input :class="amountStyle" v-model="sumExpenses(subExpense2.id)[0]"
                                                 readonly>
 
                                             <button @click="toggleSubList(subExpense2)">
@@ -57,7 +56,7 @@
 
                                         </li>
                                         <form
-                                            @submit.prevent="createNewExpense(subExpense.category, subExpense.level, subExpense.id)">
+                                            @submit.prevent="createNewExpense(subExpense.id, subExpense.level)">
                                             <div :class="listViewLiDiv">
                                                 <input :class="categoryStyle"
                                                     v-model="this.inputBoxesForCategory[subExpense.id]"
@@ -74,7 +73,7 @@
 
                             </li>
 
-                            <form @submit.prevent="createNewExpense(expense.category, expense.level, expense.id)">
+                            <form @submit.prevent="createNewExpense(expense.id, expense.level)">
                                 <div :class="listViewLiDiv">
                                     <input :class="categoryStyle" v-model="this.inputBoxesForCategory[expense.id]"
                                         placeholder="새 리스트 적기">
@@ -225,29 +224,17 @@ export default {
             })
           })
         },
-        sortCategoryAndLevel(parentCategoryHere, levelHere) {
-            return this.expenses.filter(expense => expense.parentsCategory === parentCategoryHere && expense.level === levelHere + 1);
+        sortIdAndLevel(parentIdHere, parentsLevelHere) {
+            return this.expenses.filter(expense => expense.parents_id === parentIdHere && expense.level === parentsLevelHere + 1);
         },
         toggleSubList(expense) {
             expense.show_sub_list = !expense.show_sub_list;
             this.upsertData(expense)
         },
-        sumExpenses(category) {
-            const sum = this.expenses.filter(e => e.parentsCategory === category)
+        sumExpenses(parentsIdHere) {
+            const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
                 .reduce((acc, item) => acc + Number(item.amount), 0);
             return [sum]
-        },
-        addCategory() {
-            const o = {
-                id: this.getUuidv4(),
-                parentsCategory: 'total',
-                category: this.newCategoryList,
-                amount: null,
-                order: this.setOrder('categories'),
-                level: 2
-            };
-            this.expenses.push(o);
-            this.newCategory = ''
         },
         sortExpenses(category) {
             return this.expenses.filter(expense => expense.category === category);
@@ -261,14 +248,14 @@ export default {
                 this.isEditValue = false;
             }
         },
-        createNewExpense(parentsCategoryHere, parentsLevelHere, parentsIdHere) {
+        createNewExpense(parentsIdHere, parentsLevelHere) {
             const levelForO = parentsLevelHere + 1;
             const o = {
                 id: this.getUuidv4(),
-                parentsCategory: parentsCategoryHere,
+                parents_id: parentsIdHere,
                 category: this.inputBoxesForCategory[parentsIdHere],
                 amount: this.inputBoxesForAmount[parentsIdHere],
-                order: this.setOrder(parentsCategoryHere),
+                order: this.setOrder(parentsIdHere),
                 level: levelForO
             };
             this.expenses.push(o);
@@ -289,12 +276,12 @@ export default {
 
             if (confirmValue) {
 
-                const parentsCategory = expense.parentsCategory;
+                const parentsId = expense.parents_id;
                 const orderRemoved = expense.order;
 
                 this.expenses.forEach(e => {
                     const order = e.order;
-                    if (e.parentsCategory == parentsCategory) {
+                    if (e.parents_id == parentsId) {
                         if (order > orderRemoved) {
                             this.expenses[this.expenses.indexOf(e)].order = order - 1;
                         }
@@ -304,7 +291,7 @@ export default {
                 this.expenses = this.expenses.filter((t) => t !== expense)
 
                 if (expense.level == 2) {
-                    this.expenses = this.expenses.filter((t) => t.parentsCategory !== expense.category)
+                    this.expenses = this.expenses.filter((t) => t.parents_id !== expense.id)
                 }
 
             }
@@ -358,8 +345,8 @@ export default {
                 (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
             );
         },
-        setOrder(parentsCategoryHere) {
-            const arr = this.expenses.filter(e => e.parentsCategory === parentsCategoryHere)
+        setOrder(parentsIdHere) {
+            const arr = this.expenses.filter(e => e.parents_id === parentsIdHere)
             const expenseLength = Object.keys(arr).length;
             return expenseLength + 1;
         },
