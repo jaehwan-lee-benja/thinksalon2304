@@ -169,21 +169,11 @@ export default {
         },
         isEdited() {
 
-            // const fetched = [];
-            // this.fetchedExpenses.forEach(e => {
-            //     fetched.push({
-            //         category: e.category,
-            //         amount: Number(e.amount)
-            //     })
-            // });
-
-            // console.log("fetched = ", fetched);
-
             const fetched = this.fetchedExpenses.map(e => ({
                 category: e.category,
                 amount: Number(e.amount)
             })
-            ); // 질문: 괄호가 들어가는 이유
+            );
 
             const edited = this.expenses.map(e => ({
                 category: e.category,
@@ -201,101 +191,6 @@ export default {
 
     },
     methods: {
-        test() {
-            console.log("test!")
-            const arr = []
-
-            /*
-            {   
-                id : 1
-                category: a
-            },
-            {
-                id : 2,
-                category : b
-            },
-            {
-                id : 3,
-                category : c
-            },
-            {
-                id : 4
-                category : d
-                parentsCategory: a
-            },
-            {
-                id : 5
-                category : e 
-                parentsCategory : b
-            }
-            */
-            
-            this.expenses.forEach()
-
-            // { category: id }
-            /*
-            {
-                a : 1,
-                b : 2,
-                c : 3,
-                d : 4,
-                e : 5
-            }
-             */
-            const categoryMap = {}
-            this.expenses.forEach(e => {
-                categoryMap[e.category] = e.id
-            })
-
-            this.expenses.forEach(e => {
-                e.parentsId = categoryMap[e.parentsCategory]
-                // update e
-            })
-
-            /*
-            {
-                id,
-                category,
-                parentscategory
-                -> parentsId
-            }
-            */
-           /*
-           [
-             {}, {}
-           ] */
-
-            this.expenses.forEach(e1 => {
-                const filter = this.expenses.filter(expense => expense.parentsCategory === e1.category)
-                if (filter.length > 0) {
-                    arr.push({
-                        "childrenId": filter.map(e2 => e2.id),
-                        "parentsId": e1.id
-                    })
-                }
-            })
-
-
-            // arr = [
-            //     {"parentsId": a,
-            //     "childrenId": [{},{},{}]}
-            //     {"parentsId": b,
-            //     "childrenId": [{},{},{}]}
-            //     {"parentsId": c,
-            //     "childrenId": [{},{},{}]}
-            // ]
-            arr.forEach(e2 => {
-                e2.childrenId.forEach(childrenId => {
-                    const parentsId = e2.parentsId
-                    this.expenses.forEach(each => {
-                        if (each.id === childrenId) {
-                            each.parents_id = parentsId
-                            this.upsertData(each)
-                        }
-                    })
-                })
-            })
-        }, // 질문: filter를 활용했으나, forEach가 많이 들어가있다. 더 좋은 방법이 무엇일까?
         sortIdAndLevel(parentIdHere, parentsLevelHere) {
             return this.expenses.filter(expense => expense.parents_id === parentIdHere && expense.level === parentsLevelHere + 1);
         },
