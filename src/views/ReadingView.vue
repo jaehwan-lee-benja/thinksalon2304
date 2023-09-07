@@ -262,35 +262,11 @@ export default {
       const initialDataArray = [
         {
           id: this.getUuidv4(),
-          parentsCategory: null,
-          category: 'total',
+          parents_id: null,
+          category: '총계',
           amount: 0,
           order: null,
           level: 1,
-        },
-        {
-          id: this.getUuidv4(),
-          parentsCategory: 'total',
-          category: 'past',
-          amount: 0,
-          order: 1,
-          level: 2,
-        },
-        {
-          id: this.getUuidv4(),
-          parentsCategory: 'total',
-          category: 'present',
-          amount: 0,
-          order: 2,
-          level: 2,
-        },
-        {
-          id: this.getUuidv4(),
-          parentsCategory: 'total',
-          category: 'future',
-          amount: 0,
-          order: 3,
-          level: 2,
         },
       ]
       initialDataArray.forEach(eachData => this.insertData(eachData));
