@@ -6,17 +6,20 @@
                 <ol>
                     <li :class="listViewLiStyle" v-for="expense in sortLevel1" :key="expense.order">
 
+                        <!-- <div>
+                            <ListItem v-bind:expenses="expenses" :expenseHere="expense"/>
+                        </div> -->
+
                         <div :class="listViewLiDiv">
                             <input :class="categoryStyle" v-model="expense.category">
                             <span> : </span>
                             <input :class="amountStyle" v-model="expense.amount">
                         </div>
                         <span> *하위 합계 : </span>
-                        <input :class="amountStyle" v-model="sumExpenses(expense.id)[0]" readonly>
+                        <input :class="amountStyle" :value="sumExpenses(expense.id)" readonly>
 
                         <ol>
-                            <li :class="listViewLiStyle"
-                                v-for="subExpense in sortIdAndLevel(expense.id, expense.level)"
+                            <li :class="listViewLiStyle" v-for="subExpense in sortIdAndLevel(expense.id, expense.level)"
                                 :key="subExpense.order">
                                 <div :class="listViewLiDiv">
                                     <input :class="categoryStyle" v-model="subExpense.category">
@@ -43,8 +46,7 @@
                                             </div>
                                             <button @click="removeExpense(subExpense2)">X</button>
                                             <span> *하위 합계 : </span>
-                                            <input :class="amountStyle" v-model="sumExpenses(subExpense2.id)[0]"
-                                                readonly>
+                                            <input :class="amountStyle" v-model="sumExpenses(subExpense2.id)[0]" readonly>
 
                                             <button @click="toggleSubList(subExpense2)">
                                                 {{ subExpense2.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
@@ -55,8 +57,7 @@
                                             </div>
 
                                         </li>
-                                        <form
-                                            @submit.prevent="createNewExpense(subExpense.id, subExpense.level)">
+                                        <form @submit.prevent="createNewExpense(subExpense.id, subExpense.level)">
                                             <div :class="listViewLiDiv">
                                                 <input :class="categoryStyle"
                                                     v-model="this.inputBoxesForCategory[subExpense.id]"
@@ -68,7 +69,6 @@
                                             <button>입력</button>
                                         </form>
                                     </ol>
-
                                 </div>
 
                             </li>
@@ -83,13 +83,14 @@
                                 </div>
                                 <button>입력</button>
                             </form>
-
                         </ol>
 
                     </li>
                 </ol>
             </div>
         </div>
+
+
         <div :class="flowViewDiv">
             <h2>플로우 뷰</h2>
         </div>
@@ -110,6 +111,7 @@
 
 import { supabase } from '../lib/supabaseClient.js'
 //   import PieChart from './Pie.vue'
+// import ListItem from './ListItem.vue'
 
 export default {
 
@@ -167,22 +169,27 @@ export default {
         },
         isEdited() {
 
-            const fetched = [];
-            this.fetchedExpenses.forEach(e => {
-                fetched.push({
-                    category: e.category,
-                    amount: Number(e.amount)
-                })
-            });
+            // const fetched = [];
+            // this.fetchedExpenses.forEach(e => {
+            //     fetched.push({
+            //         category: e.category,
+            //         amount: Number(e.amount)
+            //     })
+            // });
 
-            const edited = [];
-            this.expenses.forEach(e => {
-                edited.push({
-                    category: e.category,
-                    amount: Number(e.amount)
-                })
-            });
-            // map으로 해보기
+            // console.log("fetched = ", fetched);
+
+            const fetched = this.fetchedExpenses.map(e => ({
+                category: e.category,
+                amount: Number(e.amount)
+            })
+            ); // 질문: 괄호가 들어가는 이유
+
+            const edited = this.expenses.map(e => ({
+                category: e.category,
+                amount: Number(e.amount)
+            })
+            );
 
             const fetchedData = JSON.stringify(fetched);
             const editedData = JSON.stringify(edited);
@@ -195,28 +202,99 @@ export default {
     },
     methods: {
         test() {
-          console.log("test!")
-          const arr = []
-          this.expenses.forEach(e1 => {
-            const filter = this.expenses.filter(expense => expense.parentsCategory === e1.category)
-            if(filter.length > 0) {
-                arr.push({
-                    "childrenId": filter.map(e2 => e2.id),
-                    "parentsId": e1.id
-                })
+            console.log("test!")
+            const arr = []
+
+            /*
+            {   
+                id : 1
+                category: a
+            },
+            {
+                id : 2,
+                category : b
+            },
+            {
+                id : 3,
+                category : c
+            },
+            {
+                id : 4
+                category : d
+                parentsCategory: a
+            },
+            {
+                id : 5
+                category : e 
+                parentsCategory : b
             }
-          })
-          arr.forEach(e2 => {
-            e2.childrenId.forEach(childrenId => {
-                const parentsId = e2.parentsId
-                this.expenses.forEach(each => {
-                    if(each.id === childrenId) {
-                        each.parents_id = parentsId
-                        this.upsertData(each)
-                    }
+            */
+            
+            this.expenses.forEach()
+
+            // { category: id }
+            /*
+            {
+                a : 1,
+                b : 2,
+                c : 3,
+                d : 4,
+                e : 5
+            }
+             */
+            const categoryMap = {}
+            this.expenses.forEach(e => {
+                categoryMap[e.category] = e.id
+            })
+
+            this.expenses.forEach(e => {
+                e.parentsId = categoryMap[e.parentsCategory]
+                // update e
+            })
+
+            /*
+            {
+                id,
+                category,
+                parentscategory
+                -> parentsId
+            }
+            */
+           /*
+           [
+             {}, {}
+           ] */
+
+            this.expenses.forEach(e1 => {
+                const filter = this.expenses.filter(expense => expense.parentsCategory === e1.category)
+                if (filter.length > 0) {
+                    arr.push({
+                        "childrenId": filter.map(e2 => e2.id),
+                        "parentsId": e1.id
+                    })
+                }
+            })
+
+
+            // arr = [
+            //     {"parentsId": a,
+            //     "childrenId": [{},{},{}]}
+            //     {"parentsId": b,
+            //     "childrenId": [{},{},{}]}
+            //     {"parentsId": c,
+            //     "childrenId": [{},{},{}]}
+            // ]
+            arr.forEach(e2 => {
+                e2.childrenId.forEach(childrenId => {
+                    const parentsId = e2.parentsId
+                    this.expenses.forEach(each => {
+                        if (each.id === childrenId) {
+                            each.parents_id = parentsId
+                            this.upsertData(each)
+                        }
+                    })
                 })
             })
-          })
         }, // 질문: filter를 활용했으나, forEach가 많이 들어가있다. 더 좋은 방법이 무엇일까?
         sortIdAndLevel(parentIdHere, parentsLevelHere) {
             return this.expenses.filter(expense => expense.parents_id === parentIdHere && expense.level === parentsLevelHere + 1);
@@ -228,7 +306,8 @@ export default {
         sumExpenses(parentsIdHere) {
             const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
                 .reduce((acc, item) => acc + Number(item.amount), 0);
-            return [sum] //질문: 이것이 좋은 방법인가?
+            console.log("sum =", sum);
+            return sum //질문: 이것이 좋은 방법인가?
         },
         sortExpenses(category) {
             return this.expenses.filter(expense => expense.category === category);
@@ -356,6 +435,7 @@ export default {
     },
     components: {
         //   PieChart
+        // ListItem
     }
 }
 </script>

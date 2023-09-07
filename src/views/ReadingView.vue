@@ -193,12 +193,9 @@ export default {
     async loginGoogle() {
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
-        //     options: {
-        //     redirectTo: 'http://localhost:8081/'
-        // }
-          options: {
-          redirectTo: 'https://thinksalon.github.io/moneyflow/'
-        }
+        //   options: {
+        //   redirectTo: 'https://thinksalon.github.io/moneyflow/'
+        // } // 질문
       })
       console.log("data = ", data);
       console.log("error = ", error);
