@@ -206,24 +206,18 @@ export default {
                 })
             }
           })
-          console.log("arr = ", arr);
           arr.forEach(e2 => {
-            // console.log("e2 = ", e2)
-            // console.log("e.childrenId = ", e2.childrenId)
             e2.childrenId.forEach(childrenId => {
                 const parentsId = e2.parentsId
-                // console.log("parentsId = ", parentsId)
-                // console.log("childrenId = ", childrenId)
                 this.expenses.forEach(each => {
                     if(each.id === childrenId) {
                         each.parents_id = parentsId
-                        console.log("each = ", each);
                         this.upsertData(each)
                     }
                 })
             })
           })
-        },
+        }, // 질문: filter를 활용했으나, forEach가 많이 들어가있다. 더 좋은 방법이 무엇일까?
         sortIdAndLevel(parentIdHere, parentsLevelHere) {
             return this.expenses.filter(expense => expense.parents_id === parentIdHere && expense.level === parentsLevelHere + 1);
         },
@@ -234,7 +228,7 @@ export default {
         sumExpenses(parentsIdHere) {
             const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
                 .reduce((acc, item) => acc + Number(item.amount), 0);
-            return [sum]
+            return [sum] //질문: 이것이 좋은 방법인가?
         },
         sortExpenses(category) {
             return this.expenses.filter(expense => expense.category === category);

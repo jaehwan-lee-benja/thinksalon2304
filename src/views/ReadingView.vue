@@ -196,9 +196,9 @@ export default {
         //     options: {
         //     redirectTo: 'http://localhost:8081/'
         // }
-      //   options: {
-      //   redirectTo: 'https://thinksalon.github.io/moneyflow/'
-      // }
+          options: {
+          redirectTo: 'https://thinksalon.github.io/moneyflow/'
+        }
       })
       console.log("data = ", data);
       console.log("error = ", error);
