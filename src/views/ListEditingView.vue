@@ -6,29 +6,20 @@
                 <ol>
                     <li :class="listViewLiStyle" v-for="expense in sortLevel1" :key="expense.order">
 
-                        <!-- <div>
-                            <ListItem v-bind:expenses="expenses" :expenseHere="expense"/>
-                        </div> -->
-
-                        <div :class="listViewLiDiv">
-                            <input :class="categoryStyle" v-model="expense.category">
-                            <span> : </span>
-                            <input :class="amountStyle" v-model="expense.amount">
-                        </div>
+                        <ListItem v-bind:expenses="expenses" :expenseId="expense.id"/>
                         <span> *하위 합계 : </span>
                         <input :class="amountStyle" :value="sumExpenses(expense.id)" readonly>
 
                         <ol>
                             <li :class="listViewLiStyle" v-for="subExpense in sortIdAndLevel(expense.id, expense.level)"
                                 :key="subExpense.order">
-                                <div :class="listViewLiDiv">
-                                    <input :class="categoryStyle" v-model="subExpense.category">
-                                    <span> : </span>
-                                    <input :class="amountStyle" v-model="subExpense.amount">
-                                </div>
+
+                                <ListItem v-bind:expenses="expenses" :expenseId="subExpense.id"/>
+
+                                <!-- 아래 그룹도 집어넣기 -->
                                 <button @click="removeExpense(subExpense)">X</button>
                                 <span> *하위 합계 : </span>
-                                <input :class="amountStyle" v-model="sumExpenses(subExpense.id)[0]" readonly>
+                                <input :class="amountStyle" :value="sumExpenses(subExpense.id)" readonly>
 
                                 <button @click="toggleSubList(subExpense)">
                                     {{ subExpense.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
@@ -39,14 +30,12 @@
                                         <li :class="listViewLiStyle"
                                             v-for="subExpense2 in sortIdAndLevel(subExpense.id, subExpense.level)"
                                             :key="subExpense2.order">
-                                            <div :class="listViewLiDiv">
-                                                <input :class="categoryStyle" v-model="subExpense2.category">
-                                                <span> : </span>
-                                                <input :class="amountStyle" v-model="subExpense2.amount">
-                                            </div>
+
+                                            <ListItem v-bind:expenses="expenses" :expenseId="subExpense2.id"/>
+
                                             <button @click="removeExpense(subExpense2)">X</button>
                                             <span> *하위 합계 : </span>
-                                            <input :class="amountStyle" v-model="sumExpenses(subExpense2.id)[0]" readonly>
+                                            <input :class="amountStyle" :value="sumExpenses(subExpense2.id)" readonly>
 
                                             <button @click="toggleSubList(subExpense2)">
                                                 {{ subExpense2.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
@@ -111,7 +100,7 @@
 
 import { supabase } from '../lib/supabaseClient.js'
 //   import PieChart from './Pie.vue'
-// import ListItem from './ListItem.vue'
+import ListItem from './ListItem.vue'
 
 export default {
 
@@ -201,8 +190,7 @@ export default {
         sumExpenses(parentsIdHere) {
             const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
                 .reduce((acc, item) => acc + Number(item.amount), 0);
-            console.log("sum =", sum);
-            return sum //질문: 이것이 좋은 방법인가?
+            return sum
         },
         sortExpenses(category) {
             return this.expenses.filter(expense => expense.category === category);
@@ -330,7 +318,7 @@ export default {
     },
     components: {
         //   PieChart
-        // ListItem
+        ListItem
     }
 }
 </script>
