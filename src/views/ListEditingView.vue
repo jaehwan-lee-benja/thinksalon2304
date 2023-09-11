@@ -131,20 +131,10 @@ export default {
     },
     mounted() {
         this.fetchData(),
-            this.monitorIsEdited()
+        this.monitorIsEdited()
+        // this.fetchToggleActiveHandler()
     },
     computed: {
-        fetchToggleActiveHandler() {
-            this.expenses.forEach(e => {
-                if( e.level == 5 ) {
-                    this.toggleActiveHandler[e.id] = false;
-                } else {
-                    this.toggleActiveHandler[e.id] = true;
-                }
-            })
-            console.log("this.toggleActiveHandler = ", this.toggleActiveHandler)
-            return null
-        },
         getTotalExpense() {
             const totalExpenseArr = this.expenses.filter(e => e.level === 1)
             const totalExpense = totalExpenseArr[0]
@@ -184,14 +174,26 @@ export default {
 
     },
     methods: {
+        // fetchToggleActiveHandler() {
+        //     console.log("here!")
+        //     if(!this.expenses) {
+        //         this.expenses.forEach(e => {
+        //             console.log("here!!!!!!!!!!")
+        //             if( e.level == 5 ) {
+        //                 this.toggleActiveHandler[e.id] = false;
+        //                 console.log("here!***********")
+        //             } else {
+        //                 this.toggleActiveHandler[e.id] = true;
+        //         }
+        //         })
+        //     }
+        // },
         controlToggleActiveHandler(expenseHere){    
-            console.log("expenseHere.level = ", expenseHere.level);    
             if( expenseHere.level == 5 ) {
                 this.toggleActiveHandler[expenseHere.id] = false;
             } else {
                 this.toggleActiveHandler[expenseHere.id] = true;
             }
-            console.log("this.toggleActiveHandler[expenseHere.id] = ", this.toggleActiveHandler[expenseHere.id])
         },
         sumExpensesForTotal(parentsIdHere) {
             const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
@@ -228,6 +230,7 @@ export default {
             return this.expenses.filter(e => e.parents_id === parentIdHere && e.level === parentsLevelHere + 1);
         },
         toggleSubList(expenseHere) {
+            console.log("expenseHere.level = ", expenseHere.level);
             this.controlToggleActiveHandler(expenseHere);
             if(expenseHere.level < 5 ){
                 expenseHere.show_sub_list = !expenseHere.show_sub_list;
@@ -257,13 +260,12 @@ export default {
                 amount: newAmountHere,
                 order: this.setOrder(parentsIdHere),
                 level: levelForO,
+                show_sub_list: false
             };
 
             if(levelForO < 5) {
-                o.show_sub_list = true;
                 this.toggleActiveHandler[o.id] = true;
             } else {
-                o.show_sub_list = false;
                 this.toggleActiveHandler[o.id] = false;
             }
 
@@ -277,6 +279,9 @@ export default {
             const { data } = a;
             this.expenses = data;
             this.fetchedExpenses = JSON.parse(JSON.stringify(data));
+            this.expenses.forEach(e => {
+                if(e.level == 5) { this.toggleActiveHandler[e.id] = false; }
+            })
         },
         editExpenses() {
 
