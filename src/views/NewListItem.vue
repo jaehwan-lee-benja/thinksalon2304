@@ -5,7 +5,7 @@
             <span> : </span>
             <input :class="amountStyle" v-model="this.newAmount" placeholder="0">
         </div>
-        <button>입력2</button>
+        <button>입력</button>
     </form>
 </template>
 

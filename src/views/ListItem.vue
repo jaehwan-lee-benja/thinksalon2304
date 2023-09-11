@@ -4,10 +4,7 @@
         <span> : </span>
         <input :class="amountStyle" v-model="getExpenseById[0].amount">
     </div>
-    <button @click="toggleSubList(getExpenseById[0])">
-        {{ getExpenseById[0].show_sub_list ? "숨기기" : "펼치기" }}
-    </button>
-    
+
     <button @click="removeExpense(getExpenseById[0])">X</button>
     <span> *하위 합계 : </span>
     <input :class="amountStyle" :value="sumExpenses(getExpenseById[0].id)" readonly>
@@ -48,9 +45,6 @@ export default {
         },
         removeExpense(expenseHere) {
             this.$emit('remove-expense', expenseHere);
-        },
-        toggleSubList(expenseHere) {
-            this.$emit('toggle-sub-list', expenseHere);
         }
     }
 }

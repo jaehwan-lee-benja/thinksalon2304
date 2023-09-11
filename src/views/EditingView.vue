@@ -322,15 +322,12 @@ export default {
   },
   methods: {
     sumExpenses(category) {
-      console.log("category =", category);
       const sum = this.expenses.filter(e => e.parentsCategory === category)
       .reduce((acc, item) => acc + Number(item.amount), 0);
-      console.log("sum = ", sum);
       return [sum]
     },
     updateSelectbox(event) {
       this.selectedCategory = event.target.value;
-      console.log("this.selectedCategory = ", this.selectedCategory);
     },
     addCategory() {
       const o = {
