@@ -6,18 +6,21 @@
                 <ol>
                     <li :class="listViewLiStyle" v-for="expense1 in sortLevel1" :key="expense1.index">
 
-                        <ListItem v-bind:expenses="expenses" :expenseId="expense1.id" />
+                        <div :class="listViewLiDiv">
+                            <input :class="categoryStyle" v-model="expense1.category">
+                            <span> : </span>
+                            <input :class="amountStyle" v-model="expense1.amount">
+                        </div>
+                        <span> *하위 합계 : </span>
+                        <input :class="amountStyle" :value="sumExpensesForTotal(expense1.id)" readonly>
 
                         <ol>
-                            <li :class="listViewLiStyle" v-for="expense2 in sortChildrenByIdAndLevel(expense1.id, expense1.level)"
+                            <li :class="listViewLiStyle"
+                                v-for="expense2 in sortChildrenByIdAndLevel(expense1.id, expense1.level)"
                                 :key="expense2.index">
 
-                                <ListItem v-bind:expenses="expenses" :expenseId="expense2.id" />
-
-                                <button @click="removeExpense(expense2)">X</button>
-                                <button @click="toggleSubList(expense2)">
-                                    {{ expense2.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
-                                </button>
+                                <ListItem v-bind:expenses="expenses" :expenseId="expense2.id"
+                                    @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" />
 
                                 <div v-if="expense2.show_sub_list">
                                     <ol>
@@ -25,12 +28,8 @@
                                             v-for="expense3 in sortChildrenByIdAndLevel(expense2.id, expense2.level)"
                                             :key="expense3.index">
 
-                                            <ListItem v-bind:expenses="expenses" :expenseId="expense3.id" />
-
-                                            <button @click="removeExpense(expense3)">X</button>
-                                            <button @click="toggleSubList(expense3)">
-                                                {{ expense3.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
-                                            </button>
+                                            <ListItem v-bind:expenses="expenses" :expenseId="expense3.id"
+                                                @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" />
 
                                             <div v-if="expense3.show_sub_list">
 
@@ -53,7 +52,7 @@
 
                             </li>
 
-                            <!-- <NewListItem v-bind:expenses="expenses" :expenseId="expense1.id" :inputBoxesForCategory="this.inputBoxesForCategory" /> -->
+                            <!-- <NewListItem v-bind:expenses="expenses" :expenseId="expense1.id" /> -->
 
                             <form @submit.prevent="createNewExpense(expense1.id, expense1.level)">
                                 <div :class="listViewLiDiv">
@@ -174,6 +173,37 @@ export default {
 
     },
     methods: {
+        sumExpensesForTotal(parentsIdHere) {
+            const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
+                .reduce((acc, item) => acc + Number(item.amount), 0);
+            return sum
+        },
+        removeExpense(expenseHere) {
+            const confirmValue = confirm("내용을 삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
+
+            if (confirmValue) {
+
+                const parentsId = expenseHere.parents_id;
+                const orderRemoved = expenseHere.order;
+
+                this.expenses.forEach(e => {
+                    const order = e.order;
+                    if (e.parents_id == parentsId) {
+                        if (order > orderRemoved) {
+                            this.expenses[this.expenses.indexOf(e)].order = order - 1;
+                        }
+                    }
+                });
+
+                this.expenses = this.expenses.filter((t) => t !== expenseHere)
+
+                if (expenseHere.level > 1) {
+                    this.expenses = this.expenses.filter((t) => t.parents_id !== expenseHere.id)
+                }
+
+            }
+
+        },
         sortChildrenByIdAndLevel(parentIdHere, parentsLevelHere) {
             return this.expenses.filter(e => e.parents_id === parentIdHere && e.level === parentsLevelHere + 1);
         },
@@ -288,6 +318,4 @@ export default {
 }
 </script>
   
-<style scoped>
-@import '../style.css';
-</style>
+<style scoped>@import '../style.css';</style>

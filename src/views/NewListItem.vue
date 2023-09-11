@@ -3,11 +3,11 @@
     <div></div>
     <form @submit.prevent="createNewExpense(getExpenseById[0].id, getExpenseById[0].level)">
         <div :class="listViewLiDiv">
-            <!-- <input :class="categoryStyle" v-model="this.inputBoxesForCategory[getExpenseById[0].id]"
-                placeholder="새 리스트 적기">
+            <!-- <input :class="categoryStyle" v-model="this.inputBoxesForCategory[getExpenseById[0].id]" -->
+                <!-- placeholder="새 리스트 적기"> -->
             <span> : </span>
             <input :class="amountStyle" v-model="this.inputBoxesForAmount[getExpenseById[0].id]"
-                placeholder="0"> -->
+                placeholder="0">
         </div>
         <button>입력</button>
     </form>
