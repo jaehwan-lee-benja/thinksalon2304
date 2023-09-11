@@ -36,34 +36,18 @@
                                             </div>
 
                                         </li>
-                                        <form @submit.prevent="createNewExpense(expense2.id, expense2.level)">
-                                            <div :class="listViewLiDiv">
-                                                <input :class="categoryStyle"
-                                                    v-model="this.inputBoxesForCategory[expense2.id]"
-                                                    placeholder="새 리스트 적기">
-                                                <span> : </span>
-                                                <input :class="amountStyle" v-model="this.inputBoxesForAmount[expense2.id]"
-                                                    placeholder="0">
-                                            </div>
-                                            <button>입력</button>
-                                        </form>
+
+                                        <NewListItem v-bind:expenses="expenses" :expenseId="expense2.id"
+                                            @create-new-expense="createNewExpense" />
+                                    
                                     </ol>
                                 </div>
 
                             </li>
 
-                            <!-- <NewListItem v-bind:expenses="expenses" :expenseId="expense1.id" /> -->
+                            <NewListItem v-bind:expenses="expenses" :expenseId="expense1.id"
+                                @create-new-expense="createNewExpense" />
 
-                            <form @submit.prevent="createNewExpense(expense1.id, expense1.level)">
-                                <div :class="listViewLiDiv">
-                                    <input :class="categoryStyle" v-model="this.inputBoxesForCategory[expense1.id]"
-                                        placeholder="새 리스트 적기">
-                                    <span> : </span>
-                                    <input :class="amountStyle" v-model="this.inputBoxesForAmount[expense1.id]"
-                                        placeholder="0">
-                                </div>
-                                <button>입력</button>
-                            </form>
                         </ol>
 
                     </li>
@@ -93,7 +77,7 @@
 import { supabase } from '../lib/supabaseClient.js'
 //   import PieChart from './Pie.vue'
 import ListItem from './ListItem.vue'
-// import NewListItem from './NewListItem.vue'
+import NewListItem from './NewListItem.vue'
 
 export default {
 
@@ -102,9 +86,6 @@ export default {
 
             expenses: [],
             fetchedExpenses: [],
-
-            inputBoxesForCategory: {},
-            inputBoxesForAmount: {},
 
             unitDiv: 'unitDiv',
             subGrid: 'subGrid',
@@ -223,19 +204,19 @@ export default {
                 this.isEditValue = false;
             }
         },
-        createNewExpense(parentsIdHere, parentsLevelHere) {
+        createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere) {
+        
             const levelForO = parentsLevelHere + 1;
             const o = {
                 id: this.getUuidv4(),
                 parents_id: parentsIdHere,
-                category: this.inputBoxesForCategory[parentsIdHere],
-                amount: this.inputBoxesForAmount[parentsIdHere],
+                category: newCategoryHere,
+                amount: newAmountHere,
                 order: this.setOrder(parentsIdHere),
                 level: levelForO
             };
+            console.log("o = ", o);
             this.expenses.push(o);
-            this.inputBoxesForCategory[parentsIdHere] = ''
-            this.inputBoxesForAmount[parentsIdHere] = ''
         },
         async fetchData() {
             const a = await supabase
@@ -313,7 +294,7 @@ export default {
     components: {
         //   PieChart
         ListItem,
-        // NewListItem
+        NewListItem
     }
 }
 </script>
