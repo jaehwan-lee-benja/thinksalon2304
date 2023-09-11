@@ -4,56 +4,47 @@
             <h2>리스트 뷰</h2>
             <div :class="listViewItemDiv">
                 <ol>
-                    <li :class="listViewLiStyle" v-for="expense in sortLevel1" :key="expense.order">
+                    <li :class="listViewLiStyle" v-for="expense1 in sortLevel1" :key="expense1.index">
 
-                        <ListItem v-bind:expenses="expenses" :expenseId="expense.id"/>
-                        <span> *하위 합계 : </span>
-                        <input :class="amountStyle" :value="sumExpenses(expense.id)" readonly>
+                        <ListItem v-bind:expenses="expenses" :expenseId="expense1.id" />
 
                         <ol>
-                            <li :class="listViewLiStyle" v-for="subExpense in sortIdAndLevel(expense.id, expense.level)"
-                                :key="subExpense.order">
+                            <li :class="listViewLiStyle" v-for="expense2 in sortChildrenByIdAndLevel(expense1.id, expense1.level)"
+                                :key="expense2.index">
 
-                                <ListItem v-bind:expenses="expenses" :expenseId="subExpense.id"/>
+                                <ListItem v-bind:expenses="expenses" :expenseId="expense2.id" />
 
-                                <!-- 아래 그룹도 집어넣기 -->
-                                <button @click="removeExpense(subExpense)">X</button>
-                                <span> *하위 합계 : </span>
-                                <input :class="amountStyle" :value="sumExpenses(subExpense.id)" readonly>
-
-                                <button @click="toggleSubList(subExpense)">
-                                    {{ subExpense.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
+                                <button @click="removeExpense(expense2)">X</button>
+                                <button @click="toggleSubList(expense2)">
+                                    {{ expense2.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
                                 </button>
 
-                                <div v-if="subExpense.show_sub_list">
+                                <div v-if="expense2.show_sub_list">
                                     <ol>
                                         <li :class="listViewLiStyle"
-                                            v-for="subExpense2 in sortIdAndLevel(subExpense.id, subExpense.level)"
-                                            :key="subExpense2.order">
+                                            v-for="expense3 in sortChildrenByIdAndLevel(expense2.id, expense2.level)"
+                                            :key="expense3.index">
 
-                                            <ListItem v-bind:expenses="expenses" :expenseId="subExpense2.id"/>
+                                            <ListItem v-bind:expenses="expenses" :expenseId="expense3.id" />
 
-                                            <button @click="removeExpense(subExpense2)">X</button>
-                                            <span> *하위 합계 : </span>
-                                            <input :class="amountStyle" :value="sumExpenses(subExpense2.id)" readonly>
-
-                                            <button @click="toggleSubList(subExpense2)">
-                                                {{ subExpense2.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
+                                            <button @click="removeExpense(expense3)">X</button>
+                                            <button @click="toggleSubList(expense3)">
+                                                {{ expense3.show_sub_list ? "하위항목 숨기기" : "하위항목 보기" }}
                                             </button>
 
-                                            <div v-if="subExpense2.show_sub_list">
+                                            <div v-if="expense3.show_sub_list">
 
                                             </div>
 
                                         </li>
-                                        <form @submit.prevent="createNewExpense(subExpense.id, subExpense.level)">
+                                        <form @submit.prevent="createNewExpense(expense2.id, expense2.level)">
                                             <div :class="listViewLiDiv">
                                                 <input :class="categoryStyle"
-                                                    v-model="this.inputBoxesForCategory[subExpense.id]"
+                                                    v-model="this.inputBoxesForCategory[expense2.id]"
                                                     placeholder="새 리스트 적기">
                                                 <span> : </span>
-                                                <input :class="amountStyle"
-                                                    v-model="this.inputBoxesForAmount[subExpense.id]" placeholder="0">
+                                                <input :class="amountStyle" v-model="this.inputBoxesForAmount[expense2.id]"
+                                                    placeholder="0">
                                             </div>
                                             <button>입력</button>
                                         </form>
@@ -62,12 +53,14 @@
 
                             </li>
 
-                            <form @submit.prevent="createNewExpense(expense.id, expense.level)">
+                            <!-- <NewListItem v-bind:expenses="expenses" :expenseId="expense1.id" :inputBoxesForCategory="this.inputBoxesForCategory" /> -->
+
+                            <form @submit.prevent="createNewExpense(expense1.id, expense1.level)">
                                 <div :class="listViewLiDiv">
-                                    <input :class="categoryStyle" v-model="this.inputBoxesForCategory[expense.id]"
+                                    <input :class="categoryStyle" v-model="this.inputBoxesForCategory[expense1.id]"
                                         placeholder="새 리스트 적기">
                                     <span> : </span>
-                                    <input :class="amountStyle" v-model="this.inputBoxesForAmount[expense.id]"
+                                    <input :class="amountStyle" v-model="this.inputBoxesForAmount[expense1.id]"
                                         placeholder="0">
                                 </div>
                                 <button>입력</button>
@@ -101,6 +94,7 @@
 import { supabase } from '../lib/supabaseClient.js'
 //   import PieChart from './Pie.vue'
 import ListItem from './ListItem.vue'
+// import NewListItem from './NewListItem.vue'
 
 export default {
 
@@ -180,20 +174,15 @@ export default {
 
     },
     methods: {
-        sortIdAndLevel(parentIdHere, parentsLevelHere) {
-            return this.expenses.filter(expense => expense.parents_id === parentIdHere && expense.level === parentsLevelHere + 1);
+        sortChildrenByIdAndLevel(parentIdHere, parentsLevelHere) {
+            return this.expenses.filter(e => e.parents_id === parentIdHere && e.level === parentsLevelHere + 1);
         },
-        toggleSubList(expense) {
-            expense.show_sub_list = !expense.show_sub_list;
-            this.upsertData(expense)
-        },
-        sumExpenses(parentsIdHere) {
-            const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
-                .reduce((acc, item) => acc + Number(item.amount), 0);
-            return sum
+        toggleSubList(expenseHere) {
+            expenseHere.show_sub_list = !expenseHere.show_sub_list;
+            this.upsertData(expenseHere)
         },
         sortExpenses(category) {
-            return this.expenses.filter(expense => expense.category === category);
+            return this.expenses.filter(e => e.category === category);
         },
         monitorIsEdited() {
             if (this.isEdited) {
@@ -227,31 +216,6 @@ export default {
             this.expenses = data;
             this.fetchedExpenses = JSON.parse(JSON.stringify(data));
         },
-        removeExpense(expense) {
-            const confirmValue = confirm("내용을 삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
-
-            if (confirmValue) {
-
-                const parentsId = expense.parents_id;
-                const orderRemoved = expense.order;
-
-                this.expenses.forEach(e => {
-                    const order = e.order;
-                    if (e.parents_id == parentsId) {
-                        if (order > orderRemoved) {
-                            this.expenses[this.expenses.indexOf(e)].order = order - 1;
-                        }
-                    }
-                });
-
-                this.expenses = this.expenses.filter((t) => t !== expense)
-
-                if (expense.level == 2) {
-                    this.expenses = this.expenses.filter((t) => t.parents_id !== expense.id)
-                }
-
-            }
-        },
         editExpenses() {
 
             const confirmValue = confirm("수정된 내용을 저장하시겠습니까?")
@@ -270,12 +234,12 @@ export default {
             }
 
         },
-        async upsertData(expense) {
+        async upsertData(expenseHere) {
             try {
                 const { error } = await supabase
                     .from('expense')
-                    .upsert(expense)
-                    .eq('id', expense.id)
+                    .upsert(expenseHere)
+                    .eq('id', expenseHere.id)
                 if (error) {
                     throw error;
                 }
@@ -318,7 +282,8 @@ export default {
     },
     components: {
         //   PieChart
-        ListItem
+        ListItem,
+        // NewListItem
     }
 }
 </script>
