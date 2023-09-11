@@ -1,4 +1,15 @@
 <template>
+    <!-- <button v-if="this.hideShowHandler" @click="toggleSubList(getExpenseById[0])"> 
+        {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }} 
+    </button> -->
+
+    <button :class="{
+            'toggleBtnStyle_active': this.toggleActiveHandler === true,
+            'toggleBtnStyle_inactive': this.toggleActiveHandler === false
+        }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(getExpenseById[0])">
+        {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }} 
+    </button>
+
     <div :class="listViewLiDiv">
         <input :class="categoryStyle" v-model="getExpenseById[0].category">
         <span> : </span>
@@ -24,12 +35,18 @@ export default {
             type: Object,
             default: () => {}
         },
+        toggleActiveHandler: {
+            type: Boolean,
+            default: true
+        }
     }, 
     data() {
         return {
             listViewLiDiv: 'listViewLiDiv',
             categoryStyle: 'categoryStyle',
             amountStyle: 'amountStyle',
+            toggleBtnStyle_active: 'toggleBtnStyle_active',
+            toggleBtnStyle_inactive: 'toggleBtnStyle_inactive'
         }
     },
     computed: {
@@ -45,6 +62,9 @@ export default {
         },
         removeExpense(expenseHere) {
             this.$emit('remove-expense', expenseHere);
+        },
+        toggleSubList(expenseHere) {
+            this.$emit('toggle-sub-list', expenseHere);
         }
     }
 }

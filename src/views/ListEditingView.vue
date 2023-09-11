@@ -11,52 +11,61 @@
                 </div>
                 <span> *하위 합계 : </span>
                 <input :class="amountStyle" :value="sumExpensesForTotal(this.getTotalExpense.id)" readonly>
-                
+
                 <ol>
                     <li :class="listViewLiStyle"
                         v-for="expense2 in sortChildrenByIdAndLevel(this.getTotalExpense.id, this.getTotalExpense.level)"
                         :key="expense2.index">
 
-                        <button @click="toggleSubList(expense2)"> {{ expense2.show_sub_list ? "숨기기" : "&#62;" }} </button>
-                        <ListItem v-bind:expenses="expenses" :expenseId="expense2.id" @remove-expense="removeExpense" />
-                        
+                        <ListItem v-bind:expenses="expenses" :expenseId="expense2.id" 
+                        @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" 
+                        :toggleActiveHandler="this.toggleActiveHandler[expense2.id]" />
+
                         <ol v-if="expense2.show_sub_list">
                             <li :class="listViewLiStyle"
                                 v-for="expense3 in sortChildrenByIdAndLevel(expense2.id, expense2.level)"
                                 :key="expense3.index">
-                                
-                                <button @click="toggleSubList(expense3)"> {{ expense3.show_sub_list ? "숨기기" : "펼치기" }} </button>
-                                <ListItem v-bind:expenses="expenses" :expenseId="expense3.id" @remove-expense="removeExpense" />
-                                
+
+                                <ListItem v-bind:expenses="expenses" :expenseId="expense3.id"
+                                    @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" 
+                                    :toggleActiveHandler="this.toggleActiveHandler[expense3.id]" />
+
                                 <ol v-if="expense3.show_sub_list">
                                     <li :class="listViewLiStyle"
                                         v-for="expense4 in sortChildrenByIdAndLevel(expense3.id, expense3.level)"
                                         :key="expense4.index">
-                                        
-                                        <ListItem v-bind:expenses="expenses" :expenseId="expense4.id" @remove-expense="removeExpense" />
-                                        <button @click="toggleSubList(expense4)"> {{ expense4.show_sub_list ? "숨기기" : "펼치기" }} </button>
-                                        
+
+                                        <ListItem v-bind:expenses="expenses" :expenseId="expense4.id"
+                                            @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" 
+                                            :toggleActiveHandler="this.toggleActiveHandler[expense4.id]"/>
+
                                         <ol v-if="expense4.show_sub_list">
                                             <li :class="listViewLiStyle"
                                                 v-for="expense5 in sortChildrenByIdAndLevel(expense4.id, expense4.level)"
                                                 :key="expense5.index">
-                                                
-                                                <ListItem v-bind:expenses="expenses" :expenseId="expense5.id" @remove-expense="removeExpense" />
-                                            
+
+                                                <ListItem v-bind:expenses="expenses" :expenseId="expense5.id"
+                                                    @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" 
+                                                    :toggleActiveHandler="this.toggleActiveHandler[expense5.id]" />
+
                                             </li>
-                                            <NewListItem v-bind:expenses="expenses" :expenseId="expense4.id" @create-new-expense="createNewExpense" />
+                                            <NewListItem v-bind:expenses="expenses" :expenseId="expense4.id"
+                                                @create-new-expense="createNewExpense" />
                                         </ol>
 
                                     </li>
-                                    <NewListItem v-bind:expenses="expenses" :expenseId="expense3.id" @create-new-expense="createNewExpense" />
+                                    <NewListItem v-bind:expenses="expenses" :expenseId="expense3.id"
+                                        @create-new-expense="createNewExpense" />
                                 </ol>
 
                             </li>
-                            <NewListItem v-bind:expenses="expenses" :expenseId="expense2.id" @create-new-expense="createNewExpense" />
+                            <NewListItem v-bind:expenses="expenses" :expenseId="expense2.id"
+                                @create-new-expense="createNewExpense" />
                         </ol>
 
                     </li>
-                    <NewListItem v-bind:expenses="expenses" :expenseId="this.getTotalExpense.id" @create-new-expense="createNewExpense" />
+                    <NewListItem v-bind:expenses="expenses" :expenseId="this.getTotalExpense.id"
+                        @create-new-expense="createNewExpense" />
                 </ol>
 
             </div>
@@ -116,6 +125,7 @@ export default {
             listViewOlStyle: 'listViewOlStyle',
 
             isEditValue: true,
+            toggleActiveHandler: {}
 
         }
     },
@@ -124,6 +134,17 @@ export default {
             this.monitorIsEdited()
     },
     computed: {
+        fetchToggleActiveHandler() {
+            this.expenses.forEach(e => {
+                if( e.level == 5 ) {
+                    this.toggleActiveHandler[e.id] = false;
+                } else {
+                    this.toggleActiveHandler[e.id] = true;
+                }
+            })
+            console.log("this.toggleActiveHandler = ", this.toggleActiveHandler)
+            return null
+        },
         getTotalExpense() {
             const totalExpenseArr = this.expenses.filter(e => e.level === 1)
             const totalExpense = totalExpenseArr[0]
@@ -132,13 +153,6 @@ export default {
                 o = totalExpense
             }
             return o
-        },
-        updateInputboxes() {
-            this.expenses.forEach(e => {
-                this.inputBoxesForCategory[e.id] = ""
-                this.inputBoxesForAmount[e.id] = ""
-            })
-            return 0;
         },
         sortLevel1() {
             return this.expenses.filter(e => e.level === 1)
@@ -170,6 +184,15 @@ export default {
 
     },
     methods: {
+        controlToggleActiveHandler(expenseHere){    
+            console.log("expenseHere.level = ", expenseHere.level);    
+            if( expenseHere.level == 5 ) {
+                this.toggleActiveHandler[expenseHere.id] = false;
+            } else {
+                this.toggleActiveHandler[expenseHere.id] = true;
+            }
+            console.log("this.toggleActiveHandler[expenseHere.id] = ", this.toggleActiveHandler[expenseHere.id])
+        },
         sumExpensesForTotal(parentsIdHere) {
             const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
                 .reduce((acc, item) => acc + Number(item.amount), 0);
@@ -205,8 +228,11 @@ export default {
             return this.expenses.filter(e => e.parents_id === parentIdHere && e.level === parentsLevelHere + 1);
         },
         toggleSubList(expenseHere) {
-            expenseHere.show_sub_list = !expenseHere.show_sub_list;
-            this.upsertData(expenseHere)
+            this.controlToggleActiveHandler(expenseHere);
+            if(expenseHere.level < 5 ){
+                expenseHere.show_sub_list = !expenseHere.show_sub_list;
+                this.upsertData(expenseHere)
+            }
         },
         sortExpenses(category) {
             return this.expenses.filter(e => e.category === category);
@@ -223,14 +249,24 @@ export default {
         createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere) {
 
             const levelForO = parentsLevelHere + 1;
+
             const o = {
                 id: this.getUuidv4(),
                 parents_id: parentsIdHere,
                 category: newCategoryHere,
                 amount: newAmountHere,
                 order: this.setOrder(parentsIdHere),
-                level: levelForO
+                level: levelForO,
             };
+
+            if(levelForO < 5) {
+                o.show_sub_list = true;
+                this.toggleActiveHandler[o.id] = true;
+            } else {
+                o.show_sub_list = false;
+                this.toggleActiveHandler[o.id] = false;
+            }
+
             this.expenses.push(o);
         },
         async fetchData() {
@@ -314,6 +350,4 @@ export default {
 }
 </script>
   
-<style scoped>
-@import '../style.css';
-</style>
+<style scoped>@import '../style.css';</style>
