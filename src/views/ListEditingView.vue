@@ -4,88 +4,59 @@
             <h2>리스트 뷰</h2>
             <div :class="listViewItemDiv">
 
-                <div>
-                    <div :class="listViewLiDiv">
-                        <input :class="categoryStyle" :value="this.getTotalExpense.category">
-                        <span> : </span>
-                        <input :class="amountStyle" :value="this.getTotalExpense.amount">
-                    </div>
-                    <span> *하위 합계 : </span>
-                    <input :class="amountStyle" :value="sumExpensesForTotal(this.getTotalExpense.id)" readonly>
+                <div :class="listViewLiDiv">
+                    <input :class="categoryStyle" :value="this.getTotalExpense.category">
+                    <span> : </span>
+                    <input :class="amountStyle" :value="this.getTotalExpense.amount">
                 </div>
-
+                <span> *하위 합계 : </span>
+                <input :class="amountStyle" :value="sumExpensesForTotal(this.getTotalExpense.id)" readonly>
+                
                 <ol>
                     <li :class="listViewLiStyle"
                         v-for="expense2 in sortChildrenByIdAndLevel(this.getTotalExpense.id, this.getTotalExpense.level)"
                         :key="expense2.index">
 
+                        <button @click="toggleSubList(expense2)"> {{ expense2.show_sub_list ? "숨기기" : "&#62;" }} </button>
                         <ListItem v-bind:expenses="expenses" :expenseId="expense2.id" @remove-expense="removeExpense" />
-
-                        <button @click="toggleSubList(expense2)">
-                            {{ expense2.show_sub_list ? "숨기기" : "펼치기" }}
-                        </button>
-                        <div v-if="expense2.show_sub_list">
-                            <ol>
-                                <li :class="listViewLiStyle"
-                                    v-for="expense3 in sortChildrenByIdAndLevel(expense2.id, expense2.level)"
-                                    :key="expense3.index">
-
-                                    <ListItem v-bind:expenses="expenses" :expenseId="expense3.id"
-                                        @remove-expense="removeExpense" />
-
-                                    <button @click="toggleSubList(expense3)">
-                                        {{ expense3.show_sub_list ? "숨기기" : "펼치기" }}
-                                    </button>
-                                    <div v-if="expense3.show_sub_list">
-
-                                        <ol>
+                        
+                        <ol v-if="expense2.show_sub_list">
+                            <li :class="listViewLiStyle"
+                                v-for="expense3 in sortChildrenByIdAndLevel(expense2.id, expense2.level)"
+                                :key="expense3.index">
+                                
+                                <button @click="toggleSubList(expense3)"> {{ expense3.show_sub_list ? "숨기기" : "펼치기" }} </button>
+                                <ListItem v-bind:expenses="expenses" :expenseId="expense3.id" @remove-expense="removeExpense" />
+                                
+                                <ol v-if="expense3.show_sub_list">
+                                    <li :class="listViewLiStyle"
+                                        v-for="expense4 in sortChildrenByIdAndLevel(expense3.id, expense3.level)"
+                                        :key="expense4.index">
+                                        
+                                        <ListItem v-bind:expenses="expenses" :expenseId="expense4.id" @remove-expense="removeExpense" />
+                                        <button @click="toggleSubList(expense4)"> {{ expense4.show_sub_list ? "숨기기" : "펼치기" }} </button>
+                                        
+                                        <ol v-if="expense4.show_sub_list">
                                             <li :class="listViewLiStyle"
-                                                v-for="expense4 in sortChildrenByIdAndLevel(expense3.id, expense3.level)"
-                                                :key="expense4.index">
-
-                                                <ListItem v-bind:expenses="expenses" :expenseId="expense4.id"
-                                                    @remove-expense="removeExpense" />
-
-                                                <button @click="toggleSubList(expense4)">
-                                                    {{ expense4.show_sub_list ? "숨기기" : "펼치기" }}
-                                                </button>
-
-                                                <div v-if="expense4.show_sub_list">
-                                                    <ol>
-                                                        <li :class="listViewLiStyle"
-                                                            v-for="expense5 in sortChildrenByIdAndLevel(expense4.id, expense4.level)"
-                                                            :key="expense5.index">
-
-                                                            <ListItem v-bind:expenses="expenses" :expenseId="expense5.id"
-                                                                @remove-expense="removeExpense" />
-                                                        </li>
-
-                                                        <NewListItem v-bind:expenses="expenses" :expenseId="expense4.id"
-                                                            @create-new-expense="createNewExpense" />
-                                                    </ol>
-                                                </div>
-
+                                                v-for="expense5 in sortChildrenByIdAndLevel(expense4.id, expense4.level)"
+                                                :key="expense5.index">
+                                                
+                                                <ListItem v-bind:expenses="expenses" :expenseId="expense5.id" @remove-expense="removeExpense" />
+                                            
                                             </li>
-
-                                            <NewListItem v-bind:expenses="expenses" :expenseId="expense3.id"
-                                                @create-new-expense="createNewExpense" />
-
+                                            <NewListItem v-bind:expenses="expenses" :expenseId="expense4.id" @create-new-expense="createNewExpense" />
                                         </ol>
-                                    </div>
 
-                                </li>
+                                    </li>
+                                    <NewListItem v-bind:expenses="expenses" :expenseId="expense3.id" @create-new-expense="createNewExpense" />
+                                </ol>
 
-                                <NewListItem v-bind:expenses="expenses" :expenseId="expense2.id"
-                                    @create-new-expense="createNewExpense" />
-
-                            </ol>
-                        </div>
+                            </li>
+                            <NewListItem v-bind:expenses="expenses" :expenseId="expense2.id" @create-new-expense="createNewExpense" />
+                        </ol>
 
                     </li>
-
-                    <NewListItem v-bind:expenses="expenses" :expenseId="this.getTotalExpense.id"
-                        @create-new-expense="createNewExpense" />
-
+                    <NewListItem v-bind:expenses="expenses" :expenseId="this.getTotalExpense.id" @create-new-expense="createNewExpense" />
                 </ol>
 
             </div>
