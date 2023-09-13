@@ -211,3 +211,15 @@ input:read-only {
 .listViewOlStyle {
   margin-bottom: 30px;
 }
+/* ol.img li {
+  position: relative;
+}
+ol.img span {
+  width: 10px;
+  height: 10px;
+  display: block;
+  background: blue;
+  position: absolute;
+  left: -30px;
+  top: 3px;
+} */
