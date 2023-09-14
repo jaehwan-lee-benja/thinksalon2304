@@ -7,22 +7,33 @@ h2 {
 h3 {
   padding-left: 40px;
 }
+span {
+  font-size: 13px;
+}
 button {
   border: 1px solid #575757;
   color: #575757;
   min-width: 30px;
   padding: 5px;
   margin: 0 10px;
+  border-radius: 4px;
 }
 button:hover{
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer; /* 마우스 포인터를 올렸을 때 손가락으로 바뀜 */
   transition: box-shadow 0.1s linear;
 }
+.liControlBtn {
+  border: 0px solid #575757;
+  color: #575757;
+  min-width: 30px;
+  padding: 5px;
+  margin: 0 10px;
+}
 .mainBodyDiv{
   margin: 70px auto;
   width: 90%;
-  min-width: 1000px;
+  min-width: 1500px;
 }
 .menuDiv {
   word-break: break-all;
@@ -33,7 +44,7 @@ button:hover{
 }
 .sectionGrid {
   display: grid;
-  grid-template-columns: 5fr 1fr;
+  grid-template-columns: 6fr 1fr;
   grid-gap: 10px;
   padding-bottom: 30px;
 }
@@ -61,7 +72,7 @@ button:hover{
 }
 
 .listViewDiv {
-  min-width: 800px;
+  min-width: 1000px;
   background-color:#f5efe9;
   padding: 10px;
   overflow-x: scroll;
@@ -114,7 +125,7 @@ input:read-only.amountStyle_readingMode  {
   margin-right: 10px;
 }
 input:read-only {
-  background-color: #e0e0e0;
+  background-color: transparent;
   border: 0px solid white;
   color: #575757;
 }
@@ -141,16 +152,29 @@ input:read-only {
   margin: 0.5%;
 }
 .toggleBtnStyle_active {
+  color: rgb(142, 111, 78);
   background-color: transparent;
   border: 0px solid transparent;
   margin: 0.5%;
+
+  position: relative;
+  left: -12px;
+  top: -2px;
+
 }
+
 .toggleBtnStyle_inactive {
-  color: #a0a0a0;
+  color: rgb(142, 111, 78, 0.3);
   background-color: transparent;
   border: 1px solid transparent;
   margin: 0.5%;
+ 
+  position: relative;
+  left: -12px;
+  top: -2px;
+  
 }
+
 .cancelEditedStyle_active {
   width: 49%;
   height: 40px;
@@ -182,7 +206,7 @@ input:read-only {
 }
 .titleDiv{
   text-align : left;
-  margin-left: 10px;  
+  margin-left: 10px;
 }
 .graphGrid{
   display: grid;
@@ -202,6 +226,10 @@ input:read-only {
   max-width: 300px;
   display: inline;
 }
+.liAlignStyle{
+  position: relative;
+  left: -37px;
+}
 .listViewLiDiv:hover {
   box-shadow: 0 4px 8px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
@@ -211,15 +239,33 @@ input:read-only {
 .listViewOlStyle {
   margin-bottom: 30px;
 }
-/* ol.img li {
+.olBgStyle {
+  background-color:rgb(218, 192, 163, 0.35);/*까만색(0,0,0) 20% 불투명도*/
+  margin: 12px;
+  padding: 10px 10px 30px 50px;
+  border-radius: 10px;
   position: relative;
+  z-index: 1;
+  /* pointer-events: none; hover 시에만 이벤트를 허용하도록 설정 */
 }
-ol.img span {
-  width: 10px;
-  height: 10px;
-  display: block;
-  background: blue;
-  position: absolute;
-  left: -30px;
-  top: 3px;
+.olBgStyle:hover {
+  border: 2px solid #FFFFFF;
+  z-index: 2;
+  /* pointer-events: auto; hover 시에만 이벤트를 허용하도록 설정 */
+}
+/* .olBgStyle_hover {
+  border: 2px solid #FFFFFF;
 } */
+.newListDivStyle {
+  padding: 6px 0;
+  margin-top: 10px;
+  border: 2px solid rgb(218, 192, 163);
+  border-radius: 10px;
+  width: 60%;
+  opacity: 0.5;
+  filter: Alpha(opacity=50); /* IE8 이하 호환을 위해서 */
+}
+.newListDivStyle:hover {
+  opacity: 1;
+  filter: Alpha(opacity=100); /* IE8 이하 호환을 위해서 */
+}

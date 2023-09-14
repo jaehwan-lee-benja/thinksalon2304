@@ -12,7 +12,8 @@
                 <span> *하위 합계 : </span>
                 <input :class="amountStyle" :value="sumExpensesForTotal(this.getTotalExpense.id)" readonly>
 
-                <ol>
+                <ol :class="olBgStyle" v-on:mouseover="mouseover">
+
                     <li :class="listViewLiStyle"
                         v-for="expense2 in sortChildrenByIdAndLevel(this.getTotalExpense.id, this.getTotalExpense.level)"
                         :key="expense2.index">
@@ -21,7 +22,7 @@
                         @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" 
                         :toggleActiveHandler="this.toggleActiveHandler[expense2.id]" />
 
-                        <ol v-if="expense2.show_sub_list">
+                        <ol :class="olBgStyle" v-if="expense2.show_sub_list">
                             <li :class="listViewLiStyle"
                                 v-for="expense3 in sortChildrenByIdAndLevel(expense2.id, expense2.level)"
                                 :key="expense3.index">
@@ -30,7 +31,7 @@
                                     @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" 
                                     :toggleActiveHandler="this.toggleActiveHandler[expense3.id]" />
 
-                                <ol v-if="expense3.show_sub_list">
+                                <ol :class="olBgStyle" v-if="expense3.show_sub_list">
                                     <li :class="listViewLiStyle"
                                         v-for="expense4 in sortChildrenByIdAndLevel(expense3.id, expense3.level)"
                                         :key="expense4.index">
@@ -39,7 +40,7 @@
                                             @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" 
                                             :toggleActiveHandler="this.toggleActiveHandler[expense4.id]"/>
 
-                                        <ol v-if="expense4.show_sub_list">
+                                        <ol :class="olBgStyle" v-if="expense4.show_sub_list">
                                             <li :class="listViewLiStyle"
                                                 v-for="expense5 in sortChildrenByIdAndLevel(expense4.id, expense4.level)"
                                                 :key="expense5.index">
@@ -64,6 +65,7 @@
                         </ol>
 
                     </li>
+
                     <NewListItem v-bind:expenses="expenses" :expenseId="this.getTotalExpense.id"
                         @create-new-expense="createNewExpense" />
                 </ol>
@@ -123,6 +125,7 @@ export default {
             saveEditedDiv: 'saveEditedDiv',
             listViewLiStyle: 'listViewLiStyle',
             listViewOlStyle: 'listViewOlStyle',
+            olBgStyle:'olBgStyle',
 
             isEditValue: true,
             toggleActiveHandler: {}
@@ -174,20 +177,16 @@ export default {
 
     },
     methods: {
-        // fetchToggleActiveHandler() {
-        //     console.log("here!")
-        //     if(!this.expenses) {
-        //         this.expenses.forEach(e => {
-        //             console.log("here!!!!!!!!!!")
-        //             if( e.level == 5 ) {
-        //                 this.toggleActiveHandler[e.id] = false;
-        //                 console.log("here!***********")
-        //             } else {
-        //                 this.toggleActiveHandler[e.id] = true;
-        //         }
-        //         })
-        //     }
-        // },
+        mouseover() {
+            // console.log("mouseover")
+            // if(this.olBgStyle == "olBgStyle") {
+            //     console.log("1")
+            //     this.olBgStyle = "olBgStyle_hover"
+            // } else {
+            //     console.log("2")
+            //     this.olBgStyle = "olBgStyle"
+            // }
+        },
         controlToggleActiveHandler(expenseHere){    
             if( expenseHere.level == 5 ) {
                 this.toggleActiveHandler[expenseHere.id] = false;
@@ -230,7 +229,6 @@ export default {
             return this.expenses.filter(e => e.parents_id === parentIdHere && e.level === parentsLevelHere + 1);
         },
         toggleSubList(expenseHere) {
-            console.log("expenseHere.level = ", expenseHere.level);
             this.controlToggleActiveHandler(expenseHere);
             if(expenseHere.level < 5 ){
                 expenseHere.show_sub_list = !expenseHere.show_sub_list;

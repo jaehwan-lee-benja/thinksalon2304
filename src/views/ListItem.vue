@@ -1,24 +1,23 @@
 <template>
-    <!-- <button v-if="this.hideShowHandler" @click="toggleSubList(getExpenseById[0])"> 
-        {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }} 
-    </button> -->
-
-    <button :class="{
+    <div :class="liAlignStyle">
+        <button :class="{
             'toggleBtnStyle_active': this.toggleActiveHandler === true,
             'toggleBtnStyle_inactive': this.toggleActiveHandler === false
         }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(getExpenseById[0])">
         {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }} 
-    </button>
+        </button>
 
-    <div :class="listViewLiDiv">
-        <input :class="categoryStyle" v-model="getExpenseById[0].category">
-        <span> : </span>
-        <input :class="amountStyle" v-model="getExpenseById[0].amount">
+        <div :class="listViewLiDiv">
+            <input :class="categoryStyle" v-model="getExpenseById[0].category">
+            <span> : </span>
+            <input :class="amountStyle" v-model="getExpenseById[0].amount">
+        </div>
+
+        <button :class="liControlBtn" @click="removeExpense(getExpenseById[0])">X</button>
+        <span> *하위 합계 : </span>
+        <input :class="amountStyle" :value="sumExpenses(getExpenseById[0].id)" readonly>
+        
     </div>
-
-    <button @click="removeExpense(getExpenseById[0])">X</button>
-    <span> *하위 합계 : </span>
-    <input :class="amountStyle" :value="sumExpenses(getExpenseById[0].id)" readonly>
     
 </template>
 
@@ -46,7 +45,9 @@ export default {
             categoryStyle: 'categoryStyle',
             amountStyle: 'amountStyle',
             toggleBtnStyle_active: 'toggleBtnStyle_active',
-            toggleBtnStyle_inactive: 'toggleBtnStyle_inactive'
+            toggleBtnStyle_inactive: 'toggleBtnStyle_inactive',
+            liAlignStyle: 'liAlignStyle',
+            liControlBtn: 'liControlBtn'
         }
     },
     computed: {

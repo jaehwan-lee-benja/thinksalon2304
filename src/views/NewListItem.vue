@@ -1,12 +1,14 @@
 <template>
-    <form @submit.prevent="createNewExpense(getExpenseById[0].id, getExpenseById[0].level)">
+    <div :class="newListDivStyle">
+        <form @submit.prevent="createNewExpense(getExpenseById[0].id, getExpenseById[0].level)">
         <div :class="listViewLiDiv">
             <input :class="categoryStyle" v-model="this.newCategory" placeholder="새 리스트 적기">
             <span> : </span>
             <input :class="amountStyle" v-model="this.newAmount" placeholder="0">
         </div>
-        <button>입력</button>
-    </form>
+        <button :class="liControlBtn">입력</button>
+        </form>
+    </div>
 </template>
 
 <script>
@@ -30,6 +32,8 @@ export default {
             amountStyle: 'amountStyle',
             newCategory: '',
             newAmount: '',
+            liControlBtn: 'liControlBtn',
+            newListDivStyle: 'newListDivStyle'
         }
     },
     computed: {
