@@ -72,6 +72,7 @@ button:hover{
 }
 
 .listViewDiv {
+  width: 90%;
   min-width: 1000px;
   background-color:#f5efe9;
   padding: 10px;
@@ -83,10 +84,6 @@ button:hover{
 
 .listViewDiv::-webkit-scrollbar {
   display: none; /* 크롬, 사파리, 오페라, 엣지 */
-}
-
-.listViewItemDiv {
-  width: 90%;
 }
 .unitDiv {
   border: 1px solid black;
