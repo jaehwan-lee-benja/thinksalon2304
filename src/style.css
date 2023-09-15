@@ -44,7 +44,7 @@ button:hover{
 }
 .sectionGrid {
   display: grid;
-  grid-template-columns: 6fr 1fr;
+  grid-template-columns: 2fr 6fr 1fr;
   grid-gap: 10px;
   padding-bottom: 30px;
 }

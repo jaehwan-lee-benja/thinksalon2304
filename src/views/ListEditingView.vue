@@ -1,5 +1,8 @@
 <template>
     <div :class="sectionGrid">
+        <div>
+            <button @click="upsertDataForVersion">test</button>
+        </div>
         <div :class="listViewDiv">
             <h2>리스트 뷰</h2>
             <div :class="listViewItemDiv">
@@ -12,7 +15,7 @@
                 <span> *하위 합계 : </span>
                 <input :class="amountStyle" :value="sumExpensesForTotal(this.getTotalExpense.id)" readonly>
 
-                <ol :class="olBgStyle" v-on:mouseover="mouseover">
+                <ol :class="olBgStyle">
 
                     <li :class="listViewLiStyle"
                         v-for="expense2 in sortChildrenByIdAndLevel(this.getTotalExpense.id, this.getTotalExpense.level)"
@@ -72,7 +75,6 @@
 
             </div>
         </div>
-
 
         <div :class="flowViewDiv">
             <h2>플로우 뷰</h2>
@@ -177,16 +179,6 @@ export default {
 
     },
     methods: {
-        mouseover() {
-            // console.log("mouseover")
-            // if(this.olBgStyle == "olBgStyle") {
-            //     console.log("1")
-            //     this.olBgStyle = "olBgStyle_hover"
-            // } else {
-            //     console.log("2")
-            //     this.olBgStyle = "olBgStyle"
-            // }
-        },
         controlToggleActiveHandler(expenseHere){    
             if( expenseHere.level == 5 ) {
                 this.toggleActiveHandler[expenseHere.id] = false;
@@ -312,6 +304,21 @@ export default {
                 console.error(error);
             }
         },
+
+        async upsertDataForVersion() {
+            const oHere = { id: this.getUuidv4() }
+            try {
+                const { error } = await supabase
+                    .from('expense_version')
+                    .upsert(oHere)
+                if (error) {
+                    throw error;
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        },
+
         async deleteData(expenseId) {
             try {
                 const { error } = await supabase
