@@ -1,7 +1,8 @@
 <template>
     <div :class="sectionGrid">
-        <div>
+        <div :class="versionDiv">
             <button @click="upsertDataForVersion">test</button>
+            <VersionList v-bind:expenses="expenses"/>
         </div>
         <div :class="listViewDiv">
             <h2>리스트 뷰</h2>
@@ -97,6 +98,7 @@
 import { supabase } from '../lib/supabaseClient.js'
 import ListItem from './ListItem.vue'
 import NewListItem from './NewListItem.vue'
+import VersionList from './VersionList.vue'
 //   import PieChart from './Pie.vue'
 
 export default {
@@ -127,6 +129,7 @@ export default {
             listViewLiStyle: 'listViewLiStyle',
             listViewOlStyle: 'listViewOlStyle',
             olBgStyle:'olBgStyle',
+            versionDiv: 'versionDiv',
 
             isEditValue: true,
             toggleActiveHandler: {}
@@ -341,6 +344,7 @@ export default {
     components: {
         ListItem,
         NewListItem,
+        VersionList,
         //   PieChart
     }
 }
