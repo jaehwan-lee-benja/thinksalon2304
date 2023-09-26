@@ -10,7 +10,7 @@ import dagre from "dagre/dist/dagre.min.js"
 export default {
     name: 'GraphExample',
     props: {
-        samples: {
+        expenses: {
             type: Object,
             default: () => { }
         },
@@ -72,37 +72,43 @@ export default {
         },
         formatExpenses() {
 
-            /*
-             {
-                node1: { name: "p1" },
-                node2: { name: "p2" },
-                node3: { name: "p3" },
-                node4: { name: "p4" },
-             }
-             */
-
-            const nodesResult = {}
-            this.samples.forEach((e) => {
-                nodesResult[e.id] = { 'name': e.name }
-            })
-            console.log("nodesResult = ", nodesResult)
-            this.nodes = nodesResult
-            
-            /*
-             {
-                edge1: { source: "1", target: "2" },
-                edge2: { source: "1", target: "4" },
-                edge3: { source: "2", target: "3" },
-            }
-             */
-            const edgeResult = {}
-            this.samples.forEach((e) => {
-                if(e.parentId != null) {
-                    edgeResult[e.id] = { 'source': e.parentId,  'target': e.id }
+            console.log("this.expenses = ", this.expenses);
+            console.log(Object.keys(this.expenses).length);
+            const expensesLength = Object.keys(this.expenses).length;
+            if(expensesLength > 0) {
+                /*
+                {
+                    node1: { name: "p1" },
+                    node2: { name: "p2" },
+                    node3: { name: "p3" },
+                    node4: { name: "p4" },
                 }
-            })
-            console.log("edgeResult = ", edgeResult)
-            this.edges = edgeResult
+                */
+                
+                const nodesResult = {}
+                this.expenses.forEach((e) => {
+                    nodesResult[e.id] = { 'name': e.name }
+                })
+                console.log("nodesResult = ", nodesResult)
+                this.nodes = nodesResult
+                
+                /*
+                {
+                    edge1: { source: "1", target: "2" },
+                    edge2: { source: "1", target: "4" },
+                    edge3: { source: "2", target: "3" },
+                }
+                */
+                const edgeResult = {}
+                this.expenses.forEach((e) => {
+                    if(e.parentId != null) {
+                        edgeResult[e.id] = { 'source': e.parentId,  'target': e.id }
+                    }
+                })
+                console.log("edgeResult = ", edgeResult)
+                this.edges = edgeResult
+            }
+            
         }
     },
     components: {

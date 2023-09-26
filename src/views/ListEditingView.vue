@@ -81,7 +81,7 @@
         </div>
         <div :class="flowViewDiv">
             <h2>플로우 뷰</h2>
-            <GraphExample v-bind:samples="samples"/>
+            <GraphExample v-bind:expenses="expenses"/>
         </div>
     </div>
     <div :class="saveEditedDiv">
