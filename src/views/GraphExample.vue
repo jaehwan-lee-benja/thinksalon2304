@@ -1,5 +1,4 @@
 <template>
-    <div>hello world</div>
     <VNetworkGraph class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" />
 </template>
 
@@ -17,22 +16,13 @@ export default {
         },
     },
     mounted() {
-        this.test()
+        this.formatExpenses()
         this.formatLayout()
     },
     data() {
         return {
-            nodes: {
-                // node1: { name: "Node 1" },
-                // node2: { name: "Node 2" },
-                // node3: { name: "Node 3" },
-                // node4: { name: "Node 4" },
-            },
-            edges: {
-                edge1: { source: "1", target: "2" },
-                edge2: { source: "1", target: "4" },
-                edge3: { source: "2", target: "3" },
-            },
+            nodes: {},
+            edges: {},
             layouts: {
                 nodes: {},
             }
@@ -80,27 +70,8 @@ export default {
                 this.layouts.nodes[nodeId] = { x, y }
             })
         },
-        test() {
-            // const nodesResult = this.samples.map(e => {
-            //     return {['node'+this.samples.indexOf(e)]: {'name': e.name}}
-            // })
-            const samplesResult = {}
-            /*
-            {
-                key: value,
-                key: value,
-                id: {}
-            }
-            */
-            this.samples.forEach((e, i) => {
-                console.log(i, e)
-                //samplesResult['node' + (i + 1)] = { 'name': e.name }
-                samplesResult[e.id] = { 'name': e.name }
-            })
-            console.log("samplesResult = ", samplesResult)
+        formatExpenses() {
 
-            console.log(this.nodes)
-            console.log(this.edges)
             /*
              {
                 node1: { name: "p1" },
@@ -109,8 +80,14 @@ export default {
                 node4: { name: "p4" },
              }
              */
-            this.nodes = samplesResult
 
+            const nodesResult = {}
+            this.samples.forEach((e) => {
+                nodesResult[e.id] = { 'name': e.name }
+            })
+            console.log("nodesResult = ", nodesResult)
+            this.nodes = nodesResult
+            
             /*
              {
                 edge1: { source: "1", target: "2" },
@@ -118,6 +95,14 @@ export default {
                 edge3: { source: "2", target: "3" },
             }
              */
+            const edgeResult = {}
+            this.samples.forEach((e) => {
+                if(e.parentId != null) {
+                    edgeResult[e.id] = { 'source': e.parentId,  'target': e.id }
+                }
+            })
+            console.log("edgeResult = ", edgeResult)
+            this.edges = edgeResult
         }
     },
     components: {

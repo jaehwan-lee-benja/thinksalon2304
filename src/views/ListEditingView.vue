@@ -1,12 +1,13 @@
 <template>
+    <button @click="upsertDataForVersion">test</button>
+
     <div :class="sectionGrid">
-        <div :class="versionDiv">
-            <button @click="upsertDataForVersion">test</button>
-            <VersionList v-bind:expenses="expenses"/>
-        </div>
         <div :class="listViewDiv">
-            <GraphExample v-bind:samples="samples"/>
+            
             <h2>리스트 뷰</h2>
+            <div :class="versionDiv">
+                <VersionList v-bind:expenses="expenses"/>
+            </div>
             <!-- <ListItem v-bind:expenses="expenses" :expenseId="this.getTotalExpense.id" 
             @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" 
             :toggleActiveHandler="this.toggleActiveHandler[this.getTotalExpense.id]" /> -->
@@ -80,6 +81,7 @@
         </div>
         <div :class="flowViewDiv">
             <h2>플로우 뷰</h2>
+            <GraphExample v-bind:samples="samples"/>
         </div>
     </div>
     <div :class="saveEditedDiv">
@@ -110,7 +112,8 @@ export default {
             samples: [
             {
                 id: 1,
-                name : 'p1'
+                name : 'p1',
+                parentId: null
             },
             {
                 id: 2,

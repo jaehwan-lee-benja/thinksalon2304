@@ -1,5 +1,4 @@
 <template>
-    <div>hello</div>
     <ol>
         <li v-for="version in this.expenseVersions" :key="version.index">
             <span>{{ version.version_title }}</span>
