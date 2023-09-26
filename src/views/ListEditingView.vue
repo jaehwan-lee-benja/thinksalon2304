@@ -5,6 +5,7 @@
             <VersionList v-bind:expenses="expenses"/>
         </div>
         <div :class="listViewDiv">
+            <GraphExample v-bind:samples="samples"/>
             <h2>리스트 뷰</h2>
             <!-- <ListItem v-bind:expenses="expenses" :expenseId="this.getTotalExpense.id" 
             @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" 
@@ -99,12 +100,55 @@ import { supabase } from '../lib/supabaseClient.js'
 import ListItem from './ListItem.vue'
 import NewListItem from './NewListItem.vue'
 import VersionList from './VersionList.vue'
+import GraphExample from './GraphExample.vue'
 //   import PieChart from './Pie.vue'
 
 export default {
 
     data() {
         return {
+            samples: [
+            {
+                id: 1,
+                name : 'p1'
+            },
+            {
+                id: 2,
+                name : 'p2',
+                parentId: 1
+            },
+            {
+                id: 4,
+                name : 'p4',
+                parentId: 1
+            },
+            {
+                id: 3,
+                name : 'p3',
+                parentId: 2
+            },
+            ],
+            sample: {
+                id: 1,
+                name : 'p1',
+                childs: [
+                    {
+                        id: 2,
+                        name : "p2",
+                        childs : [
+                            {
+                                id : 3,
+                                name: "p3",
+                            }
+                        ]
+                        
+                    },
+                    {
+                        id: 4,
+                        name : "p4"
+                    }
+                ]
+            },
 
             expenses: [],
             fetchedExpenses: [],
@@ -345,6 +389,7 @@ export default {
         ListItem,
         NewListItem,
         VersionList,
+        GraphExample,
         //   PieChart
     }
 }
