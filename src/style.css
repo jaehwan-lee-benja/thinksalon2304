@@ -44,7 +44,7 @@ button:hover{
 }
 .sectionGrid {
   display: grid;
-  grid-template-columns: 6fr 1fr;
+  grid-template-columns: 1fr 1fr;
   grid-gap: 10px;
   padding-bottom: 30px;
 }
@@ -68,7 +68,6 @@ button:hover{
   padding-top: 10px;
 }
 .flowViewDiv {
-  min-width: 600px;
   background-color:white;
   padding: 10px;
   overflow-x: scroll;
@@ -80,8 +79,7 @@ button:hover{
 }
 
 .listViewDiv {
-  width: 90%;
-  min-width: 800px;
+  /* min-width: 800px; */
   background-color:#f5efe9;
   padding: 10px;
   overflow-x: scroll;

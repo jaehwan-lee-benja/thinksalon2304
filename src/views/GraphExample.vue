@@ -1,4 +1,5 @@
 <template>
+    <button @click="formatExpenses">show</button>
     <VNetworkGraph class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" />
 </template>
 
@@ -17,7 +18,6 @@ export default {
     },
     mounted() {
         this.formatExpenses()
-        this.formatLayout()
     },
     data() {
         return {
@@ -65,7 +65,7 @@ export default {
 
             g.nodes().forEach((nodeId) => {
                 // update node position
-                const x = g.node(nodeId).x
+                    const x = g.node(nodeId).x
                 const y = g.node(nodeId).y
                 this.layouts.nodes[nodeId] = { x, y }
             })
@@ -87,7 +87,7 @@ export default {
                 
                 const nodesResult = {}
                 this.expenses.forEach((e) => {
-                    nodesResult[e.id] = { 'name': e.name }
+                    nodesResult[e.id] = { 'name': e.category }
                 })
                 console.log("nodesResult = ", nodesResult)
                 this.nodes = nodesResult
@@ -101,15 +101,16 @@ export default {
                 */
                 const edgeResult = {}
                 this.expenses.forEach((e) => {
-                    if(e.parentId != null) {
-                        edgeResult[e.id] = { 'source': e.parentId,  'target': e.id }
+                    if(e.parents_id != null) {
+                        edgeResult[e.id] = { 'source': e.parents_id,  'target': e.id }
                     }
                 })
                 console.log("edgeResult = ", edgeResult)
                 this.edges = edgeResult
             }
-            
+            this.formatLayout()  
         }
+
     },
     components: {
         VNetworkGraph
