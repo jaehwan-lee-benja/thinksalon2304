@@ -72,40 +72,21 @@ export default {
         },
         formatExpenses() {
 
-            console.log("this.expenses = ", this.expenses);
-            console.log(Object.keys(this.expenses).length);
             const expensesLength = Object.keys(this.expenses).length;
             if(expensesLength > 0) {
-                /*
-                {
-                    node1: { name: "p1" },
-                    node2: { name: "p2" },
-                    node3: { name: "p3" },
-                    node4: { name: "p4" },
-                }
-                */
-                
+
                 const nodesResult = {}
                 this.expenses.forEach((e) => {
                     nodesResult[e.id] = { 'name': e.category }
                 })
-                console.log("nodesResult = ", nodesResult)
                 this.nodes = nodesResult
                 
-                /*
-                {
-                    edge1: { source: "1", target: "2" },
-                    edge2: { source: "1", target: "4" },
-                    edge3: { source: "2", target: "3" },
-                }
-                */
                 const edgeResult = {}
                 this.expenses.forEach((e) => {
                     if(e.parents_id != null) {
                         edgeResult[e.id] = { 'source': e.parents_id,  'target': e.id }
                     }
                 })
-                console.log("edgeResult = ", edgeResult)
                 this.edges = edgeResult
             }
             this.formatLayout()  

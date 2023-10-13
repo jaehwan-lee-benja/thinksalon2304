@@ -8,9 +8,6 @@
             <div :class="versionDiv">
                 <VersionList v-bind:expenses="expenses"/>
             </div>
-            <!-- <ListItem v-bind:expenses="expenses" :expenseId="this.getTotalExpense.id" 
-            @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" 
-            :toggleActiveHandler="this.toggleActiveHandler[this.getTotalExpense.id]" /> -->
 
             <div :class="listViewLiDiv">
                 <input :class="categoryStyle" :value="this.getTotalExpense.category">
@@ -109,49 +106,6 @@ export default {
 
     data() {
         return {
-            samples: [
-            {
-                id: 1,
-                name : 'p1',
-                parentId: null
-            },
-            {
-                id: 2,
-                name : 'p2',
-                parentId: 1
-            },
-            {
-                id: 4,
-                name : 'p4',
-                parentId: 1
-            },
-            {
-                id: 3,
-                name : 'p3',
-                parentId: 2
-            },
-            ],
-            sample: {
-                id: 1,
-                name : 'p1',
-                childs: [
-                    {
-                        id: 2,
-                        name : "p2",
-                        childs : [
-                            {
-                                id : 3,
-                                name: "p3",
-                            }
-                        ]
-                        
-                    },
-                    {
-                        id: 4,
-                        name : "p4"
-                    }
-                ]
-            },
 
             expenses: [],
             fetchedExpenses: [],
@@ -344,11 +298,11 @@ export default {
             }
         },
         async upsertDataForVersion() {
-            const oHere = { id: this.getUuidv4() }
+            const o = { id: this.getUuidv4() }
             try {
                 const { error } = await supabase
                     .from('expense_version')
-                    .upsert(oHere)
+                    .upsert(o)
                 if (error) {
                     throw error;
                 }
