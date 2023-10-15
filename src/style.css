@@ -1,5 +1,9 @@
 body {
   background-color:#f5efe9;
+  margin: 0;
+}
+div {
+  box-sizing: border-box;
 }
 h2 {
   padding-left: 40px;
@@ -22,6 +26,19 @@ button:hover{
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer; /* 마우스 포인터를 올렸을 때 손가락으로 바뀜 */
   transition: box-shadow 0.1s linear;
+}
+.blackBg {
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  position: fixed;
+  padding: 20px;
+}
+.whiteBg {
+  width: 100%;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
 }
 .liControlBtn {
   border: 0px solid #575757;
@@ -47,29 +64,27 @@ button:hover{
   grid-template-columns: 1fr 1fr;
   grid-gap: 10px;
   padding-bottom: 30px;
+  margin: 10px;
 }
-.versionDiv {
-  height: 100px;
-  overflow-y: scroll;
+.fileDiv {
+  /* overflow-y: scroll; */
   -ms-overflow-style: none; /* 인터넷 익스플로러 */
   scrollbar-width: none; /* 파이어폭스 */
   padding: 10px;
-  margin: 10px;
+  margin: 20px;
   margin-bottom: 30px;
-  background-color:rgba(250, 250, 250, 0.8);
   border-radius: 10px;
+  border: 1px solid #a0a0a0;
 }
 .subMenuGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 10px;
 }
-.mainViewDiv {
-  padding-top: 10px;
-}
 .flowViewDiv {
   background-color:white;
   padding: 10px;
+  margin: 10px;
   overflow-x: scroll;
   border-radius: 10px;
 }
@@ -81,7 +96,6 @@ button:hover{
 .listViewDiv {
   /* min-width: 800px; */
   background-color:#f5efe9;
-  padding: 10px;
   overflow-x: scroll;
 
   -ms-overflow-style: none; /* 인터넷 익스플로러 */
@@ -244,16 +258,16 @@ input:read-only {
 }
 .olBgStyle {
   background-color:rgb(218, 192, 163, 0.35);/*까만색(0,0,0) 20% 불투명도*/
-  margin: 12px;
+  margin: 10px;
   padding: 10px 10px 30px 50px;
   border-radius: 10px;
   position: relative;
-  z-index: 1;
+  /* z-index: 1; */
   /* pointer-events: none; hover 시에만 이벤트를 허용하도록 설정 */
 }
 .olBgStyle:hover {
   border: 2px solid #FFFFFF;
-  z-index: 2;
+  /* z-index: 2; */
   /* pointer-events: auto; hover 시에만 이벤트를 허용하도록 설정 */
 }
 /* .olBgStyle_hover {
@@ -271,4 +285,7 @@ input:read-only {
 .newListDivStyle:hover {
   opacity: 1;
   filter: Alpha(opacity=100); /* IE8 이하 호환을 위해서 */
+}
+.fileListStyle {
+  margin: 20px;
 }

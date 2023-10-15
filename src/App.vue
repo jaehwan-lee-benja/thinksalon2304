@@ -28,7 +28,7 @@
         </div>
       </div>
     </div>
-    <div :class="mainViewDiv">
+    <div>
       <!-- <ReadingView v-if="mode" />
       <EditingView v-else /> -->
       <ListEditingView v-if="mode" />
@@ -50,7 +50,6 @@ export default {
       pageHanderDiv: 'pageHanderDiv',
       loginMenuDiv: 'loginMenuDiv',
       titleDiv: 'titleDiv',
-      mainViewDiv: 'mainViewDiv',
       subMenuGrid: 'subMenuGrid',
       mainBodyDiv: 'mainBodyDiv',
     }

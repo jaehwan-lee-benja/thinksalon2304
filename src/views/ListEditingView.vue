@@ -1,13 +1,19 @@
 <template>
-    <button @click="upsertDataForVersion">test</button>
+    <div :class="fileDiv">
+        <button @click="openFileDiv()">파일 편집하기</button>
+        <!-- <div :class="blackBg" v-if="isFileDivOpened">
+            <div :class="whiteBg"> -->
+        <div v-if="isFileDivOpened">
+            <div>   
+                <FileList v-bind:expenses="expenses"/>
+            </div>
+        </div>
+    </div>
 
     <div :class="sectionGrid">
         <div :class="listViewDiv">
             
             <h2>리스트 뷰</h2>
-            <div :class="versionDiv">
-                <FileList v-bind:expenses="expenses"/>
-            </div>
 
             <div :class="listViewLiDiv">
                 <input :class="categoryStyle" :value="this.getTotalExpense.category">
@@ -130,10 +136,13 @@ export default {
             listViewLiStyle: 'listViewLiStyle',
             listViewOlStyle: 'listViewOlStyle',
             olBgStyle:'olBgStyle',
-            versionDiv: 'versionDiv',
+            fileDiv: 'fileDiv',
+            blackBg: "blackBg",
+            whiteBg: "whiteBg",
 
+            isFileDivOpened: false,
             isEditValue: true,
-            toggleActiveHandler: {}
+            toggleActiveHandler: {},
 
         }
     },
@@ -175,6 +184,9 @@ export default {
 
     },
     methods: {
+        openFileDiv() {
+            this.isFileDivOpened = !this.isFileDivOpened;
+        },
         controlToggleActiveHandler(expenseHere){    
             if( expenseHere.level == 5 ) {
                 this.toggleActiveHandler[expenseHere.id] = false;
@@ -290,19 +302,6 @@ export default {
                     .from('expense')
                     .upsert(expenseHere)
                     .eq('id', expenseHere.id)
-                if (error) {
-                    throw error;
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        },
-        async upsertDataForVersion() {
-            const o = { id: this.getUuidv4() }
-            try {
-                const { error } = await supabase
-                    .from('expense_version')
-                    .upsert(o)
                 if (error) {
                     throw error;
                 }

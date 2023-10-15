@@ -1,23 +1,23 @@
 <template>
-    <h2>파일 편집하기</h2>
-
-    <div>
-        <h4>새 파일 만들기</h4>
-        <span>새 파일명: </span>
-        <input v-model="this.newVersionTitle" placeholder="새 타이틀 적기">
-        <button @click="createNewVersion">만들기</button>
-    </div>
-    
-    <div>
-        <h4>기존 파일 수정하기</h4>
-        <ol>
-            <li v-for="version in this.expenseVersions" :key="version.index">
-                <input type="checkbox" v-model="checkedValues" @change="updateCheckedVersion" :id="version.id" :true-value="yes" :false-value="no">
-                <input v-model="version.version_title">
-                <button @click="upsertVersion(version)">수정하기</button>
-                <button @click="deleteVersion(version.id)">삭제하기</button>
-            </li>
-        </ol>
+    <div :class="fileListStyle">
+        <div>
+            <h4>새 파일 만들기</h4>
+            <span>새 파일명: </span>
+            <input v-model="this.newVersionTitle" placeholder="새 타이틀 적기">
+            <button @click="createNewVersion">만들기</button>
+        </div>
+        
+        <div>
+            <h4>기존 파일 수정하기</h4>
+            <ol>
+                <li v-for="version in this.expenseVersions" :key="version.index">
+                    <input type="checkbox" v-model="checkedValues" @change="updateCheckedVersion" :id="version.id" :true-value="yes" :false-value="no">
+                    <input v-model="version.version_title">
+                    <button @click="upsertVersion(version)">수정하기</button>
+                    <button @click="deleteVersion(version.id)">삭제하기</button>
+                </li>
+            </ol>
+        </div>
     </div>
 </template>
 
@@ -42,6 +42,8 @@ export default {
             checkedValues: [],
 
             newVersionTitle: "",
+
+            fileListStyle: "fileListStyle",
         }
     },
     methods: {
