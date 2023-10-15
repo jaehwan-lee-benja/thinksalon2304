@@ -6,7 +6,7 @@
             
             <h2>리스트 뷰</h2>
             <div :class="versionDiv">
-                <VersionList v-bind:expenses="expenses"/>
+                <FileList v-bind:expenses="expenses"/>
             </div>
 
             <div :class="listViewLiDiv">
@@ -98,7 +98,7 @@
 import { supabase } from '../lib/supabaseClient.js'
 import ListItem from './ListItem.vue'
 import NewListItem from './NewListItem.vue'
-import VersionList from './VersionList.vue'
+import FileList from './FileList.vue'
 import GraphExample from './GraphExample.vue'
 //   import PieChart from './Pie.vue'
 
@@ -345,7 +345,7 @@ export default {
     components: {
         ListItem,
         NewListItem,
-        VersionList,
+        FileList,
         GraphExample,
         //   PieChart
     }

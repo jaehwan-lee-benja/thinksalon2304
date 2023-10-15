@@ -25,7 +25,7 @@
 import { supabase } from '../lib/supabaseClient.js'
 
 export default {
-    name: 'VersionList',
+    name: 'FileList',
     props: {
         expenses: {
             type: Object,
@@ -47,7 +47,7 @@ export default {
     methods: {
         async fetchDataForVersion() {
             const a = await supabase
-                .from('expense_version')
+                .from('expense_file')
                 .select()
             const { data } = a;
             this.expenseVersions = data;
@@ -74,7 +74,7 @@ export default {
 
             try {
                 const { error } = await supabase
-                    .from('expense_version')
+                    .from('expense_file')
                     .upsert(oHere)
                 if (error) {
                     throw error;
@@ -86,7 +86,7 @@ export default {
         async deleteVersion(versionIdHere) {
             try {
                 const { error } = await supabase
-                    .from('expense_version')
+                    .from('expense_file')
                     .delete()
                     .eq('id', versionIdHere)
                 if (error) {
