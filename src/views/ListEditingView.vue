@@ -1,5 +1,12 @@
 <template>
     <div :class="fileDiv">
+
+        <select v-model="fileName" @change="changeFile()">
+            <option v-for="file in this.expenseFiles" :key="file.id" :value="file.file_name">
+                {{ file.file_name }}
+            </option>
+        </select>
+
         <button @click="openFileDiv()">파일 편집하기</button>
         <!-- <div :class="blackBg" v-if="isFileDivOpened">
             <div :class="whiteBg"> -->
@@ -115,6 +122,8 @@ export default {
 
             expenses: [],
             fetchedExpenses: [],
+            expenseFiles: [],
+            selectedFileId: '',
 
             unitDiv: 'unitDiv',
             subGrid: 'subGrid',
@@ -184,6 +193,12 @@ export default {
 
     },
     methods: {
+        changeFile() {
+            const selectedFile = this.expenseFiles.filter(e => e.file_name === this.fileName)
+            this.selectedFileId = selectedFile[0].id
+            // const dataByFile = this.data.filter(e => e.file_id === this.selectedFileId)
+            // 이것을 어딘가에 써야한다.
+        },
         openFileDiv() {
             this.isFileDivOpened = !this.isFileDivOpened;
         },
@@ -267,6 +282,8 @@ export default {
             this.expenses.push(o);
         },
         async fetchData() {
+
+            this.fetchDataForFile()
             const a = await supabase
                 .from('expense')
                 .select()
@@ -277,6 +294,13 @@ export default {
             this.expenses.forEach(e => {
                 if(e.level == 5) { this.toggleActiveHandler[e.id] = false; }
             })
+        },
+        async fetchDataForFile() {
+            const a = await supabase
+                .from('expense_file')
+                .select()
+            const { data } = a;
+            this.expenseFiles = data;
         },
         editExpenses() {
 

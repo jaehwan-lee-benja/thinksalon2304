@@ -3,18 +3,17 @@
         <div>
             <h4>새 파일 만들기</h4>
             <span>새 파일명: </span>
-            <input v-model="this.newVersionTitle" placeholder="새 타이틀 적기">
-            <button @click="createNewVersion">만들기</button>
+            <input v-model="this.newFileName" placeholder="새 파일명 적기">
+            <button @click="createNewFile">만들기</button>
         </div>
         
         <div>
             <h4>기존 파일 수정하기</h4>
             <ol>
-                <li v-for="version in this.expenseVersions" :key="version.index">
-                    <input type="checkbox" v-model="checkedValues" @change="updateCheckedVersion" :id="version.id" :true-value="yes" :false-value="no">
-                    <input v-model="version.version_title">
-                    <button @click="upsertVersion(version)">수정하기</button>
-                    <button @click="deleteVersion(version.id)">삭제하기</button>
+                <li v-for="file in this.expenseFiles" :key="file.index">
+                    <input v-model="file.file_name">
+                    <button @click="upsertFile(file)">수정하기</button>
+                    <button @click="deleteFile(file.id)">삭제하기</button>
                 </li>
             </ol>
         </div>
@@ -33,46 +32,33 @@ export default {
         },
     },
     mounted() {
-        this.fetchDataForVersion()
+        this.fetchDataForFile()
     },
     data() {
         return {
-            expenseVersions: [],
-            checkedVersion: "",
-            checkedValues: [],
+            expenseFiles: [],
 
-            newVersionTitle: "",
+            newFileName: "",
 
             fileListStyle: "fileListStyle",
         }
     },
     methods: {
-        async fetchDataForVersion() {
+        async fetchDataForFile() {
             const a = await supabase
                 .from('expense_file')
                 .select()
             const { data } = a;
-            this.expenseVersions = data;
+            this.expenseFiles = data;
         },
-        updateCheckedVersion(event) {
-            console.log("event.target =", event.target)
-            console.log("event.target.id =", event.target.id)
-            console.log("event.target.value =", event.target.value)
-            for(let i=0; i<this.checkedValues.length;i++){
-                if(this.checkedValues[i] !== event.target.value){
-                    console.log(this.checkedValues[i])
-                    this.checkedValues.splice(i,1);
-            }
-          }
-        },
-        createNewVersion() {
+        createNewFile() {
             const o = { 
                 id: this.getUuidv4(),
-                version_title: this.newVersionTitle,
+                file_name: this.newFileName,
             }
-            this.upsertVersion(o);
+            this.upsertFile(o);
         },
-        async upsertVersion(oHere) {
+        async upsertFile(oHere) {
 
             try {
                 const { error } = await supabase
@@ -85,12 +71,12 @@ export default {
                 console.error(error);
             }
         },
-        async deleteVersion(versionIdHere) {
+        async deleteFile(fileIdHere) {
             try {
                 const { error } = await supabase
                     .from('expense_file')
                     .delete()
-                    .eq('id', versionIdHere)
+                    .eq('id', fileIdHere)
                 if (error) {
                     throw error;
                 }
