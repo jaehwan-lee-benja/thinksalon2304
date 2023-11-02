@@ -1,18 +1,18 @@
 <template>
-    <div :class="fileDiv">
+    <div :class="pageDiv">
 
-        <select v-model="fileName" @change="changeFile()">
-            <option v-for="file in this.expenseFiles" :key="file.id" :value="file.file_name">
-                {{ file.file_name }}
+        <select v-model="pageName" @change="selectPage()">
+            <option v-for="page in this.expensePages" :key="page.id" :value="page.page_name">
+                {{ page.page_name }}
             </option>
         </select>
 
-        <button @click="openFileDiv()">파일 편집하기</button>
-        <!-- <div :class="blackBg" v-if="isFileDivOpened">
+        <button @click="openPageDiv()">페이지 설정하기</button>
+        <!-- <div :class="blackBg" v-if="isPageDivOpened">
             <div :class="whiteBg"> -->
-        <div v-if="isFileDivOpened">
+        <div v-if="isPageDivOpened">
             <div>   
-                <FileList v-bind:expenses="expenses"/>
+                <PageList v-bind:expenses="expenses"/>
             </div>
         </div>
     </div>
@@ -111,7 +111,7 @@
 import { supabase } from '../lib/supabaseClient.js'
 import ListItem from './ListItem.vue'
 import NewListItem from './NewListItem.vue'
-import FileList from './FileList.vue'
+import PageList from './PageList.vue'
 import GraphExample from './GraphExample.vue'
 //   import PieChart from './Pie.vue'
 
@@ -122,8 +122,8 @@ export default {
 
             expenses: [],
             fetchedExpenses: [],
-            expenseFiles: [],
-            selectedFileId: '',
+            expensePages: [],
+            selectedPageId: '',
 
             unitDiv: 'unitDiv',
             subGrid: 'subGrid',
@@ -145,11 +145,11 @@ export default {
             listViewLiStyle: 'listViewLiStyle',
             listViewOlStyle: 'listViewOlStyle',
             olBgStyle:'olBgStyle',
-            fileDiv: 'fileDiv',
+            pageDiv: 'pageDiv',
             blackBg: "blackBg",
             whiteBg: "whiteBg",
 
-            isFileDivOpened: false,
+            isPageDivOpened: false,
             isEditValue: true,
             toggleActiveHandler: {},
 
@@ -193,14 +193,16 @@ export default {
 
     },
     methods: {
-        changeFile() {
-            const selectedFile = this.expenseFiles.filter(e => e.file_name === this.fileName)
-            this.selectedFileId = selectedFile[0].id
-            // const dataByFile = this.data.filter(e => e.file_id === this.selectedFileId)
+        selectPage() {
+            const selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)
+            this.selectedPageId = selectedPage[0].id
+            console.log("this.selectedPageId = ", this.selectedPageId);
+            const expensesByPage = this.expenses.filter(e => e.page_id === this.selectedPageId)
+            console.log("expensesByPage = ", expensesByPage);
             // 이것을 어딘가에 써야한다.
         },
-        openFileDiv() {
-            this.isFileDivOpened = !this.isFileDivOpened;
+        openPageDiv() {
+            this.isPageDivOpened = !this.isPageDivOpened;
         },
         controlToggleActiveHandler(expenseHere){    
             if( expenseHere.level == 5 ) {
@@ -297,10 +299,10 @@ export default {
         },
         async fetchDataForFile() {
             const a = await supabase
-                .from('expense_file')
+                .from('expense_page')
                 .select()
             const { data } = a;
-            this.expenseFiles = data;
+            this.expensePages = data;
         },
         editExpenses() {
 
@@ -368,7 +370,7 @@ export default {
     components: {
         ListItem,
         NewListItem,
-        FileList,
+        PageList,
         GraphExample,
         //   PieChart
     }

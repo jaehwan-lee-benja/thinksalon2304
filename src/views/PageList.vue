@@ -1,19 +1,19 @@
 <template>
-    <div :class="fileListStyle">
+    <div :class="pageListStyle">
         <div>
-            <h4>새 파일 만들기</h4>
-            <span>새 파일명: </span>
-            <input v-model="this.newFileName" placeholder="새 파일명 적기">
-            <button @click="createNewFile">만들기</button>
+            <h4>새 페이지 만들기</h4>
+            <span>새 페이지명: </span>
+            <input v-model="this.newPageName" placeholder="새 페이지명 적기">
+            <button @click="createNewPage">만들기</button>
         </div>
         
         <div>
-            <h4>기존 파일 수정하기</h4>
+            <h4>기존 페이지 수정하기</h4>
             <ol>
-                <li v-for="file in this.expenseFiles" :key="file.index">
-                    <input v-model="file.file_name">
-                    <button @click="upsertFile(file)">수정하기</button>
-                    <button @click="deleteFile(file.id)">삭제하기</button>
+                <li v-for="page in this.expensePages" :key="page.index">
+                    <input v-model="page.page_name">
+                    <button @click="upsertPage(page)">수정하기</button>
+                    <button @click="deletePage(page.id)">삭제하기</button>
                 </li>
             </ol>
         </div>
@@ -24,7 +24,7 @@
 import { supabase } from '../lib/supabaseClient.js'
 
 export default {
-    name: 'FileList',
+    name: 'PageList',
     props: {
         expenses: {
             type: Object,
@@ -32,37 +32,37 @@ export default {
         },
     },
     mounted() {
-        this.fetchDataForFile()
+        this.fetchDataForPage()
     },
     data() {
         return {
-            expenseFiles: [],
+            expensePages: [],
 
-            newFileName: "",
+            newPageName: "",
 
-            fileListStyle: "fileListStyle",
+            pageListStyle: "pageListStyle",
         }
     },
     methods: {
-        async fetchDataForFile() {
+        async fetchDataForPage() {
             const a = await supabase
-                .from('expense_file')
+                .from('expense_page')
                 .select()
             const { data } = a;
-            this.expenseFiles = data;
+            this.expensePages = data;
         },
-        createNewFile() {
+        createNewPage() {
             const o = { 
                 id: this.getUuidv4(),
-                file_name: this.newFileName,
+                page_name: this.newPageName,
             }
-            this.upsertFile(o);
+            this.upsertPage(o);
         },
-        async upsertFile(oHere) {
+        async upsertPage(oHere) {
 
             try {
                 const { error } = await supabase
-                    .from('expense_file')
+                    .from('expense_page')
                     .upsert(oHere)
                 if (error) {
                     throw error;
@@ -71,12 +71,12 @@ export default {
                 console.error(error);
             }
         },
-        async deleteFile(fileIdHere) {
+        async deletePage(pageIdHere) {
             try {
                 const { error } = await supabase
-                    .from('expense_file')
+                    .from('expense_page')
                     .delete()
-                    .eq('id', fileIdHere)
+                    .eq('id', pageIdHere)
                 if (error) {
                     throw error;
                 }

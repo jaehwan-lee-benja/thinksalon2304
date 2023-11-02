@@ -70,7 +70,7 @@ button:hover{
   padding-bottom: 30px;
   margin: 10px;
 }
-.fileDiv {
+.pageDiv {
   /* overflow-y: scroll; */
   -ms-overflow-style: none; /* 인터넷 익스플로러 */
   scrollbar-width: none; /* 파이어폭스 */
@@ -290,6 +290,6 @@ input:read-only {
   opacity: 1;
   filter: Alpha(opacity=100); /* IE8 이하 호환을 위해서 */
 }
-.fileListStyle {
+.pageListStyle {
   margin: 20px;
 }
