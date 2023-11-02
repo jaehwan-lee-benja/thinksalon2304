@@ -2,7 +2,7 @@
     <div :class="pageDiv">
 
         <select v-model="pageName" @change="selectPage()">
-            <option v-for="page in this.expensePages" :key="page.id" :value="page.page_name">
+            <option v-for="(page, index) in this.expensePages" :key="index" :value="page.page_name">
                 {{ page.page_name }}
             </option>
         </select>
@@ -12,7 +12,7 @@
             <div :class="whiteBg"> -->
         <div v-if="isPageDivOpened">
             <div>   
-                <PageList v-bind:expenses="expenses"/>
+                <PageList v-bind:expenses="expenses" @remove-e-by-pageId="removeExpenseByPageDelete"/>
             </div>
         </div>
     </div>
@@ -91,7 +91,7 @@
         </div>
         <div :class="flowViewDiv">
             <h2>플로우 뷰</h2>
-            <GraphExample v-bind:expenses="expenses"/>
+            <FlowView v-bind:expenses="expenses"/>
         </div>
     </div>
     <div :class="saveEditedDiv">
@@ -112,7 +112,7 @@ import { supabase } from '../lib/supabaseClient.js'
 import ListItem from './ListItem.vue'
 import NewListItem from './NewListItem.vue'
 import PageList from './PageList.vue'
-import GraphExample from './GraphExample.vue'
+import FlowView from './FlowView.vue'
 //   import PieChart from './Pie.vue'
 
 export default {
@@ -248,6 +248,12 @@ export default {
             }
 
         },
+        removeExpenseByPageDelete(pageIdHere) {
+            console.log("pageIdHere = ", pageIdHere);
+            const deleteExpensesArray = this.totalExpenses.filter((e) => e.page_id == pageIdHere)
+            console.log("deleteExpensesArray = ", deleteExpensesArray);
+            deleteExpensesArray.forEach(e => this.deleteData(e.id))
+        },
         sortChildrenByIdAndLevel(parentIdHere, parentsLevelHere) {
             return this.expenses.filter(e => e.parents_id === parentIdHere && e.level === parentsLevelHere + 1);
         },
@@ -380,7 +386,7 @@ export default {
         ListItem,
         NewListItem,
         PageList,
-        GraphExample,
+        FlowView,
         //   PieChart
     }
 }

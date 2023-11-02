@@ -9,7 +9,7 @@ import "v-network-graph/lib/style.css"
 import dagre from "dagre/dist/dagre.min.js"
 
 export default {
-    name: 'GraphExample',
+    name: 'FlowView',
     props: {
         expenses: {
             type: Object,

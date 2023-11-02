@@ -57,6 +57,31 @@ export default {
                 page_name: this.newPageName,
             }
             this.upsertPage(o);
+            this.insertInitailData(o.id);
+        },
+        insertInitailData(idHere) {
+            const initialExpenseData = {
+            id: this.getUuidv4(),
+            parents_id: null,
+            category: '총계',
+            amount: 0,
+            order: null,
+            level: 1,
+            page_id: idHere
+            }
+            this.insertData(initialExpenseData)
+        },
+        async insertData(dataHere) {
+            try {
+                const { error } = await supabase
+                .from('expense')
+                .insert(dataHere)
+                if (error) {
+                throw error;
+                }
+            } catch (error) {
+                console.error(error);
+            }
         },
         async upsertPage(oHere) {
 
@@ -72,6 +97,7 @@ export default {
             }
         },
         async deletePage(pageIdHere) {
+            this.removeExpenseByPageDelete(pageIdHere);
             try {
                 const { error } = await supabase
                     .from('expense_page')
@@ -83,6 +109,10 @@ export default {
             } catch (error) {
                 console.error(error);
             }
+        },
+        async removeExpenseByPageDelete(pageIdHere) {
+            console.log("Check!(1)")
+            this.$emit('remove-e-by-pageId', pageIdHere);
         },
         getUuidv4() {
             return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
