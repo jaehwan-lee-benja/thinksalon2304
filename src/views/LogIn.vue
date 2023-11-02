@@ -10,12 +10,10 @@ export default {
 
   data() {
     return {
-
       isNewUser: '',
       session: '',
       loginMode: true,
       email: ''
-
     }
   },
   mounted() {

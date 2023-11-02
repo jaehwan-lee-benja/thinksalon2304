@@ -12,7 +12,7 @@
             <ol>
                 <li v-for="page in this.expensePages" :key="page.index">
                     <input v-model="page.page_name">
-                    <button @click="upsertPage(page)">수정하기</button>
+                    <button @click="editPage(page)">수정하기</button>
                     <button @click="deletePage(page.id)">삭제하기</button>
                 </li>
             </ol>
@@ -57,9 +57,10 @@ export default {
                 page_name: this.newPageName,
             }
             this.upsertPage(o);
-            this.insertInitailData(o.id);
+            this.upsertInitailData(o.id);
+            this.fetchDataForPage()
         },
-        insertInitailData(idHere) {
+        upsertInitailData(idHere) {
             const initialExpenseData = {
             id: this.getUuidv4(),
             parents_id: null,
@@ -69,18 +70,25 @@ export default {
             level: 1,
             page_id: idHere
             }
-            this.insertData(initialExpenseData)
+            this.upsertData(initialExpenseData)
         },
-        async insertData(dataHere) {
+        async upsertData(dataHere) {
             try {
                 const { error } = await supabase
                 .from('expense')
-                .insert(dataHere)
+                .upsert(dataHere)
                 if (error) {
                 throw error;
                 }
             } catch (error) {
                 console.error(error);
+            }
+        },
+        editPage(pageHere) {
+            const confirmValue = confirm("저장하시겠습니까?")
+            if (confirmValue) {
+                this.upsertPage(pageHere);
+                alert('수정되었습니다.')
             }
         },
         async upsertPage(oHere) {
@@ -95,23 +103,31 @@ export default {
             } catch (error) {
                 console.error(error);
             }
+
+                
         },
         async deletePage(pageIdHere) {
-            this.removeExpenseByPageDelete(pageIdHere);
-            try {
-                const { error } = await supabase
-                    .from('expense_page')
-                    .delete()
-                    .eq('id', pageIdHere)
-                if (error) {
-                    throw error;
+            const confirmValue = confirm("정말로 삭제하시겠습니까? 삭제된 데이터는 복구가 불가능합니다.")
+            if (confirmValue) {
+
+                this.removeExpenseByPageDelete(pageIdHere);
+                try {
+                    const { error } = await supabase
+                        .from('expense_page')
+                        .delete()
+                        .eq('id', pageIdHere)
+
+                        alert('삭제되었습니다.')
+
+                    if (error) {
+                        throw error;
+                    }
+                } catch (error) {
+                    console.error(error);
                 }
-            } catch (error) {
-                console.error(error);
             }
         },
         async removeExpenseByPageDelete(pageIdHere) {
-            console.log("Check!(1)")
             this.$emit('remove-e-by-pageId', pageIdHere);
         },
         getUuidv4() {

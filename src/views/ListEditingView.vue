@@ -193,12 +193,12 @@ export default {
     methods: {
         selectPage() {
             let selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)
-            console.log("selectedPage.length = ", selectedPage.length);
+            console.log("this.expensePages = ", this.expensePages);
             if(selectedPage.length == 0) {
                 selectedPage = [this.expensePages[0]]
             }
+            console.log("selectedPage[0] = ", selectedPage[0]);
             this.selectedPageId = selectedPage[0].id
-            console.log("this.selectedPageId = ", this.selectedPageId);
             this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
             // 여기부터
             this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
@@ -249,9 +249,7 @@ export default {
 
         },
         removeExpenseByPageDelete(pageIdHere) {
-            console.log("pageIdHere = ", pageIdHere);
             const deleteExpensesArray = this.totalExpenses.filter((e) => e.page_id == pageIdHere)
-            console.log("deleteExpensesArray = ", deleteExpensesArray);
             deleteExpensesArray.forEach(e => this.deleteData(e.id))
         },
         sortChildrenByIdAndLevel(parentIdHere, parentsLevelHere) {
@@ -295,6 +293,7 @@ export default {
             }
 
             this.expenses.push(o);
+            
         },
         async fetchData() {
 
@@ -317,7 +316,6 @@ export default {
                 .select()
             const { data } = a;
             this.expensePages = data;
-            console.log("this.expensePages = ", this.expensePages);
         },
         editExpenses() {
 
