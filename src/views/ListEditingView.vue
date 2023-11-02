@@ -120,6 +120,7 @@ export default {
     data() {
         return {
 
+            totalExpenses: [],
             expenses: [],
             fetchedExpenses: [],
             expensePages: [],
@@ -194,12 +195,20 @@ export default {
     },
     methods: {
         selectPage() {
-            const selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)
+            let selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)
+            console.log("selectedPage.length = ", selectedPage.length);
+            if(selectedPage.length == 0) {
+                selectedPage = [this.expensePages[0]]
+            }
             this.selectedPageId = selectedPage[0].id
             console.log("this.selectedPageId = ", this.selectedPageId);
-            const expensesByPage = this.expenses.filter(e => e.page_id === this.selectedPageId)
-            console.log("expensesByPage = ", expensesByPage);
-            // 이것을 어딘가에 써야한다.
+            this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
+            // 여기부터
+            this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
+            this.expenses.forEach(e => {
+                if(e.level == 5) { this.toggleActiveHandler[e.id] = false; }
+            })
+            // 여기까지 함수로 묶기 필요(반복됨)
         },
         openPageDiv() {
             this.isPageDivOpened = !this.isPageDivOpened;
@@ -272,7 +281,8 @@ export default {
                 amount: newAmountHere,
                 order: this.setOrder(parentsIdHere),
                 level: levelForO,
-                show_sub_list: false
+                show_sub_list: false,
+                page_id: this.selectedPageId
             };
 
             if(levelForO < 5) {
@@ -285,24 +295,26 @@ export default {
         },
         async fetchData() {
 
-            this.fetchDataForFile()
+            this.fetchDataForPage()
             const a = await supabase
                 .from('expense')
                 .select()
                 .order('order', { ascending: true })
             const { data } = a;
-            this.expenses = data;
+            this.totalExpenses = data;
+            this.selectPage();
             this.fetchedExpenses = JSON.parse(JSON.stringify(data));
             this.expenses.forEach(e => {
                 if(e.level == 5) { this.toggleActiveHandler[e.id] = false; }
             })
         },
-        async fetchDataForFile() {
+        async fetchDataForPage() {
             const a = await supabase
                 .from('expense_page')
                 .select()
             const { data } = a;
             this.expensePages = data;
+            console.log("this.expensePages = ", this.expensePages);
         },
         editExpenses() {
 

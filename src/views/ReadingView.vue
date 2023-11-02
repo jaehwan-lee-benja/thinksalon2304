@@ -256,14 +256,16 @@ export default {
 
     },
     insertInitailData() {
+      // 이 부분을 앞으로 빼와야한다.
       const initialDataArray = [
         {
           id: this.getUuidv4(),
           parents_id: null,
-          category: '총계',
+          category: '',
           amount: 0,
           order: null,
           level: 1,
+          page_id: ""
         },
       ]
       initialDataArray.forEach(eachData => this.insertData(eachData));
