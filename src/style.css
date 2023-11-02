@@ -53,15 +53,7 @@ button:hover{
 }
 .mainBodyDiv{
   margin: 70px auto;
-  width: 90%;
   min-width: 1500px;
-}
-.menuDiv {
-  word-break: break-all;
-  backdrop-filter: blur(5px);
-  margin-bottom: 20px;
-  position: sticky;
-  top: 0;
 }
 .sectionGrid {
   display: grid;
@@ -132,15 +124,7 @@ input {
   margin: 4px 0px;
   border: 0px solid white;
 }
-input:read-only.categoryStyle_readingMode {
-  width: 100px;
-}
 .amountStyle {
-  text-align : right;
-  width: 70px;
-  margin-right: 10px;
-}
-input:read-only.amountStyle_readingMode  {
   text-align : right;
   width: 70px;
   margin-right: 10px;
@@ -149,12 +133,6 @@ input:read-only {
   background-color: transparent;
   border: 0px solid white;
   color: #575757;
-}
-.newUlStyle {
-  list-style:none;
-  border: 1px solid #575757;
-  width: 80%;
-  padding: 20px;
 }
 .saveEditedStyle_active {
   width: 49%;
@@ -216,10 +194,6 @@ input:read-only {
   width: 50%;
   margin: auto;
 }
-.pageHanderDiv {
-  font-size: 13px;
-  margin: 10px;
-}
 .loginMenuDiv {
   text-align: right;
   font-size: 13px;
@@ -228,15 +202,6 @@ input:read-only {
 .titleDiv{
   text-align : left;
   margin-left: 10px;
-}
-.graphGrid{
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-gap: 10px;
-}
-.graphDiv{
-  height: 80%;
-  margin: 20px;
 }
 .listViewLiDiv {
   padding: 5px;

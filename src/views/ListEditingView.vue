@@ -128,8 +128,6 @@ export default {
 
             unitDiv: 'unitDiv',
             subGrid: 'subGrid',
-            graphGrid: 'graphGrid',
-            graphDiv: 'graphDiv',
             sectionGrid: 'sectionGrid',
             flowViewDiv: 'flowViewDiv',
             listViewDiv: 'listViewDiv',
@@ -137,7 +135,6 @@ export default {
 
             categoryStyle: 'categoryStyle',
             amountStyle: 'amountStyle',
-            newUlStyle: 'newUlStyle',
             saveEditedStyle_active: 'saveEditedStyle_active',
             saveEditedStyle_inactive: 'saveEditedStyle_inactive',
             cancelEditedStyle_active: 'cancelEditedStyle_active',
