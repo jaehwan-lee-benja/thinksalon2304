@@ -44,6 +44,9 @@ button:hover{
   border-radius: 8px;
   padding: 20px;
 }
+.menuDiv {
+  background: #4a5c6a;
+}
 .liControlBtn {
   border: 0px solid #575757;
   color: #575757;
@@ -51,8 +54,8 @@ button:hover{
   padding: 5px;
   margin: 0 10px;
 }
-.mainBodyDiv{
-  margin: 70px auto;
+.bodyDiv{
+  margin: 50px auto;
   min-width: 1500px;
 }
 .sectionGrid {
@@ -72,9 +75,9 @@ button:hover{
   border-radius: 10px;
   border: 1px solid #a0a0a0;
 }
-.subMenuGrid {
+.menuMainGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 200px 1fr;
   grid-gap: 10px;
 }
 .flowViewDiv {
@@ -198,10 +201,6 @@ input:read-only {
   text-align: right;
   font-size: 13px;
   margin: 10px;
-}
-.titleDiv{
-  text-align : left;
-  margin-left: 10px;
 }
 .listViewLiDiv {
   padding: 5px;
