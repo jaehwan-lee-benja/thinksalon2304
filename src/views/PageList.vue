@@ -1,5 +1,6 @@
 <template>
     <div :class="pageListStyle">
+        <h1>페이지 설정하기</h1>
         <div>
             <h4>새 페이지 만들기</h4>
             <span>새 페이지명: </span>

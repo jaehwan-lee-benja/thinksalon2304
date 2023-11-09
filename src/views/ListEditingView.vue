@@ -7,12 +7,13 @@
                 </option>
             </select>
 
-            <button @click="handlerPageDiv()">페이지 설정하기</button>
-            <!-- <div :class="blackBg" v-if="isPageDivOpened">
-            <div :class="whiteBg"> -->
-            <div v-if="isPageDivOpened">
-                <PageList v-bind:expenses="expenses" @remove-e-by-pageId="removeExpenseByPageDelete" />
+            <button @click="openPageDiv()">페이지 설정하기</button>
+            <div v-if="isPageDivOpened" :class="modal">
+                <div :class="modalContent">
+                    <PageList v-bind:expenses="expenses" @remove-e-by-pageId="removeExpenseByPageDelete" />
+                </div>
             </div>
+            <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
         </div>
         <div :class="saveEditedDiv">
             <button :class="{
@@ -37,8 +38,11 @@
                 <span> : </span>
                 <input :class="amountStyle" :value="this.getTotalExpense.amount">
             </div>
-            <span> *하위 합계 : </span>
-            <input :class="amountStyle" :value="sumExpensesForTotal(this.getTotalExpense.id)" readonly>
+            <button :class="liMoreBtn" @click="handlerLiMoreDiv()"> … </button>
+            <div :class="liMoreDiv" v-if="isLiMoreDivOpened">
+                <span> *하위 합계 : </span>
+                <input :class="amountStyle" :value="sumExpensesForTotal(this.getTotalExpense.id)" readonly>
+            </div>
 
             <ol :class="olBgStyle">
 
@@ -146,9 +150,15 @@ export default {
             controlGrid: 'controlGrid',
             blackBg: "blackBg",
             whiteBg: "whiteBg",
+            liMoreDiv: 'liMoreDiv',
+            liMoreBtn: 'liMoreBtn',
+            modal: 'modal',
+            modalOverlay: 'modalOverlay',
+            modalContent: 'modalContent',
 
             isPageDivOpened: false,
             isEditValue: true,
+            isLiMoreDivOpened: false,
             toggleActiveHandler: {},
 
         }
@@ -191,6 +201,9 @@ export default {
 
     },
     methods: {
+        handlerLiMoreDiv() {
+            this.isLiMoreDivOpened = !this.isLiMoreDivOpened;
+        },
         selectPage() {
             let selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)
             console.log("this.expensePages = ", this.expensePages);
@@ -207,8 +220,11 @@ export default {
             })
             // 여기까지 함수로 묶기 필요(반복됨)
         },
-        handlerPageDiv() {
-            this.isPageDivOpened = !this.isPageDivOpened;
+        openPageDiv() {
+            this.isPageDivOpened = true;
+        },
+        closePageDiv() {
+            this.isPageDivOpened = false;
         },
         controlToggleActiveHandler(expenseHere) {
             if (expenseHere.level == 5) {

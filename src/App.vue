@@ -1,15 +1,17 @@
 <template>
   <div :class="menuMainGrid">
-    <div :class="menuDiv">
-      <div :class="loginMenuDiv">
-          <div v-if="loginMode" >
-            <button @click="loginGoogle">구글 로그인</button>
-            <p> *버튼을 눌러 로그인할 수 있습니다.</p>
-          </div>
-          <div v-else>
-            <p> 로그인 계정: {{ email }}</p>
-            <button :class="logoutBtn" @click="signout">로그아웃</button>
-          </div>
+    <div :class="menuGrid">
+      <div :class="pageListDiv">
+      </div>
+      <div :class="loginDiv"> 
+        <div v-if="loginMode" >
+          <button @click="loginGoogle">구글 로그인</button>
+          <p> *버튼을 눌러 로그인할 수 있습니다.</p>
+        </div>
+        <div v-else>
+          <p> 로그인 계정: {{ email }}</p>
+          <button :class="loginBtn" @click="signout">로그아웃</button>
+        </div>
       </div>
     </div>
     <div :class="mainDiv">
@@ -25,11 +27,13 @@ import ListEditingView from './views/ListEditingView.vue'
 export default {
   data() {
     return {
-      loginMenuDiv: 'loginMenuDiv',
+      loginmenuGrid: 'loginmenuGrid',
       menuMainGrid: 'menuMainGrid',
-      menuDiv: 'menuDiv',
+      menuGrid: 'menuGrid',
       mainDiv: 'mainDiv',
-      logoutBtn: 'logoutBtn'
+      loginBtn: 'loginBtn',
+      pageListDiv: 'pageListDiv',
+      loginDiv: 'loginDiv',
     }
   },
   mixins: [LogIn],

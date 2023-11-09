@@ -13,7 +13,7 @@
             <input :class="amountStyle" v-model="getExpenseById[0].amount">
         </div>
 
-        <button @click="handlerLiMoreDiv()"> … </button>
+        <button :class="liMoreBtn" @click="handlerLiMoreDiv()"> … </button>
         <div :class="liMoreDiv" v-if="isLiMoreDivOpened">
             <button @click="removeExpense(getExpenseById[0])">삭제</button>
             <span> *하위 합계 : </span>
@@ -51,6 +51,7 @@ export default {
             toggleBtnStyle_inactive: 'toggleBtnStyle_inactive',
             liAlignStyle: 'liAlignStyle',
             liMoreDiv: 'liMoreDiv',
+            liMoreBtn: 'liMoreBtn',
 
             isLiMoreDivOpened: false
         }
