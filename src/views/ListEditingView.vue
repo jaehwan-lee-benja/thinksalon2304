@@ -1,25 +1,35 @@
 <template>
-    <div :class="pageDiv">
+    <div :class="controlGrid">
+        <div :class="pageDiv">
+            <select v-model="pageName" @change="selectPage()">
+                <option v-for="(page, index) in this.expensePages" :key="index" :value="page.page_name">
+                    {{ page.page_name }}
+                </option>
+            </select>
 
-        <select v-model="pageName" @change="selectPage()">
-            <option v-for="(page, index) in this.expensePages" :key="index" :value="page.page_name">
-                {{ page.page_name }}
-            </option>
-        </select>
-
-        <button @click="openPageDiv()">페이지 설정하기</button>
-        <!-- <div :class="blackBg" v-if="isPageDivOpened">
+            <button @click="openPageDiv()">페이지 설정하기</button>
+            <!-- <div :class="blackBg" v-if="isPageDivOpened">
             <div :class="whiteBg"> -->
-        <div v-if="isPageDivOpened">
-            <div>   
-                <PageList v-bind:expenses="expenses" @remove-e-by-pageId="removeExpenseByPageDelete"/>
+            <div v-if="isPageDivOpened">
+                <PageList v-bind:expenses="expenses" @remove-e-by-pageId="removeExpenseByPageDelete" />
             </div>
+        </div>
+        <div :class="saveEditedDiv">
+            <button :class="{
+                'saveEditedStyle_active': isEdited === true,
+                'saveEditedStyle_inactive': isEdited === false
+            }" :disabled="!isEdited" @click="editExpenses">편집한 내용 저장</button>
+            <!-- <button :class="{
+                'cancelEditedStyle_active': isEdited === true,
+                'cancelEditedStyle_inactive': isEdited === false
+            }" :disabled="!isEdited" @click="cancelEditing">편집 취소</button> -->
         </div>
     </div>
 
+
     <div :class="sectionGrid">
         <div :class="listViewDiv">
-            
+
             <h2>리스트 뷰</h2>
 
             <div :class="listViewLiDiv">
@@ -36,17 +46,15 @@
                     v-for="expense2 in sortChildrenByIdAndLevel(this.getTotalExpense.id, this.getTotalExpense.level)"
                     :key="expense2.index">
 
-                    <ListItem v-bind:expenses="expenses" :expenseId="expense2.id" 
-                    @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" 
-                    :toggleActiveHandler="this.toggleActiveHandler[expense2.id]" />
+                    <ListItem v-bind:expenses="expenses" :expenseId="expense2.id" @remove-expense="removeExpense"
+                        @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[expense2.id]" />
 
                     <ol :class="olBgStyle" v-if="expense2.show_sub_list">
                         <li :class="listViewLiStyle"
-                            v-for="expense3 in sortChildrenByIdAndLevel(expense2.id, expense2.level)"
-                            :key="expense3.index">
+                            v-for="expense3 in sortChildrenByIdAndLevel(expense2.id, expense2.level)" :key="expense3.index">
 
-                            <ListItem v-bind:expenses="expenses" :expenseId="expense3.id"
-                                @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" 
+                            <ListItem v-bind:expenses="expenses" :expenseId="expense3.id" @remove-expense="removeExpense"
+                                @toggle-sub-list="toggleSubList"
                                 :toggleActiveHandler="this.toggleActiveHandler[expense3.id]" />
 
                             <ol :class="olBgStyle" v-if="expense3.show_sub_list">
@@ -55,8 +63,8 @@
                                     :key="expense4.index">
 
                                     <ListItem v-bind:expenses="expenses" :expenseId="expense4.id"
-                                        @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" 
-                                        :toggleActiveHandler="this.toggleActiveHandler[expense4.id]"/>
+                                        @remove-expense="removeExpense" @toggle-sub-list="toggleSubList"
+                                        :toggleActiveHandler="this.toggleActiveHandler[expense4.id]" />
 
                                     <ol :class="olBgStyle" v-if="expense4.show_sub_list">
                                         <li :class="listViewLiStyle"
@@ -64,7 +72,7 @@
                                             :key="expense5.index">
 
                                             <ListItem v-bind:expenses="expenses" :expenseId="expense5.id"
-                                                @remove-expense="removeExpense" @toggle-sub-list="toggleSubList" 
+                                                @remove-expense="removeExpense" @toggle-sub-list="toggleSubList"
                                                 :toggleActiveHandler="this.toggleActiveHandler[expense5.id]" />
 
                                         </li>
@@ -91,19 +99,10 @@
         </div>
         <div :class="flowViewDiv">
             <h2>플로우 뷰</h2>
-            <FlowView v-bind:expenses="expenses"/>
+            <FlowView v-bind:expenses="expenses" />
         </div>
     </div>
-    <div :class="saveEditedDiv">
-        <button :class="{
-            'saveEditedStyle_active': isEdited === true,
-            'saveEditedStyle_inactive': isEdited === false
-        }" :disabled="!isEdited" @click="editExpenses">편집한 내용 저장</button>
-        <button :class="{
-            'cancelEditedStyle_active': isEdited === true,
-            'cancelEditedStyle_inactive': isEdited === false
-        }" :disabled="!isEdited" @click="cancelEditing">편집 취소</button>
-    </div>
+
 </template>
   
 <script>
@@ -142,8 +141,9 @@ export default {
             saveEditedDiv: 'saveEditedDiv',
             listViewLiStyle: 'listViewLiStyle',
             listViewOlStyle: 'listViewOlStyle',
-            olBgStyle:'olBgStyle',
+            olBgStyle: 'olBgStyle',
             pageDiv: 'pageDiv',
+            controlGrid: 'controlGrid',
             blackBg: "blackBg",
             whiteBg: "whiteBg",
 
@@ -155,7 +155,7 @@ export default {
     },
     mounted() {
         this.fetchData(),
-        this.monitorIsEdited()
+            this.monitorIsEdited()
     },
     computed: {
         getTotalExpense() {
@@ -194,7 +194,7 @@ export default {
         selectPage() {
             let selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)
             console.log("this.expensePages = ", this.expensePages);
-            if(selectedPage.length == 0) {
+            if (selectedPage.length == 0) {
                 selectedPage = [this.expensePages[0]]
             }
             console.log("selectedPage[0] = ", selectedPage[0]);
@@ -203,15 +203,15 @@ export default {
             // 여기부터
             this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
             this.expenses.forEach(e => {
-                if(e.level == 5) { this.toggleActiveHandler[e.id] = false; }
+                if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
             })
             // 여기까지 함수로 묶기 필요(반복됨)
         },
         openPageDiv() {
             this.isPageDivOpened = !this.isPageDivOpened;
         },
-        controlToggleActiveHandler(expenseHere){    
-            if( expenseHere.level == 5 ) {
+        controlToggleActiveHandler(expenseHere) {
+            if (expenseHere.level == 5) {
                 this.toggleActiveHandler[expenseHere.id] = false;
             } else {
                 this.toggleActiveHandler[expenseHere.id] = true;
@@ -257,7 +257,7 @@ export default {
         },
         toggleSubList(expenseHere) {
             this.controlToggleActiveHandler(expenseHere);
-            if(expenseHere.level < 5 ){
+            if (expenseHere.level < 5) {
                 expenseHere.show_sub_list = !expenseHere.show_sub_list;
                 this.upsertData(expenseHere)
             }
@@ -286,14 +286,14 @@ export default {
                 page_id: this.selectedPageId
             };
 
-            if(levelForO < 5) {
+            if (levelForO < 5) {
                 this.toggleActiveHandler[o.id] = true;
             } else {
                 this.toggleActiveHandler[o.id] = false;
             }
 
             this.expenses.push(o);
-            
+
         },
         async fetchData() {
 
@@ -307,7 +307,7 @@ export default {
             this.selectPage();
             this.fetchedExpenses = JSON.parse(JSON.stringify(data));
             this.expenses.forEach(e => {
-                if(e.level == 5) { this.toggleActiveHandler[e.id] = false; }
+                if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
             })
         },
         async fetchDataForPage() {
@@ -390,4 +390,6 @@ export default {
 }
 </script>
   
-<style scoped>@import '../style.css';</style>
+<style scoped>
+@import '../style.css';
+</style>

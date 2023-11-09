@@ -1,8 +1,11 @@
-body {
-  background-color:#f5efe9;
-  margin: 0;
-  width: 100%;
+html, body {
   height: 100%;
+  margin: 0;
+  padding: 0;
+}
+body {
+  background-color:#F8F7F7;
+  min-height: 100vh;
 }
 div {
   box-sizing: border-box;
@@ -17,8 +20,8 @@ span {
   font-size: 13px;
 }
 button {
-  border: 1px solid #575757;
-  color: #575757;
+  border: 1px solid #11212D;
+  color: #11212D;
   min-width: 30px;
   padding: 5px;
   margin: 0 10px;
@@ -48,15 +51,11 @@ button:hover{
   background: #4a5c6a;
 }
 .liControlBtn {
-  border: 0px solid #575757;
-  color: #575757;
+  border: 0px solid #11212D;
+  color: #11212D;
   min-width: 30px;
   padding: 5px;
   margin: 0 10px;
-}
-.bodyDiv{
-  margin: 50px auto;
-  min-width: 1500px;
 }
 .sectionGrid {
   display: grid;
@@ -64,6 +63,11 @@ button:hover{
   grid-gap: 10px;
   padding-bottom: 30px;
   margin: 10px;
+}
+.controlGrid {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  grid-gap: 10px;
 }
 .pageDiv {
   /* overflow-y: scroll; */
@@ -73,12 +77,13 @@ button:hover{
   margin: 20px;
   margin-bottom: 30px;
   border-radius: 10px;
-  border: 1px solid #a0a0a0;
+  border: 1px solid #9BA8AB;
 }
 .menuMainGrid {
   display: grid;
   grid-template-columns: 200px 1fr;
   grid-gap: 10px;
+  height: 100vh;
 }
 .flowViewDiv {
   background-color:white;
@@ -94,7 +99,7 @@ button:hover{
 
 .listViewDiv {
   /* min-width: 800px; */
-  background-color:#f5efe9;
+  background-color:#F8F7F7;
   overflow-x: scroll;
 
   -ms-overflow-style: none; /* 인터넷 익스플로러 */
@@ -135,26 +140,26 @@ input {
 input:read-only {
   background-color: transparent;
   border: 0px solid white;
-  color: #575757;
+  color: #11212D;
 }
 .saveEditedStyle_active {
-  width: 49%;
+  width: 100%;
   height: 40px;
   color: white;
-  background-color: #449cdb;
-  border: 1px solid #449cdb;
+  background-color: #F9B17A;
+  border: 1px solid #F9B17A;
   margin: 0.5%;
 }
 .saveEditedStyle_inactive {
-  width: 49%;
+  width: 100%;
   height: 40px;
   color: white;
-  background-color: #a0a0a0;
-  border: 1px solid #a0a0a0;
+  background-color: #9BA8AB;
+  border: 1px solid #9BA8AB;
   margin: 0.5%;
 }
 .toggleBtnStyle_active {
-  color: rgb(142, 111, 78);
+  color: rgb(0, 33, 45);
   background-color: transparent;
   border: 0px solid transparent;
   margin: 0.5%;
@@ -166,7 +171,7 @@ input:read-only {
 }
 
 .toggleBtnStyle_inactive {
-  color: rgb(142, 111, 78, 0.3);
+  color: rgb(0, 33, 45, 0.3);
   background-color: transparent;
   border: 1px solid transparent;
   margin: 0.5%;
@@ -188,9 +193,9 @@ input:read-only {
 .cancelEditedStyle_inactive {
   width: 49%;
   height: 40px;
-  color: #a0a0a0;
+  color: #9BA8AB;
   background-color: transparent;
-  border: 1px solid #a0a0a0;
+  border: 1px solid #9BA8AB;
   margin: 0.5%;
 }
 .saveEditedDiv {
@@ -198,7 +203,7 @@ input:read-only {
   margin: auto;
 }
 .loginMenuDiv {
-  text-align: right;
+  color: #FFFFFF;
   font-size: 13px;
   margin: 10px;
 }
@@ -215,9 +220,9 @@ input:read-only {
   position: relative;
   left: -37px;
 }
-.listViewLiDiv:hover {
+/* .listViewLiDiv:hover {
   box-shadow: 0 4px 8px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
-}
+} */
 .listViewLiStyle {
   line-height: 250%;
 }
@@ -225,7 +230,7 @@ input:read-only {
   margin-bottom: 30px;
 }
 .olBgStyle {
-  background-color:rgb(218, 192, 163, 0.35);/*까만색(0,0,0) 20% 불투명도*/
+  background-color:rgb(37, 55, 69, 0.35);/*까만색(0,0,0) 20% 불투명도*/
   margin: 10px;
   padding: 10px 10px 30px 50px;
   border-radius: 10px;
@@ -233,18 +238,18 @@ input:read-only {
   /* z-index: 1; */
   /* pointer-events: none; hover 시에만 이벤트를 허용하도록 설정 */
 }
-.olBgStyle:hover {
-  border: 2px solid #FFFFFF;
-  /* z-index: 2; */
-  /* pointer-events: auto; hover 시에만 이벤트를 허용하도록 설정 */
-}
+/* .olBgStyle:hover {
+  border: 2px solid #11212D;
+  z-index: 2;
+  pointer-events: auto; hover 시에만 이벤트를 허용하도록 설정
+} */
 /* .olBgStyle_hover {
   border: 2px solid #FFFFFF;
 } */
 .newListDivStyle {
   padding: 6px 0;
   margin-top: 10px;
-  border: 2px solid rgb(218, 192, 163);
+  border: 2px solid rgb(74, 92, 106);
   border-radius: 10px;
   width: 60%;
   opacity: 0.5;
