@@ -1,5 +1,5 @@
 <template>
-    <button @click="formatExpenses">show</button>
+    <button @click="formatExpenses" :class="flowViewBtn">새로고침</button>
     <div :class="graphDiv">
         <VNetworkGraph class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" />
     </div>
@@ -28,7 +28,8 @@ export default {
             layouts: {
                 nodes: {},
             },
-            graphDiv: 'graphDiv'
+            graphDiv: 'graphDiv',
+            flowViewBtn: 'flowViewBtn',
         }
     },
     methods: {
@@ -92,7 +93,7 @@ export default {
                 })
                 this.edges = edgeResult
             }
-            this.formatLayout()  
+            this.formatLayout()
         }
 
     },

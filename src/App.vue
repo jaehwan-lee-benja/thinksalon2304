@@ -2,6 +2,11 @@
   <div :class="menuMainGrid">
     <div :class="menuGrid">
       <div :class="pageListDiv">
+        <button @click="openPageDiv()">페이지 설정하기</button>
+          <div v-if="isPageDivOpened" :class="modal">
+                <PageList v-bind:expenses="expenses" @remove-e-by-pageId="removeExpenseByPageDelete" />
+          </div>
+          <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
       </div>
       <div :class="loginDiv"> 
         <div v-if="loginMode" >
@@ -23,10 +28,13 @@
 <script>
 import LogIn from './views/LogIn.vue'
 import ListEditingView from './views/ListEditingView.vue'
+import PageList from './views/PageList.vue'
 
 export default {
   data() {
     return {
+      isPageDivOpened: false,
+
       loginmenuGrid: 'loginmenuGrid',
       menuMainGrid: 'menuMainGrid',
       menuGrid: 'menuGrid',
@@ -34,13 +42,22 @@ export default {
       loginBtn: 'loginBtn',
       pageListDiv: 'pageListDiv',
       loginDiv: 'loginDiv',
+      modal: 'modal',
+      modalOverlay: 'modalOverlay',
     }
   },
   mixins: [LogIn],
   components: {
-    ListEditingView
+    ListEditingView,
+    PageList,
   },
   methods: {
+    openPageDiv() {
+        this.isPageDivOpened = true;
+    },
+    closePageDiv() {
+        this.isPageDivOpened = false;
+    },
   }
 }
 </script>

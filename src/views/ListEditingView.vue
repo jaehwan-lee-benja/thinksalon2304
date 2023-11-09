@@ -1,19 +1,12 @@
 <template>
     <div :class="controlGrid">
         <div :class="pageDiv">
-            <select v-model="pageName" @change="selectPage()">
+            <select :class="pageSelect" v-model="pageName" @change="selectPage()">
                 <option v-for="(page, index) in this.expensePages" :key="index" :value="page.page_name">
                     {{ page.page_name }}
                 </option>
             </select>
 
-            <button @click="openPageDiv()">페이지 설정하기</button>
-            <div v-if="isPageDivOpened" :class="modal">
-                <div :class="modalContent">
-                    <PageList v-bind:expenses="expenses" @remove-e-by-pageId="removeExpenseByPageDelete" />
-                </div>
-            </div>
-            <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
         </div>
         <div :class="saveEditedDiv">
             <button :class="{
@@ -114,7 +107,6 @@
 import { supabase } from '../lib/supabaseClient.js'
 import ListItem from './ListItem.vue'
 import NewListItem from './NewListItem.vue'
-import PageList from './PageList.vue'
 import FlowView from './FlowView.vue'
 //   import PieChart from './Pie.vue'
 
@@ -148,15 +140,10 @@ export default {
             olBgStyle: 'olBgStyle',
             pageDiv: 'pageDiv',
             controlGrid: 'controlGrid',
-            blackBg: "blackBg",
-            whiteBg: "whiteBg",
             liMoreDiv: 'liMoreDiv',
             liMoreBtn: 'liMoreBtn',
-            modal: 'modal',
-            modalOverlay: 'modalOverlay',
-            modalContent: 'modalContent',
+            pageSelect: 'pageSelect',
 
-            isPageDivOpened: false,
             isEditValue: true,
             isLiMoreDivOpened: false,
             toggleActiveHandler: {},
@@ -219,12 +206,6 @@ export default {
                 if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
             })
             // 여기까지 함수로 묶기 필요(반복됨)
-        },
-        openPageDiv() {
-            this.isPageDivOpened = true;
-        },
-        closePageDiv() {
-            this.isPageDivOpened = false;
         },
         controlToggleActiveHandler(expenseHere) {
             if (expenseHere.level == 5) {
@@ -399,7 +380,6 @@ export default {
     components: {
         ListItem,
         NewListItem,
-        PageList,
         FlowView,
         //   PieChart
     }

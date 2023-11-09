@@ -12,7 +12,7 @@ div {
   box-sizing: border-box;
 }
 h2 {
-  padding-left: 40px;
+  padding-left: 20px;
 }
 h3 {
   padding-left: 40px;
@@ -44,6 +44,13 @@ button:hover{
   border: 1px solid #9BA8AB;
   color: #9BA8AB;
 }
+.flowViewBtn {
+  margin: 0 20px;
+  background-color: transparent;
+  border: 1px solid #9BA8AB;
+  color: #9BA8AB;
+}
+
 
 /* layout */
 .menuMainGrid {
@@ -60,7 +67,7 @@ button:hover{
   background: #4a5c6a;
   color: #FFFFFF;
   font-size: 13px;
-  padding: 10px;
+  padding: 30px;
 }
 
 .loginDiv {
@@ -69,19 +76,27 @@ button:hover{
 
 .mainDiv {
   height: 80%;
+  padding: 30px;
 }
 
 .controlGrid {
   display: grid;
   grid-template-columns: 3fr 1fr;
   grid-gap: 10px;
-}
-.pageDiv {
-  padding: 10px;
   margin: 20px;
-  margin-bottom: 30px;
-  border-radius: 10px;
-  border: 1px solid #9BA8AB;
+  height: 50px;
+}
+.pageSelect {
+  font-weight: bold;
+  background-color: transparent;
+  border-color: transparent;
+  font-size: 30px;
+  height: 50px;
+  width: 50%;
+  margin: 0 10px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
 }
 
 .viewGrid {
@@ -273,6 +288,7 @@ input:read-only {
   background-color:rgb(204, 208, 207);
   border-radius: 20px;
   padding: 20px;
+  color: black;
 }
 
 .modalOverlay {
