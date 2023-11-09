@@ -1,7 +1,7 @@
 <template>
     <button @click="formatExpenses" :class="flowViewBtn">새로고침</button>
     <div :class="graphDiv">
-        <VNetworkGraph class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" />
+        <VNetworkGraph class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs"/>
     </div>
 </template>
 
@@ -27,6 +27,14 @@ export default {
             edges: {},
             layouts: {
                 nodes: {},
+            },
+            configs: {
+              node : {
+                normal: {
+                    color: "#336699",
+                    radius: node => Math.pow(node.size/100, 1/4)
+                }
+              }
             },
             graphDiv: 'graphDiv',
             flowViewBtn: 'flowViewBtn',
@@ -81,7 +89,7 @@ export default {
 
                 const nodesResult = {}
                 this.expenses.forEach((e) => {
-                    nodesResult[e.id] = { 'name': e.category }
+                    nodesResult[e.id] = { 'name': e.category, 'size': e.amount }
                 })
                 this.nodes = nodesResult
                 
