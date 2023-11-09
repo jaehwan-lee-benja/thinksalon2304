@@ -6,7 +6,6 @@
                     {{ page.page_name }}
                 </option>
             </select>
-
         </div>
         <div :class="saveEditedDiv">
             <button :class="{
@@ -193,11 +192,9 @@ export default {
         },
         selectPage() {
             let selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)
-            console.log("this.expensePages = ", this.expensePages);
             if (selectedPage.length == 0) {
                 selectedPage = [this.expensePages[0]]
             }
-            console.log("selectedPage[0] = ", selectedPage[0]);
             this.selectedPageId = selectedPage[0].id
             this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
             // 여기부터
