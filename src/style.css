@@ -1,5 +1,6 @@
 html, body {
   height: 100%;
+  width: 100%;
   margin: 0;
   padding: 0;
 }
@@ -93,30 +94,34 @@ button:hover{
 }
 
 .listViewDiv {
-  background-color:#F8F7F7;
   white-space: nowrap;
+  width: 700px;
 }
 
 .flowViewDiv {
+  border-radius: 10px;
   background-color:white;
 }
 
 .graphDiv {
-  border: 1px solid black;
-  height: 90%;
+  height: 85%;
+  padding: 10px;
   overflow: hidden;
 }
 
 /* --이하 정리 필요-- */
 
 .liMoreDiv {
+  background-color: #9BA8AB;
+  border-radius: 5px;
   display: inline;
+  padding: 10px;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 5px 5px rgba(0,0,0,0.22);
 }
 .unitDiv {
   border: 1px solid black;
   padding: 20px;
   border-radius: 5px;
-  min-width: 300px;
 }
 .unitDiv:hover {
   box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
@@ -216,7 +221,7 @@ input:read-only {
   border-radius: 2px;
   background-color: white;
   margin: 5px 10px;
-  max-width: 300px;
+  /* max-width: 300px; */
   display: inline;
 }
 .liAlignStyle{
@@ -251,8 +256,8 @@ input:read-only {
 } */
 .newListDivStyle {
   margin-top: 7px;
+  /* margin-left: -4px; */
   opacity: 0.5;
-  margin-left: -4px;
   filter: Alpha(opacity=50); /* IE8 이하 호환을 위해서 */
 }
 .newListDivStyle:hover {
