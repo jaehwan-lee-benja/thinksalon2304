@@ -1,6 +1,8 @@
 <template>
     <button @click="formatExpenses">show</button>
-    <VNetworkGraph class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" />
+    <div :class="graphDiv">
+        <VNetworkGraph class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" />
+    </div>
 </template>
 
 <script>
@@ -25,7 +27,8 @@ export default {
             edges: {},
             layouts: {
                 nodes: {},
-            }
+            },
+            graphDiv: 'graphDiv'
         }
     },
     methods: {

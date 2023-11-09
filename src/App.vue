@@ -8,14 +8,12 @@
           </div>
           <div v-else>
             <p> 로그인 계정: {{ email }}</p>
-            <button @click="signout">로그아웃</button>
+            <button :class="logoutBtn" @click="signout">로그아웃</button>
           </div>
       </div>
     </div>
     <div :class="mainDiv">
-      <div>
-        <ListEditingView />
-      </div>
+      <ListEditingView />
     </div>
   </div>
 </template>
@@ -29,7 +27,9 @@ export default {
     return {
       loginMenuDiv: 'loginMenuDiv',
       menuMainGrid: 'menuMainGrid',
-      menuDiv: 'menuDiv'
+      menuDiv: 'menuDiv',
+      mainDiv: 'mainDiv',
+      logoutBtn: 'logoutBtn'
     }
   },
   mixins: [LogIn],

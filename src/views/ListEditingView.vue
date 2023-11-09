@@ -7,7 +7,7 @@
                 </option>
             </select>
 
-            <button @click="openPageDiv()">페이지 설정하기</button>
+            <button @click="handlerPageDiv()">페이지 설정하기</button>
             <!-- <div :class="blackBg" v-if="isPageDivOpened">
             <div :class="whiteBg"> -->
             <div v-if="isPageDivOpened">
@@ -27,7 +27,7 @@
     </div>
 
 
-    <div :class="sectionGrid">
+    <div :class="viewGrid">
         <div :class="listViewDiv">
 
             <h2>리스트 뷰</h2>
@@ -127,7 +127,7 @@ export default {
 
             unitDiv: 'unitDiv',
             subGrid: 'subGrid',
-            sectionGrid: 'sectionGrid',
+            viewGrid: 'viewGrid',
             flowViewDiv: 'flowViewDiv',
             listViewDiv: 'listViewDiv',
             listViewLiDiv: 'listViewLiDiv',
@@ -207,7 +207,7 @@ export default {
             })
             // 여기까지 함수로 묶기 필요(반복됨)
         },
-        openPageDiv() {
+        handlerPageDiv() {
             this.isPageDivOpened = !this.isPageDivOpened;
         },
         controlToggleActiveHandler(expenseHere) {

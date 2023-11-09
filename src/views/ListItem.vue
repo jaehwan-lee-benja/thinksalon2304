@@ -13,9 +13,12 @@
             <input :class="amountStyle" v-model="getExpenseById[0].amount">
         </div>
 
-        <button :class="liControlBtn" @click="removeExpense(getExpenseById[0])">X</button>
-        <span> *하위 합계 : </span>
-        <input :class="amountStyle" :value="sumExpenses(getExpenseById[0].id)" readonly>
+        <button @click="handlerLiMoreDiv()"> … </button>
+        <div :class="liMoreDiv" v-if="isLiMoreDivOpened">
+            <button @click="removeExpense(getExpenseById[0])">삭제</button>
+            <span> *하위 합계 : </span>
+            <input :class="amountStyle" :value="sumExpenses(getExpenseById[0].id)" readonly>
+        </div>
         
     </div>
     
@@ -47,7 +50,9 @@ export default {
             toggleBtnStyle_active: 'toggleBtnStyle_active',
             toggleBtnStyle_inactive: 'toggleBtnStyle_inactive',
             liAlignStyle: 'liAlignStyle',
-            liControlBtn: 'liControlBtn'
+            liMoreDiv: 'liMoreDiv',
+
+            isLiMoreDivOpened: false
         }
     },
     computed: {
@@ -56,6 +61,9 @@ export default {
         }
     },
     methods: {
+        handlerLiMoreDiv() {
+            this.isLiMoreDivOpened = !this.isLiMoreDivOpened;
+        },
         sumExpenses(parentsIdHere) {
             const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
                 .reduce((acc, item) => acc + Number(item.amount), 0);

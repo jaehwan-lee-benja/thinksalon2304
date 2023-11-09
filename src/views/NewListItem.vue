@@ -6,7 +6,7 @@
             <span> : </span>
             <input :class="amountStyle" v-model="this.newAmount" placeholder="0">
         </div>
-        <button :class="liControlBtn">입력</button>
+        <button>입력</button>
         </form>
     </div>
 </template>
@@ -32,7 +32,6 @@ export default {
             amountStyle: 'amountStyle',
             newCategory: '',
             newAmount: '',
-            liControlBtn: 'liControlBtn',
             newListDivStyle: 'newListDivStyle'
         }
     },
