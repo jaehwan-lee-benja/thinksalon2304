@@ -1,7 +1,7 @@
 <template>
     <button @click="formatExpenses" :class="flowViewBtn">새로고침</button>
     <div :class="graphDiv">
-        <VNetworkGraph class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs"/>
+        <VNetworkGraph class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs" />
     </div>
 </template>
 
@@ -29,12 +29,28 @@ export default {
                 nodes: {},
             },
             configs: {
-              node : {
-                normal: {
-                    color: "#336699",
-                    radius: node => Math.pow(node.size/100, 1/4)
+                node: {
+                    normal: {
+                        type: "circle",
+                        color: "#253745",
+                        radius: node => Math.pow(node.size / 50, 1 / 3),
+                        // height: node => Math.pow(node.size / 50, 1 / 3),
+                        // height: node => node.size / 20000,
+                        // width: 100,
+                    },
+                    hover: {
+                        color: "#F7444E",
+                    }
+                },
+                edge: {
+                    normal: {
+                        width: edge => Math.pow(edge.size/100, 1/4),
+                        color: "#9BA8AB"
+                    },
+                    hover: {
+                        color: "#F7444E",
+                    }
                 }
-              }
             },
             graphDiv: 'graphDiv',
             flowViewBtn: 'flowViewBtn',
@@ -77,7 +93,7 @@ export default {
 
             g.nodes().forEach((nodeId) => {
                 // update node position
-                    const x = g.node(nodeId).x
+                const x = g.node(nodeId).x
                 const y = g.node(nodeId).y
                 this.layouts.nodes[nodeId] = { x, y }
             })
@@ -85,18 +101,18 @@ export default {
         formatExpenses() {
 
             const expensesLength = Object.keys(this.expenses).length;
-            if(expensesLength > 0) {
+            if (expensesLength > 0) {
 
                 const nodesResult = {}
                 this.expenses.forEach((e) => {
                     nodesResult[e.id] = { 'name': e.category, 'size': e.amount }
                 })
                 this.nodes = nodesResult
-                
+
                 const edgeResult = {}
                 this.expenses.forEach((e) => {
-                    if(e.parents_id != null) {
-                        edgeResult[e.id] = { 'source': e.parents_id,  'target': e.id }
+                    if (e.parents_id != null) {
+                        edgeResult[e.id] = { 'source': e.parents_id, 'target': e.id, 'size': e.amount }
                     }
                 })
                 this.edges = edgeResult
