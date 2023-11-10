@@ -36,23 +36,23 @@ export default {
                 node: {
                     normal: {
                         type: "circle",
-                        color: "#253745",
+                        color: "#004EFC",
                         radius: node => Math.pow(node.size / 50, 1 / 3),
                         // height: node => Math.pow(node.size / 50, 1 / 3),
                         // height: node => node.size / 20000,
                         // width: 100,
                     },
                     hover: {
-                        color: "#F7444E",
+                        color: "#FFC805",
                     }
                 },
                 edge: {
                     normal: {
                         width: edge => Math.pow(edge.size/100, 1/4),
-                        color: "#9BA8AB"
+                        color: "#D3D2D0"
                     },
                     hover: {
-                        color: "#F7444E",
+                        color: "#FFC805",
                     }
                 }
             },
@@ -102,6 +102,8 @@ export default {
                 const y = g.node(nodeId).y
                 this.layouts.nodes[nodeId] = { x, y }
             })
+
+            
             
         },
         formatExpenses() {
