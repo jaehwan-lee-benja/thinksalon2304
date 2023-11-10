@@ -38,9 +38,6 @@ export default {
                         type: "circle",
                         color: "#004EFC",
                         radius: node => Math.pow(node.size / 50, 1 / 3),
-                        // height: node => Math.pow(node.size / 50, 1 / 3),
-                        // height: node => node.size / 20000,
-                        // width: 100,
                     },
                     hover: {
                         color: "#FFC805",
@@ -63,7 +60,6 @@ export default {
     methods: {
         formatLayout() {
             const nodeSize = 30
-            console.log("nodeSize = ", nodeSize);
             const direction = "TB" // "TB" | "LR"
             if (Object.keys(this.nodes).length <= 1 || Object.keys(this.edges).length == 0) {
                 return
