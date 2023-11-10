@@ -5,18 +5,18 @@
     </div>
 </template>
 
-<script>
+<script> 
 import { VNetworkGraph } from "v-network-graph"
 import "v-network-graph/lib/style.css"
 import dagre from "dagre/dist/dagre.min.js"
 
-export default {
+export default { 
     name: 'FlowView',
     props: {
         expenses: {
             type: Object,
             default: () => { }
-        },
+        }, 
     },
     mounted() {
         this.formatExpenses()
@@ -24,11 +24,15 @@ export default {
     data() {
         return {
             nodes: {},
-            edges: {},
+            edges: {}, 
             layouts: {
                 nodes: {},
             },
             configs: {
+                view: {  
+                    autoPanAndZoomOnLoad: "fit-content",
+                    onBeforeInitialDisplay: () => this.formatLayout(),
+                },
                 node: {
                     normal: {
                         type: "circle",
@@ -58,11 +62,12 @@ export default {
     },
     methods: {
         formatLayout() {
-            const nodeSize = 40
+            const nodeSize = 30
+            console.log("nodeSize = ", nodeSize);
             const direction = "TB" // "TB" | "LR"
             if (Object.keys(this.nodes).length <= 1 || Object.keys(this.edges).length == 0) {
                 return
-            }
+            }  
 
             // convert graph
             // ref: https://github.com/dagrejs/dagre/wiki
@@ -70,9 +75,9 @@ export default {
             // Set an object for the graph label
             g.setGraph({
                 rankdir: direction,
-                nodesep: nodeSize * 2,
+                nodesep: nodeSize,
                 edgesep: nodeSize,
-                ranksep: nodeSize * 2,
+                ranksep: nodeSize * 4, 
             })
             // Default to assigning a new object as a label for each new edge.
             g.setDefaultEdgeLabel(() => ({}))
@@ -97,9 +102,10 @@ export default {
                 const y = g.node(nodeId).y
                 this.layouts.nodes[nodeId] = { x, y }
             })
+            
         },
         formatExpenses() {
-
+ 
             const expensesLength = Object.keys(this.expenses).length;
             if (expensesLength > 0) {
 
@@ -118,7 +124,7 @@ export default {
                 this.edges = edgeResult
             }
             this.formatLayout()
-        }
+        },
 
     },
     components: {
