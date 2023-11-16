@@ -1,4 +1,5 @@
 <template>
+    <h2>플로우 뷰</h2>
     <button @click="formatExpenses" :class="flowViewBtn">새로고침</button>
     <div :class="graphDiv">
         <VNetworkGraph class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs" />
@@ -103,7 +104,8 @@ export default {
             
         },
         formatExpenses() {
- 
+
+
             const expensesLength = Object.keys(this.expenses).length;
             if (expensesLength > 0) {
 

@@ -1,44 +1,48 @@
 <template>
+  <div>
+    <ExpensesData />
+  </div>
   <div :class="menuMainGrid">
     <div :class="menuGrid">
-      <!-- <div :class="pageDiv">
-          <select :class="pageSelect" v-model="pageName" @change="selectPage()">
-              <option v-for="(page, index) in this.expensePages" :key="index" :value="page.page_name">
-                  {{ page.page_name }}
-              </option>
-          </select>
-      </div> -->
       <div :class="pageListDiv">
         <button @click="openPageDiv()">페이지 설정하기</button>
           <div v-if="isPageDivOpened" :class="modal">
-                <PageList v-bind:expenses="expenses" @remove-e-by-pageId="removeExpenseByPageDelete" />
+            <PageListView v-bind:expenses="expenses" @remove-e-by-pageId="removeExpenseByPageDelete" />
           </div>
           <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
       </div>
-      <div :class="loginDiv"> 
-        <div v-if="loginMode" >
-          <button @click="loginGoogle">구글 로그인</button>
-          <p> *버튼을 눌러 로그인할 수 있습니다.</p>
-        </div>
-        <div v-else>
-          <p> 로그인 계정: {{ email }}</p>
-          <button :class="loginBtn" @click="signout">로그아웃</button>
-        </div>
+      <div :class="loginDiv">
+        <!-- <LogInView /> -->
+        <LogInView v-bind:testData="testData"/>
       </div>
     </div>
     <div :class="mainDiv">
-      <ListEditingView />
+      <div :class="controlGrid">
+        <div :class="viewGrid">
+          <div :class="listViewDiv">
+          </div>
+          <div :class="flowViewDiv">
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
 import { supabase } from './lib/supabaseClient.js'
-import LogIn from './views/LogIn.vue'
-import ListEditingView from './views/ListEditingView.vue'
-import PageList from './views/PageList.vue'
+import LogInView from './views/LogInView.vue'
+import PageListView from './views/PageListView.vue'
+import ExpensesData from './data/ExpensesData.vue'
 
 export default {
+  name: 'App',
+  props: {
+    testData: {
+        type: Object,
+        default: () => { }
+    },
+  },
   data() {
     return {
       expensePages: [],
@@ -55,17 +59,26 @@ export default {
       modalOverlay: 'modalOverlay',
       pageDiv: 'pageDiv',
       pageSelect: 'pageSelect',
+      controlGrid: 'controlGrid',
+      viewGrid: 'viewGrid',
+      flowViewDiv: 'flowViewDiv',
+      listViewDiv: 'listViewDiv',
     }
   },
-  mixins: [LogIn],
+  // mixins: [LogInView],
   components: {
-    ListEditingView,
-    PageList,
+    ExpensesData,
+    PageListView,
+    LogInView,
   },
   mounted() {
+    this.testHere()
     this.fetchDataForPage()
   },
   methods: {
+    testHere() {
+      console.log("testData @App = ", this.testData);
+    },
     openPageDiv() {
         this.isPageDivOpened = true;
     },
@@ -75,11 +88,9 @@ export default {
 
     selectPage() {
       let selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)
-      console.log("this.expensePages = ", this.expensePages);
       if (selectedPage.length == 0) {
           selectedPage = [this.expensePages[0]]
       }
-      console.log("selectedPage[0] = ", selectedPage[0]);
       this.selectedPageId = selectedPage[0].id
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
       // 여기부터
@@ -96,7 +107,6 @@ export default {
           .select()
       const { data } = a;
       this.expensePages = data;
-      console.log("this.expensePages = ", this.expensePages);
     },
 
   }

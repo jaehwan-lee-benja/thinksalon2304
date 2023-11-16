@@ -25,7 +25,7 @@
 import { supabase } from '../lib/supabaseClient.js'
 
 export default {
-    name: 'PageList',
+    name: 'PageListView',
     props: {
         expenses: {
             type: Object,

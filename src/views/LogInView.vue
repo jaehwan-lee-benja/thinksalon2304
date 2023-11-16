@@ -1,5 +1,13 @@
 <template>
-  <div></div>
+  test: {{ this.testData }}
+  <div v-if="loginMode" >
+    <button @click="loginGoogle">구글 로그인</button>
+    <p> *버튼을 눌러 로그인할 수 있습니다.</p>
+  </div>
+  <div v-else>
+    <p> 로그인 계정: {{ email }}</p>
+    <button :class="loginBtn" @click="signout">로그아웃</button>
+  </div>
 </template>
 
 <script>
@@ -7,7 +15,13 @@
 import { supabase } from '../lib/supabaseClient.js'
 
 export default {
-
+  name: 'LogInView',
+  props: {
+    testData: {
+        type: Object,
+        default: () => { }
+    }, 
+  },
   data() {
     return {
       isNewUser: '',
@@ -28,12 +42,12 @@ export default {
         //   redirectTo: 'https://thinksalon.github.io/moneyflow/'
         // } // 질문
       })
-      console.log("data = ", data);
-      console.log("error = ", error);
+      console.log("*data = ", data);
+      console.log("*error = ", error);
     },
     async signout() {
       const { error } = await supabase.auth.signOut()
-      console.log("error = ", error);
+      console.log("*error = ", error);
       if (error == null) {
         alert('로그아웃 되었습니다.')
         window.location.reload(true); // 리로드 방식 expense를 []로
@@ -42,6 +56,7 @@ export default {
       }
     },
     async fetchDataForLogIn() {
+      console.log("this.testData @LogInView = ", this.testData)
 
       const fetchedData = await supabase
         .from('expense')
@@ -132,8 +147,8 @@ export default {
     },
     async getSession() {
       const { data, error } = await supabase.auth.getSession()
-      console.log("getSession = ", data)
-      console.log("error = ", error)
+      console.log("*getSession = ", data)
+      console.log("*error = ", error)
       return data;
     },
     sessionListener() {

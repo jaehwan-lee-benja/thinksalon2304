@@ -300,3 +300,8 @@ input:read-only {
   background: rgba(0, 0, 0, 0.7); /* 검정색 음영, 0.7은 투명도를 나타냅니다 */
   z-index: 998; /* 모달보다 아래에 위치해야 합니다 */
 }
+
+.testDiv {
+  width: 0px;
+  height: 0px;
+}

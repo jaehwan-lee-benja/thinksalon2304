@@ -14,7 +14,7 @@
 <script>
 
 export default {
-    name: 'NewListItem',
+    name: 'NewListFunction',
     props: {
         expenseId: {
             type: String,
