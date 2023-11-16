@@ -115,14 +115,26 @@ button:hover{
 .flowViewDiv {
   border-radius: 10px;
   background-color:white;
-  min-width: 200px;
+  width: 600px;
+  height: 600px;
   box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 5px 5px rgba(0,0,0,0.22);
 }
 
+.graph {
+  width: 800px;
+  height: 800px;
+}
+
 .graphDiv {
-  height: 85%;
-  padding: 10px;
-  overflow: hidden;
+  --svg-height: 400px;
+  /* height: 85%; */
+  /* padding: 10px; */
+  /* overflow: hidden; */
+}
+
+.graphDiv .v-network-graph {
+  height : var(--svg-height);
+  width : var(--svg-height);
 }
 
 /* --이하 정리 필요-- */

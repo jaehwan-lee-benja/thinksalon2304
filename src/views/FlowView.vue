@@ -1,7 +1,12 @@
 <template>
+    <VNetworkGraph ref="vng" 
+    class="graph"
+    :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs" />
+    
     <button @click="formatExpenses" :class="flowViewBtn">새로고침</button>
     <div :class="graphDiv">
-        <VNetworkGraph class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs" />
+        <!-- <VNetworkGraph class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs" /> -->
+        
     </div>
 </template>
 
@@ -15,11 +20,11 @@ export default {
     props: {
         expenses: {
             type: Object,
-            default: () => { }
+            default: () => { } 
         }, 
     },
     mounted() {
-        this.formatExpenses()
+        //this.formatExpenses() 
     },
     data() {
         return {
@@ -30,8 +35,12 @@ export default {
             },
             configs: {
                 view: {  
-                    autoPanAndZoomOnLoad: "fit-content",
-                    onBeforeInitialDisplay: () => this.formatLayout(),
+                    grid: {
+                        visible: true
+                    }
+                    // autoPanAndZoomOnLoad: "fit-content",
+                    // autoPanOnResize: false,
+                    // onBeforeInitialDisplay: () => this.formatExpenses(),
                 },
                 node: {
                     normal: {
@@ -60,6 +69,7 @@ export default {
     methods: {
         formatLayout() {
             const nodeSize = 30
+            console.log("nodeSize = ", nodeSize);
             const direction = "TB" // "TB" | "LR"
             if (Object.keys(this.nodes).length <= 1 || Object.keys(this.edges).length == 0) {
                 return
@@ -73,7 +83,7 @@ export default {
                 rankdir: direction,
                 nodesep: nodeSize,
                 edgesep: nodeSize,
-                ranksep: nodeSize * 4, 
+                ranksep: nodeSize * 4,  
             })
             // Default to assigning a new object as a label for each new edge.
             g.setDefaultEdgeLabel(() => ({}))
@@ -97,6 +107,7 @@ export default {
                 const x = g.node(nodeId).x
                 const y = g.node(nodeId).y
                 this.layouts.nodes[nodeId] = { x, y }
+                console.log(nodeId, " | ", x, " | ", y)
             })
 
             
@@ -120,11 +131,22 @@ export default {
                     }
                 })
                 this.edges = edgeResult
+
+                const vngref = this.$refs.vng
+                vngref?.transitionWhile(() => {
+                    console.log('vng ref', vngref)
+                    this.formatLayout()
+                    // vngref.panToCenter()
+                    //vngref.fitToContents()
+                })
+                vngref.setViewBox({top: -100, bottom: 500, left: -100, right: 500})
+                console.log(vngref.getViewBox())    
+
+
             }
-            this.formatLayout()
         },
 
-    },
+    }, 
     components: {
         VNetworkGraph
     }

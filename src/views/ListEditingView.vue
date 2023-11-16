@@ -19,6 +19,12 @@
         </div>
     </div>
 
+    <FlowView v-bind:expenses="expenses" />
+
+    <div :class="flowViewDiv_">
+            <h2>플로우 뷰</h2>
+            
+        </div>
 
     <div :class="viewGrid">
         <div :class="listViewDiv">
@@ -92,10 +98,6 @@
                     @create-new-expense="createNewExpense" />
             </ol>
 
-        </div>
-        <div :class="flowViewDiv">
-            <h2>플로우 뷰</h2>
-            <FlowView v-bind:expenses="expenses" />
         </div>
     </div>
 
