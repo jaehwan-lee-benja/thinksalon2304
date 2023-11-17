@@ -20,6 +20,8 @@
     </div>
 
 
+   
+
     <div :class="viewGrid">
         <div :class="listViewDiv">
 
@@ -94,7 +96,6 @@
 
         </div>
         <div :class="flowViewDiv">
-            <h2>플로우 뷰</h2>
             <FlowView v-bind:expenses="expenses" />
         </div>
     </div>
