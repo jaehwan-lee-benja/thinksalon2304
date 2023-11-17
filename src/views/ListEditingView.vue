@@ -18,10 +18,7 @@
             }" :disabled="!isEdited" @click="cancelEditing">편집 취소</button> -->
         </div>
     </div>
-
-
-   
-
+    
     <div :class="viewGrid">
         <div :class="listViewDiv">
 
@@ -111,6 +108,13 @@ import FlowView from './FlowView.vue'
 //   import PieChart from './Pie.vue'
 
 export default {
+    name: 'ListEditingView',
+    props: {
+        expenses2: {
+            type: Object,
+            default: () => {}
+        },
+    },
 
     data() {
         return {
@@ -192,6 +196,9 @@ export default {
             this.isLiMoreDivOpened = !this.isLiMoreDivOpened;
         },
         selectPage() {
+            console.log("expenses2 @ListEditingView2= ", this.expenses2)
+            setTimeout(console.log("expenses2 @ListEditingView3= ", this.expenses2),100000)
+
             let selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)
             if (selectedPage.length == 0) {
                 selectedPage = [this.expensePages[0]]
@@ -291,7 +298,6 @@ export default {
 
         },
         async fetchData() {
-
             this.fetchDataForPage()
             const a = await supabase
                 .from('expense')

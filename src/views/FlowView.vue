@@ -136,13 +136,7 @@ export default {
                 this.formatLayout()
 
                 const vngref = this.$refs.vng
-
-                vngref?.transitionWhile(() => {
-                    console.log('vng ref', vngref)
-                    vngref.fitToContents()
-                })
-                // vngref.setViewBox({top: -100, bottom: 500, left: -100, right: 500})
-                // console.log(vngref.getViewBox())    
+                vngref?.transitionWhile(() => vngref.fitToContents())  
  
 
             }
