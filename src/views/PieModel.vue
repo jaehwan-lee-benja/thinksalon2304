@@ -1,10 +1,10 @@
 <template>
-  <Pie :chart-options="chartOptions" :chart-data="getChartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
+  <PieModel :chart-options="chartOptions" :chart-data="getChartData" :chart-id="chartId" :dataset-id-key="datasetIdKey"
     :plugins="plugins" :css-classes="cssClasses" :styles="styles" :width="width" :height="height" />
 </template>
   
 <script>
-import { Pie } from 'vue-chartjs'
+import { PieModel } from 'vue-chartjs'
 
 import {
   Chart as ChartJS,
@@ -18,9 +18,9 @@ import {
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale)
 
 export default {
-  name: 'PieChart',
+  name: 'PieModel',
   components: {
-    Pie
+    PieModel
   },
   props: {
     expenses: {

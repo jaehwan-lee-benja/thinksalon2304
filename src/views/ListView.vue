@@ -16,21 +16,21 @@
             v-for="expense2 in sortChildrenByIdAndLevel(this.getTotalExpense.id, this.getTotalExpense.level)"
             :key="expense2.index">
 
-            <ListItem v-bind:expenses="expenses" :expenseId="expense2.id" @remove-expense="removeExpense"
+            <ListModel v-bind:expenses="expenses" :expenseId="expense2.id" @remove-expense="removeExpense"
                 @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[expense2.id]" />
 
             <ol :class="olBgStyle" v-if="expense2.show_sub_list">
                 <li :class="listViewLiStyle" v-for="expense3 in sortChildrenByIdAndLevel(expense2.id, expense2.level)"
                     :key="expense3.index">
 
-                    <ListItem v-bind:expenses="expenses" :expenseId="expense3.id" @remove-expense="removeExpense"
+                    <ListModel v-bind:expenses="expenses" :expenseId="expense3.id" @remove-expense="removeExpense"
                         @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[expense3.id]" />
 
                     <ol :class="olBgStyle" v-if="expense3.show_sub_list">
                         <li :class="listViewLiStyle"
                             v-for="expense4 in sortChildrenByIdAndLevel(expense3.id, expense3.level)" :key="expense4.index">
 
-                            <ListItem v-bind:expenses="expenses" :expenseId="expense4.id" @remove-expense="removeExpense"
+                            <ListModel v-bind:expenses="expenses" :expenseId="expense4.id" @remove-expense="removeExpense"
                                 @toggle-sub-list="toggleSubList"
                                 :toggleActiveHandler="this.toggleActiveHandler[expense4.id]" />
 
@@ -39,27 +39,27 @@
                                     v-for="expense5 in sortChildrenByIdAndLevel(expense4.id, expense4.level)"
                                     :key="expense5.index">
 
-                                    <ListItem v-bind:expenses="expenses" :expenseId="expense5.id"
+                                    <ListModel v-bind:expenses="expenses" :expenseId="expense5.id"
                                         @remove-expense="removeExpense" @toggle-sub-list="toggleSubList"
                                         :toggleActiveHandler="this.toggleActiveHandler[expense5.id]" />
 
                                 </li>
-                                <NewListItem v-bind:expenses="expenses" :expenseId="expense4.id"
+                                <NewListModel v-bind:expenses="expenses" :expenseId="expense4.id"
                                     @create-new-expense="createNewExpense" />
                             </ol>
 
                         </li>
-                        <NewListItem v-bind:expenses="expenses" :expenseId="expense3.id"
+                        <NewListModel v-bind:expenses="expenses" :expenseId="expense3.id"
                             @create-new-expense="createNewExpense" />
                     </ol>
 
                 </li>
-                <NewListItem v-bind:expenses="expenses" :expenseId="expense2.id" @create-new-expense="createNewExpense" />
+                <NewListModel v-bind:expenses="expenses" :expenseId="expense2.id" @create-new-expense="createNewExpense" />
             </ol>
 
         </li>
 
-        <NewListItem v-bind:expenses="expenses" :expenseId="this.getTotalExpense.id"
+        <NewListModel v-bind:expenses="expenses" :expenseId="this.getTotalExpense.id"
             @create-new-expense="createNewExpense" />
     </ol>
 
@@ -68,8 +68,8 @@
 <script>
 
 import { supabase } from '../lib/supabaseClient.js'
-import ListItem from './ListItem.vue'
-import NewListItem from './NewListItem.vue'
+import ListModel from './ListModel.vue'
+import NewListModel from './NewListModel.vue'
 
 export default {
     name: 'ListView',
@@ -288,10 +288,8 @@ export default {
         }
     },
     components: {
-        ListItem,
-        NewListItem,
-        // FlowView,
-        //   PieChart
+        ListModel,
+        NewListModel,
     }
 }
 </script>

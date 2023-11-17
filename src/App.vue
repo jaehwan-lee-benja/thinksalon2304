@@ -1,32 +1,18 @@
 <template>
-  <div :class="controlGrid">
-    <div></div>
-    <div :class="saveEditedDiv">
-      <button :class="{
-        'saveEditedStyle_active': isEdited === true,
-        'saveEditedStyle_inactive': isEdited === false
-      }" :disabled="!isEdited" @click="editExpenses">편집한 내용 저장</button>
-      <button :class="{
-        'cancelEditedStyle_active': isEdited === true,
-        'cancelEditedStyle_inactive': isEdited === false
-      }" :disabled="!isEdited" @click="cancelEditing">편집 취소</button>
-    </div>
-  </div>
   <div :class="menuMainGrid">
     <div :class="menuGrid">
       <div :class="pageListDiv">
 
-        <div :class="pageDiv">
-          <select :class="pageSelect" v-model="pageName" @change="selectPage()">
-            <option v-for="(page, index) in this.expensePages" :key="index" :value="page.page_name">
-              {{ page.page_name }}
-            </option>
-          </select>
-        </div>
+        <select :class="pageSelect" v-model="pageName" @change="selectPage()">
+          <option v-for="(page, index) in this.expensePages" :key="index" :value="page.page_name">
+            {{ page.page_name }}
+          </option>
+        </select>
 
-        <button @click="openPageDiv()">페이지 설정하기</button>
+        <button :class="pageSettingBtn" @click="openPageDiv()">페이지 설정하기</button>
         <div v-if="isPageDivOpened" :class="modal">
-          <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" @remove-e-by-pageId="removeExpenseByPageDelete" />
+          <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages"
+            @remove-e-by-pageId="removeExpenseByPageDelete" />
         </div>
         <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
 
@@ -43,12 +29,26 @@
       </div>
     </div>
     <div :class="mainDiv">
-      <div :class="viewGrid">
-        <div :class="listViewDiv">
-          <ListView v-bind:expenses="expenses" />
+      <div :class="controlGrid">
+        <div :class="saveEditedDiv">
+          <button :class="{
+            'saveEditedStyle_active': isEdited === true,
+            'saveEditedStyle_inactive': isEdited === false
+          }" :disabled="!isEdited" @click="editExpenses">편집한 내용 저장</button>
+          <button :class="{
+            'cancelEditedStyle_active': isEdited === true,
+            'cancelEditedStyle_inactive': isEdited === false
+          }" :disabled="!isEdited" @click="cancelEditing">편집 취소</button>
         </div>
+        <div></div>
+      </div>
+      <div :class="viewGrid">
+        
         <div :class="flowViewDiv">
           <FlowView v-bind:expenses="expenses" />
+        </div>
+        <div :class="listViewDiv">
+          <ListView v-bind:expenses="expenses" />
         </div>
       </div>
     </div>
@@ -57,7 +57,7 @@
 
 <script>
 import { supabase } from './lib/supabaseClient.js'
-import LogIn from './views/LogIn.vue'
+import LoginSessionModel from './views/LoginSessionModel.vue'
 import ListView from './views/ListView.vue'
 import FlowView from './views/FlowView.vue'
 import PageSettingView from './views/PageSettingView.vue'
@@ -83,7 +83,6 @@ export default {
       loginDiv: 'loginDiv',
       modal: 'modal',
       modalOverlay: 'modalOverlay',
-      pageDiv: 'pageDiv',
       pageSelect: 'pageSelect',
       controlGrid: 'controlGrid',
       saveEditedDiv: 'saveEditedDiv',
@@ -94,9 +93,10 @@ export default {
       viewGrid: 'viewGrid',
       listViewDiv: 'listViewDiv',
       flowViewDiv: 'flowViewDiv',
+      pageSettingBtn: 'pageSettingBtn',
     }
   },
-  mixins: [LogIn],
+  mixins: [LoginSessionModel],
   components: {
     ListView,
     FlowView,

@@ -1,7 +1,7 @@
 <template>
     <div :class="pageListStyle">
-        <h1>페이지 설정하기</h1>
-        <div>
+        <h2>페이지 설정하기</h2>
+        <div :class="createNewPageDiv">
             <h4>새 페이지 만들기</h4>
             <span>새 페이지명: </span>
             <input v-model="this.newPageName" placeholder="새 페이지명 적기">
@@ -38,10 +38,9 @@ export default {
     },
     data() {
         return {
-
-            newPageName: "",
-
-            pageListStyle: "pageListStyle",
+            newPageName: '',
+            pageListStyle: 'pageListStyle',
+            createNewPageDiv: 'createNewPageDiv'
         }
     },
     methods: {
