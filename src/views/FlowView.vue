@@ -1,13 +1,12 @@
 <template>
-    <VNetworkGraph ref="vng" 
-    class="graph"
-    :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs" />
+        <button @click="formatExpenses" :class="flowViewBtn">새로고침</button>
+        <div :class="graphDiv">
+            <VNetworkGraph ref="vng" 
+            class="graph"
+            :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs" />  
+        </div>
     
-    <button @click="formatExpenses" :class="flowViewBtn">새로고침</button>
-    <div :class="graphDiv">
-        <!-- <VNetworkGraph class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs" /> -->
-        
-    </div>
+    
 </template>
 
 <script> 
@@ -34,12 +33,14 @@ export default {
                 nodes: {},
             },
             configs: {
-                view: {  
+                view: {
+                    fitContentMargin: 20,
                     grid: {
-                        visible: true
-                    }
-                    // autoPanAndZoomOnLoad: "fit-content",
-                    // autoPanOnResize: false,
+                        visible: false,
+                        interval: 20
+                    },
+                    autoPanAndZoomOnLoad: "fit-content",
+                    autoPanOnResize: false,
                     // onBeforeInitialDisplay: () => this.formatExpenses(),
                 },
                 node: {
@@ -62,6 +63,7 @@ export default {
                     }
                 }
             },
+            flowViewDiv2: 'flowViewDiv2',
             graphDiv: 'graphDiv',
             flowViewBtn: 'flowViewBtn',
         }
@@ -69,7 +71,6 @@ export default {
     methods: {
         formatLayout() {
             const nodeSize = 30
-            console.log("nodeSize = ", nodeSize);
             const direction = "TB" // "TB" | "LR"
             if (Object.keys(this.nodes).length <= 1 || Object.keys(this.edges).length == 0) {
                 return
@@ -107,7 +108,7 @@ export default {
                 const x = g.node(nodeId).x
                 const y = g.node(nodeId).y
                 this.layouts.nodes[nodeId] = { x, y }
-                console.log(nodeId, " | ", x, " | ", y)
+                // console.log(nodeId, " | ", x, " | ", y)
             })
 
             
@@ -131,17 +132,18 @@ export default {
                     }
                 })
                 this.edges = edgeResult
+                
+                this.formatLayout()
 
                 const vngref = this.$refs.vng
+
                 vngref?.transitionWhile(() => {
                     console.log('vng ref', vngref)
-                    this.formatLayout()
-                    // vngref.panToCenter()
-                    //vngref.fitToContents()
+                    vngref.fitToContents()
                 })
-                vngref.setViewBox({top: -100, bottom: 500, left: -100, right: 500})
-                console.log(vngref.getViewBox())    
-
+                // vngref.setViewBox({top: -100, bottom: 500, left: -100, right: 500})
+                // console.log(vngref.getViewBox())    
+ 
 
             }
         },

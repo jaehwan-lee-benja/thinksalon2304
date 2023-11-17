@@ -45,10 +45,11 @@ button:hover{
   color: #9BA8AB;
 }
 .flowViewBtn {
-  margin: 0 20px;
-  background-color: transparent;
-  border: 1px solid #9BA8AB;
-  color: #9BA8AB;
+  position: absolute;
+  margin: 20px;
+  background-color: #11212D;
+  color: white;
+  z-index: 1;
 }
 
 
@@ -113,29 +114,26 @@ button:hover{
 }
 
 .flowViewDiv {
+  padding: 10px;
   border-radius: 10px;
   background-color:white;
-  width: 600px;
-  height: 600px;
+  width: 100%;
+  height: 100%;
   box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 5px 5px rgba(0,0,0,0.22);
 }
 
-.graph {
-  width: 800px;
-  height: 800px;
-}
 
 .graphDiv {
-  --svg-height: 400px;
-  /* height: 85%; */
-  /* padding: 10px; */
+  /* --svg-height: 200px; */
+  height: 100%;
+  padding: 10px;
   /* overflow: hidden; */
 }
 
-.graphDiv .v-network-graph {
-  height : var(--svg-height);
+/* .graphDiv .v-network-graph {
+  height : 90%;
   width : var(--svg-height);
-}
+} */
 
 /* --이하 정리 필요-- */
 
