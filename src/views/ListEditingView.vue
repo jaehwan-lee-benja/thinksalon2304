@@ -1,28 +1,20 @@
 <template>
     <div :class="controlGrid">
-        <div :class="pageDiv">
-            <select :class="pageSelect" v-model="pageName" @change="selectPage()">
-                <option v-for="(page, index) in this.expensePages" :key="index" :value="page.page_name">
-                    {{ page.page_name }}
-                </option>
-            </select>
-        </div>
+        <div></div>
         <div :class="saveEditedDiv">
             <button :class="{
                 'saveEditedStyle_active': isEdited === true,
                 'saveEditedStyle_inactive': isEdited === false
             }" :disabled="!isEdited" @click="editExpenses">편집한 내용 저장</button>
-            <!-- <button :class="{
+            <button :class="{
                 'cancelEditedStyle_active': isEdited === true,
                 'cancelEditedStyle_inactive': isEdited === false
-            }" :disabled="!isEdited" @click="cancelEditing">편집 취소</button> -->
+            }" :disabled="!isEdited" @click="cancelEditing">편집 취소</button>
         </div>
     </div>
-    
+
     <div :class="viewGrid">
         <div :class="listViewDiv">
-
-            <h2>리스트 뷰</h2>
 
             <div :class="listViewLiDiv">
                 <input :class="categoryStyle" :value="this.getTotalExpense.category">
@@ -155,8 +147,8 @@ export default {
         }
     },
     mounted() {
-        this.fetchData(),
-            this.monitorIsEdited()
+        this.fetchData()
+            // this.monitorIsEdited()
     },
     computed: {
         getTotalExpense() {
@@ -264,15 +256,15 @@ export default {
                 this.upsertData(expenseHere)
             }
         },
-        monitorIsEdited() {
-            if (this.isEdited) {
-                // 편집된 것이 있는 경우
-                this.isEditValue = true;
-            } else {
-                // 편집된 것이 없는 경우
-                this.isEditValue = false;
-            }
-        },
+        // monitorIsEdited() {
+        //     if (this.isEdited) {
+        //         // 편집된 것이 있는 경우
+        //         this.isEditValue = true;
+        //     } else {
+        //         // 편집된 것이 없는 경우
+        //         this.isEditValue = false;
+        //     }
+        // },
         createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere) {
 
             const levelForO = parentsLevelHere + 1;

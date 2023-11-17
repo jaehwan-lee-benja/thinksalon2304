@@ -82,11 +82,12 @@ button:hover{
 
 .controlGrid {
   display: grid;
-  grid-template-columns: 3fr 1fr;
+  grid-template-columns: 2fr 1fr;
   grid-gap: 10px;
   margin: 20px;
   height: 50px;
 }
+
 .pageSelect {
   font-weight: bold;
   background-color: transparent;
@@ -177,7 +178,7 @@ input:read-only {
   color: #11212D;
 }
 .saveEditedStyle_active {
-  width: 100%;
+  width: 49%;
   height: 40px;
   color: white;
   background-color: #004EFC;
@@ -185,13 +186,31 @@ input:read-only {
   margin: 0.5%;
 }
 .saveEditedStyle_inactive {
-  width: 100%;
+  width: 49%;
   height: 40px;
   color: white;
   background-color: #9BA8AB;
   border: 1px solid #9BA8AB;
   margin: 0.5%;
 }
+
+.cancelEditedStyle_active {
+  width: 49%;
+  height: 40px;
+  color: rgb(168, 40, 40);
+  background-color: transparent;
+  border: 1px solid rgb(168, 40, 40);
+  margin: 0.5%;
+}
+.cancelEditedStyle_inactive {
+  width: 49%;
+  height: 40px;
+  color: #9BA8AB;
+  background-color: transparent;
+  border: 1px solid #9BA8AB;
+  margin: 0.5%;
+}
+
 .toggleBtnStyle_active {
   color: rgb(0, 33, 45);
   background-color: transparent;
@@ -216,24 +235,9 @@ input:read-only {
   
 }
 
-.cancelEditedStyle_active {
-  width: 49%;
-  height: 40px;
-  color: rgb(168, 40, 40);
-  background-color: transparent;
-  border: 1px solid rgb(168, 40, 40);
-  margin: 0.5%;
-}
-.cancelEditedStyle_inactive {
-  width: 49%;
-  height: 40px;
-  color: #9BA8AB;
-  background-color: transparent;
-  border: 1px solid #9BA8AB;
-  margin: 0.5%;
-}
+
 .saveEditedDiv {
-  width: 50%;
+  width: 100%;
   margin: auto;
 }
 .listViewLiDiv {

@@ -1,12 +1,32 @@
 <template>
+  <div :class="saveEditedDiv">
+    <button :class="{
+      'saveEditedStyle_active': isEdited === true,
+      'saveEditedStyle_inactive': isEdited === false
+    }" :disabled="!isEdited" @click="editExpenses">편집한 내용 저장</button>
+    <button :class="{
+      'cancelEditedStyle_active': isEdited === true,
+      'cancelEditedStyle_inactive': isEdited === false
+    }" :disabled="!isEdited" @click="cancelEditing">편집 취소</button>
+  </div>
   <div :class="menuMainGrid">
     <div :class="menuGrid">
       <div :class="pageListDiv">
+
+        <div :class="pageDiv">
+          <select :class="pageSelect" v-model="pageName" @change="selectPage()">
+            <option v-for="(page, index) in this.expensePages" :key="index" :value="page.page_name">
+              {{ page.page_name }}
+            </option>
+          </select>
+        </div>
+
         <button @click="openPageDiv()">페이지 설정하기</button>
         <div v-if="isPageDivOpened" :class="modal">
           <PageList v-bind:expenses2="expenses2" @remove-e-by-pageId="removeExpenseByPageDelete" />
         </div>
         <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
+
       </div>
       <div :class="loginDiv">
         <div v-if="loginMode">
@@ -20,7 +40,7 @@
       </div>
     </div>
     <div :class="mainDiv">
-      <ListEditingView v-bind:expenses2="expenses2"/>
+      <ListEditingView v-bind:expenses2="expenses2" />
     </div>
   </div>
 </template>
@@ -64,6 +84,31 @@ export default {
   mounted() {
     this.fetchData(),
       this.fetchDataForPage()
+  },
+  computed: {
+    isEdited() {
+
+      const fetched = this.fetchedExpenses.map(e => ({
+        category: e.category,
+        amount: Number(e.amount)
+      })
+      );
+
+      const edited = this.expenses2.map(e => ({
+        category: e.category,
+        amount: Number(e.amount)
+      })
+      );
+
+      const fetchedData = JSON.stringify(fetched);
+      const editedData = JSON.stringify(edited);
+      const result = (fetchedData || "") != (editedData || "")
+
+      console.log("result = ", result)
+
+      return false
+
+    },
   },
   methods: {
     async fetchData() {
