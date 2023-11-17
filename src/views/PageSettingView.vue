@@ -7,7 +7,7 @@
             <input v-model="this.newPageName" placeholder="새 페이지명 적기">
             <button @click="createNewPage">만들기</button>
         </div>
-        
+
         <div>
             <h4>기존 페이지 수정하기</h4>
             <ol>
@@ -25,19 +25,19 @@
 import { supabase } from '../lib/supabaseClient.js'
 
 export default {
-    name: 'PageList',
+    name: 'PageListView',
     props: {
         expenses: {
             type: Object,
-            default: () => {}
+            default: () => { }
         },
-    },
-    mounted() {
-        this.fetchDataForPage()
+        expensePages: {
+            type: Object,
+            default: () => { }
+        },
     },
     data() {
         return {
-            expensePages: [],
 
             newPageName: "",
 
@@ -45,41 +45,33 @@ export default {
         }
     },
     methods: {
-        async fetchDataForPage() {
-            const a = await supabase
-                .from('expense_page')
-                .select()
-            const { data } = a;
-            this.expensePages = data;
-        },
         createNewPage() {
-            const o = { 
+            const o = {
                 id: this.getUuidv4(),
                 page_name: this.newPageName,
             }
             this.upsertPage(o);
             this.upsertInitailData(o.id);
-            this.fetchDataForPage()
         },
         upsertInitailData(idHere) {
             const initialExpenseData = {
-            id: this.getUuidv4(),
-            parents_id: null,
-            category: '총계',
-            amount: 0,
-            order: null,
-            level: 1,
-            page_id: idHere
+                id: this.getUuidv4(),
+                parents_id: null,
+                category: '총계',
+                amount: 0,
+                order: null,
+                level: 1,
+                page_id: idHere
             }
             this.upsertData(initialExpenseData)
         },
         async upsertData(dataHere) {
             try {
                 const { error } = await supabase
-                .from('expense')
-                .upsert(dataHere)
+                    .from('expense')
+                    .upsert(dataHere)
                 if (error) {
-                throw error;
+                    throw error;
                 }
             } catch (error) {
                 console.error(error);
@@ -105,7 +97,7 @@ export default {
                 console.error(error);
             }
 
-                
+
         },
         async deletePage(pageIdHere) {
             const confirmValue = confirm("정말로 삭제하시겠습니까? 삭제된 데이터는 복구가 불가능합니다.")
@@ -118,7 +110,7 @@ export default {
                         .delete()
                         .eq('id', pageIdHere)
 
-                        alert('삭제되었습니다.')
+                    alert('삭제되었습니다.')
 
                     if (error) {
                         throw error;
@@ -141,5 +133,7 @@ export default {
 }
 </script>
 
-<style scoped>@import '../style.css';</style>
+<style scoped>
+@import '../style.css';
+</style>
 

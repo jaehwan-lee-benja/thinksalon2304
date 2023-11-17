@@ -1,13 +1,16 @@
 <template>
-  <div :class="saveEditedDiv">
-    <button :class="{
-      'saveEditedStyle_active': isEdited === true,
-      'saveEditedStyle_inactive': isEdited === false
-    }" :disabled="!isEdited" @click="editExpenses">편집한 내용 저장</button>
-    <button :class="{
-      'cancelEditedStyle_active': isEdited === true,
-      'cancelEditedStyle_inactive': isEdited === false
-    }" :disabled="!isEdited" @click="cancelEditing">편집 취소</button>
+  <div :class="controlGrid">
+    <div></div>
+    <div :class="saveEditedDiv">
+      <button :class="{
+        'saveEditedStyle_active': isEdited === true,
+        'saveEditedStyle_inactive': isEdited === false
+      }" :disabled="!isEdited" @click="editExpenses">편집한 내용 저장</button>
+      <button :class="{
+        'cancelEditedStyle_active': isEdited === true,
+        'cancelEditedStyle_inactive': isEdited === false
+      }" :disabled="!isEdited" @click="cancelEditing">편집 취소</button>
+    </div>
   </div>
   <div :class="menuMainGrid">
     <div :class="menuGrid">
@@ -23,7 +26,7 @@
 
         <button @click="openPageDiv()">페이지 설정하기</button>
         <div v-if="isPageDivOpened" :class="modal">
-          <PageList v-bind:expenses2="expenses2" @remove-e-by-pageId="removeExpenseByPageDelete" />
+          <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" @remove-e-by-pageId="removeExpenseByPageDelete" />
         </div>
         <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
 
@@ -40,7 +43,14 @@
       </div>
     </div>
     <div :class="mainDiv">
-      <ListEditingView v-bind:expenses2="expenses2" />
+      <div :class="viewGrid">
+        <div :class="listViewDiv">
+          <ListView v-bind:expenses="expenses" />
+        </div>
+        <div :class="flowViewDiv">
+          <FlowView v-bind:expenses="expenses" />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -48,15 +58,16 @@
 <script>
 import { supabase } from './lib/supabaseClient.js'
 import LogIn from './views/LogIn.vue'
-import ListEditingView from './views/ListEditingView.vue'
-import PageList from './views/PageList.vue'
+import ListView from './views/ListView.vue'
+import FlowView from './views/FlowView.vue'
+import PageSettingView from './views/PageSettingView.vue'
 
 export default {
   data() {
     return {
 
       totalExpenses: [],
-      expenses2: [],
+      expenses: [],
       fetchedExpenses: [],
       selectedPageId: '',
 
@@ -74,12 +85,22 @@ export default {
       modalOverlay: 'modalOverlay',
       pageDiv: 'pageDiv',
       pageSelect: 'pageSelect',
+      controlGrid: 'controlGrid',
+      saveEditedDiv: 'saveEditedDiv',
+      saveEditedStyle_active: 'saveEditedStyle_active',
+      saveEditedStyle_inactive: 'saveEditedStyle_inactive',
+      cancelEditedStyle_active: 'cancelEditedStyle_active',
+      cancelEditedStyle_inactive: 'cancelEditedStyle_inactive',
+      viewGrid: 'viewGrid',
+      listViewDiv: 'listViewDiv',
+      flowViewDiv: 'flowViewDiv',
     }
   },
   mixins: [LogIn],
   components: {
-    ListEditingView,
-    PageList,
+    ListView,
+    FlowView,
+    PageSettingView,
   },
   mounted() {
     this.fetchData(),
@@ -94,7 +115,7 @@ export default {
       })
       );
 
-      const edited = this.expenses2.map(e => ({
+      const edited = this.expenses.map(e => ({
         category: e.category,
         amount: Number(e.amount)
       })
@@ -104,9 +125,7 @@ export default {
       const editedData = JSON.stringify(edited);
       const result = (fetchedData || "") != (editedData || "")
 
-      console.log("result = ", result)
-
-      return false
+      return result
 
     },
   },
@@ -122,9 +141,9 @@ export default {
 
       this.totalExpenses = data;
       this.selectPage();
-      this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses2));
+      this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
 
-      this.expenses2.forEach(e => {
+      this.expenses.forEach(e => {
         if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
       })
 
@@ -142,13 +161,13 @@ export default {
         selectedPage = [this.expensePages[0]]
       }
       this.selectedPageId = selectedPage[0].id
-      this.expenses2 = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
-      console.log("this.expenses2 @selectPage= ", this.expenses2);
-      this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses2));
-      this.expenses2.forEach(e => {
+      this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
+      console.log("this.expenses @selectPage= ", this.expenses);
+      this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
+      this.expenses.forEach(e => {
         if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
       })
-      return this.expenses2
+      return this.expenses
     },
 
     async fetchDataForPage() {
