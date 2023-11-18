@@ -1,5 +1,6 @@
 <template>
-    <div :class="newListDivStyle">
+    <button :class="moreBtn" @click="handlerNewListDiv()"> 새 리스트 더하기 </button>
+    <div :class="newListDiv" v-if="isNewListDivOpened">
         <form @submit.prevent="createNewExpense(getExpenseById[0].id, getExpenseById[0].level)">
         <div :class="listViewLiDiv">
             <input :class="categoryStyle" v-model="this.newCategory" placeholder="새 리스트 적기">
@@ -32,7 +33,10 @@ export default {
             amountStyle: 'amountStyle',
             newCategory: '',
             newAmount: '',
-            newListDivStyle: 'newListDivStyle'
+            newListDiv: 'newListDiv',
+            moreBtn: 'moreBtn',
+
+            isNewListDivOpened: false,
         }
     },
     computed: {
@@ -41,6 +45,9 @@ export default {
         }
     },
     methods: {
+        handlerNewListDiv() {
+            this.isNewListDivOpened = !this.isNewListDivOpened;
+        },
         createNewExpense(parentsIdHere, parentsLevelHere) {
             this.$emit('create-new-expense', parentsIdHere, parentsLevelHere, this.newCategory, this.newAmount);
             this.newCategory = ''

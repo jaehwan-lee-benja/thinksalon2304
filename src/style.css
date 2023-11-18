@@ -36,10 +36,11 @@ button:hover{
 .loginBtn {
   margin: 0;
 }
-.liMoreBtn {
+.moreBtn {
   background-color: transparent;
   border: 1px solid #9BA8AB;
   color: #9BA8AB;
+  margin: 0 10px;
 }
 .flowViewBtn {
   position: absolute;
@@ -262,7 +263,7 @@ input:read-only {
   border: 0px solid white;
   border-radius: 2px;
   background-color: white;
-  margin: 5px 10px;
+  margin: 5px 0px 5px 10px;
   /* max-width: 300px; */
   display: inline;
 }
@@ -296,16 +297,16 @@ input:read-only {
 /* .olBgStyle_hover {
   border: 2px solid #FFFFFF;
 } */
-.newListDivStyle {
+/*.newListDiv {
   margin-top: 7px;
-  /* margin-left: -4px; */
+  margin-left: -4px;
   opacity: 0.5;
-  filter: Alpha(opacity=50); /* IE8 이하 호환을 위해서 */
-}
-.newListDivStyle:hover {
+  filter: Alpha(opacity=50); 
+} */
+/* .newListDiv:hover {
   opacity: 1;
-  filter: Alpha(opacity=100); /* IE8 이하 호환을 위해서 */
-}
+  filter: Alpha(opacity=100);
+} */
 .pageListStyle {
   margin: 10px;
   padding: 10px;

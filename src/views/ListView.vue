@@ -4,7 +4,7 @@
         <span> : </span>
         <input :class="amountStyle" :value="this.getTotalExpense.amount">
     </div>
-    <button :class="liMoreBtn" @click="handlerLiMoreDiv()"> … </button>
+    <button :class="moreBtn" @click="handlerLiMoreDiv()"> … </button>
     <div :class="liMoreDiv" v-if="isLiMoreDivOpened">
         <span> *하위 합계 : </span>
         <input :class="amountStyle" :value="sumExpensesForTotal(this.getTotalExpense.id)" readonly>
@@ -102,7 +102,7 @@ export default {
             listViewOlStyle: 'listViewOlStyle',
             olBgStyle: 'olBgStyle',
             liMoreDiv: 'liMoreDiv',
-            liMoreBtn: 'liMoreBtn',
+            moreBtn: 'moreBtn',
 
             isLiMoreDivOpened: false,
             toggleActiveHandler: {},
