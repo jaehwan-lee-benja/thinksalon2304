@@ -67,7 +67,6 @@
   
 <script>
 
-import { supabase } from '../lib/supabaseClient.js'
 import ListModel from './ListModel.vue'
 import NewListModel from './NewListModel.vue'
 
@@ -197,7 +196,7 @@ export default {
             this.controlToggleActiveHandler(expenseHere);
             if (expenseHere.level < 5) {
                 expenseHere.show_sub_list = !expenseHere.show_sub_list;
-                this.upsertData(expenseHere)
+                // this.upsertData(expenseHere)
             }
         },
         createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere) {
@@ -221,53 +220,10 @@ export default {
                 this.toggleActiveHandler[o.id] = false;
             }
 
-            // this.expenses.push(o); // 복구하기
+            this.$emit('create-new-expense', o)
 
         },
-        editExpenses() {
-
-            const confirmValue = confirm("수정된 내용을 저장하시겠습니까?")
-
-            if (confirmValue) {
-                const expensesIdArray = this.expenses.map(e => e.id);
-                const fetchedExpensesIdArray = this.fetchedExpenses.map(e => e.id);
-                const willBeDeletedIdArray = fetchedExpensesIdArray.filter(e => !expensesIdArray.includes(e));
-
-                willBeDeletedIdArray.forEach(e => this.deleteData(e));
-                this.expenses.forEach(e => this.upsertData(e))
-
-                this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
-
-                alert('저장되었습니다.')
-            }
-
-        },
-        async upsertData(expenseHere) {
-            try {
-                const { error } = await supabase
-                    .from('expense')
-                    .upsert(expenseHere)
-                    .eq('id', expenseHere.id)
-                if (error) {
-                    throw error;
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        },
-        async deleteData(expenseId) {
-            try {
-                const { error } = await supabase
-                    .from('expense')
-                    .delete()
-                    .eq('id', expenseId)
-                if (error) {
-                    throw error;
-                }
-            } catch (error) {
-                console.error(error);
-            }
-        },
+        
         getUuidv4() {
             return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
                 (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)

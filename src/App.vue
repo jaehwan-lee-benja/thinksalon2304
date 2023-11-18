@@ -43,12 +43,12 @@
         <div></div>
       </div>
       <div :class="viewGrid">
-        
+
         <div :class="flowViewDiv">
           <FlowView v-bind:expenses="expenses" />
         </div>
         <div :class="listViewDiv">
-          <ListView v-bind:expenses="expenses" />
+          <ListView v-bind:expenses="expenses" @create-new-expense="createNewExpense" />
         </div>
       </div>
     </div>
@@ -130,6 +130,57 @@ export default {
     },
   },
   methods: {
+    async upsertData(expenseHere) {
+      console.log("expenseHere = ", expenseHere);
+      try {
+        const { error } = await supabase
+          .from('expense')
+          .upsert(expenseHere)
+          .eq('id', expenseHere.id)
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async deleteData(expenseId) {
+      try {
+        const { error } = await supabase
+          .from('expense')
+          .delete()
+          .eq('id', expenseId)
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    editExpenses() {
+
+      const confirmValue = confirm("수정된 내용을 저장하시겠습니까?")
+
+      if (confirmValue) {
+        const expensesIdArray = this.expenses.map(e => e.id);
+        const fetchedExpensesIdArray = this.fetchedExpenses.map(e => e.id);
+        const willBeDeletedIdArray = fetchedExpensesIdArray.filter(e => !expensesIdArray.includes(e));
+
+        willBeDeletedIdArray.forEach(e => this.deleteData(e));
+        this.expenses.forEach(e => {
+          // 다른 id가 있는 경우 진행하도록 설정하기 *수정할것
+          this.upsertData(e)
+        })
+
+        this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
+
+        alert('저장되었습니다.')
+      }
+
+    },
+    createNewExpense(oHere) {
+      this.expenses.push(oHere);
+    },
     async fetchData() {
 
       this.fetchDataForPage()
@@ -156,13 +207,16 @@ export default {
     },
 
     selectPage() {
+
       let selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)
+
       if (selectedPage.length == 0) {
         selectedPage = [this.expensePages[0]]
       }
       this.selectedPageId = selectedPage[0].id
+
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
-      console.log("this.expenses @selectPage= ", this.expenses);
+
       this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
       this.expenses.forEach(e => {
         if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
