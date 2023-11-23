@@ -48,7 +48,8 @@
           <FlowView v-bind:expenses="expenses" />
         </div>
         <div :class="listViewDiv">
-          <ListView v-bind:expenses="expenses" @create-new-expense="createNewExpense" />
+          <ListView v-bind:expenses="expenses" @create-new-expense="createNewExpense" @remove-expense="removeExpense"
+            @upsert-data="upsertData" />
         </div>
       </div>
     </div>
@@ -130,6 +131,34 @@ export default {
     },
   },
   methods: {
+    removeExpense(expenseHere) {
+      console.log("expenseHere @remove = ", expenseHere);
+      this.$emit('remove-expense', expenseHere)
+      const confirmValue = confirm("내용을 삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
+
+      if (confirmValue) {
+
+        const parentsId = expenseHere.parents_id;
+        const orderRemoved = expenseHere.order;
+
+        this.expenses.forEach(e => {
+          const order = e.order;
+          if (e.parents_id == parentsId) {
+            if (order > orderRemoved) {
+              this.expenses[this.expenses.indexOf(e)].order = order - 1;
+            }
+          }
+        });
+
+        this.expenses = this.expenses.filter((t) => t !== expenseHere)
+
+        if (expenseHere.level > 1) {
+          this.expenses = this.expenses.filter((t) => t.parents_id !== expenseHere.id)
+        }
+
+      }
+
+    },
     async upsertData(expenseHere) {
       console.log("expenseHere = ", expenseHere);
       try {
@@ -164,11 +193,17 @@ export default {
       if (confirmValue) {
         const expensesIdArray = this.expenses.map(e => e.id);
         const fetchedExpensesIdArray = this.fetchedExpenses.map(e => e.id);
-        const willBeDeletedIdArray = fetchedExpensesIdArray.filter(e => !expensesIdArray.includes(e));
 
-        willBeDeletedIdArray.forEach(e => this.deleteData(e));
+        // fetchedExpenses 중 expenses에 없는 id를 필터링해서 모으기
+        const willBeDeletedIdArray = fetchedExpensesIdArray.filter(eachId => !expensesIdArray.includes(eachId));
+
+        willBeDeletedIdArray.forEach(eachId => this.deleteData(eachId));
+
+        // 아래와 같은 작업을 하는게 좋을까?
+        // const editedOrCreatedExpenses = this.fetchedExpenses.filter(e => !this.expenses.includes(e));
+        // console.log("editedOrCreatedExpenses = ", editedOrCreatedExpenses);
+
         this.expenses.forEach(e => {
-          // 다른 id가 있는 경우 진행하도록 설정하기 *수정할것
           this.upsertData(e)
         })
 
@@ -179,6 +214,7 @@ export default {
 
     },
     createNewExpense(oHere) {
+      oHere.page_id = this.selectedPageId; // 부모쪽으로 온다면, 여기서 넣고, 자식쪽으로 보낸다면, 자식으로 그 데이터를 보내는게 깔끔할듯함
       this.expenses.push(oHere);
     },
     async fetchData() {

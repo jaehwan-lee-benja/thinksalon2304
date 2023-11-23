@@ -159,6 +159,7 @@ export default {
         },
         removeExpense(expenseHere) {
             console.log("expenseHere @remove = ", expenseHere);
+            this.$emit('remove-expense', expenseHere)
             // const confirmValue = confirm("내용을 삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
 
             // if (confirmValue) {
@@ -196,10 +197,12 @@ export default {
             this.controlToggleActiveHandler(expenseHere);
             if (expenseHere.level < 5) {
                 expenseHere.show_sub_list = !expenseHere.show_sub_list;
-                // this.upsertData(expenseHere)
+                this.$emit('upsert-data', expenseHere)
             }
         },
         createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere) {
+
+            // 이 내용을 여기에 적을지, App.vue에 적을지 고민 [질문]
 
             const levelForO = parentsLevelHere + 1;
 
