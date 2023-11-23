@@ -1,34 +1,27 @@
 <template>
-        <button @click="formatExpenses" :class="flowViewBtn">새로고침</button>
-        <div :class="graphDiv">
-            <VNetworkGraph ref="vng" 
-            class="graph"
-            :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs" />  
-        </div>
-    
-    
+    <button @click="formatExpenses" :class="flowViewBtn">새로고침</button>
+    <div :class="graphDiv">
+        <VNetworkGraph ref="vng" class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs" />
+    </div>
 </template>
 
-<script> 
+<script>
 import { VNetworkGraph } from "v-network-graph"
 import "v-network-graph/lib/style.css"
 import dagre from "dagre/dist/dagre.min.js"
 
-export default { 
+export default {
     name: 'FlowView',
     props: {
         expenses: {
             type: Object,
-            default: () => { } 
-        }, 
-    },
-    mounted() {
-        this.setTimeoutForFormatExpenses() 
+            default: () => { }
+        },
     },
     data() {
         return {
             nodes: {},
-            edges: {}, 
+            edges: {},
             layouts: {
                 nodes: {},
             },
@@ -55,7 +48,7 @@ export default {
                 },
                 edge: {
                     normal: {
-                        width: edge => Math.pow(edge.size/100, 1/4),
+                        width: edge => Math.pow(edge.size / 100, 1 / 4),
                         color: "#D3D2D0"
                     },
                     hover: {
@@ -68,13 +61,25 @@ export default {
             flowViewBtn: 'flowViewBtn',
         }
     },
+    watch: {
+        expenses: {
+            handler() {
+                const expensesLength = this.expenses.length;
+                if(expensesLength > 0) {
+                    this.formatExpenses()
+                }
+                console.log("* =", this.expenses)
+            },
+            deep:true
+        }
+    },
     methods: {
         formatLayout() {
             const nodeSize = 30
             const direction = "TB" // "TB" | "LR"
             if (Object.keys(this.nodes).length <= 1 || Object.keys(this.edges).length == 0) {
                 return
-            }  
+            }
 
             // convert graph
             // ref: https://github.com/dagrejs/dagre/wiki
@@ -84,7 +89,7 @@ export default {
                 rankdir: direction,
                 nodesep: nodeSize,
                 edgesep: nodeSize,
-                ranksep: nodeSize * 4,  
+                ranksep: nodeSize * 4,
             })
             // Default to assigning a new object as a label for each new edge.
             g.setDefaultEdgeLabel(() => ({}))
@@ -111,19 +116,14 @@ export default {
                 // console.log(nodeId, " | ", x, " | ", y)
             })
 
-            
-            
-        },
-        setTimeoutForFormatExpenses() {
-            setTimeout(this.formatExpenses(), 10000); //[질문]
+
+
         },
         formatExpenses() {
 
             console.log("check!")
+            
 
-            const expensesLength = Object.keys(this.expenses).length;
-
-            if (expensesLength > 0) {
 
                 const nodesResult = {}
                 this.expenses.forEach((e) => {
@@ -138,17 +138,16 @@ export default {
                     }
                 })
                 this.edges = edgeResult
-                
+
                 this.formatLayout()
 
                 const vngref = this.$refs.vng
-                vngref?.transitionWhile(() => vngref.fitToContents())  
- 
+                vngref?.transitionWhile(() => vngref.fitToContents())
 
-            }
+
         },
 
-    }, 
+    },
     components: {
         VNetworkGraph
     }

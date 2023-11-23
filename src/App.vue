@@ -104,8 +104,7 @@ export default {
     PageSettingView,
   },
   mounted() {
-    this.fetchData(),
-      this.fetchDataForPage()
+    this.fetchData()
   },
   computed: {
     isEdited() {
@@ -207,7 +206,7 @@ export default {
 
         willBeDeletedIdArray.forEach(eachId => this.deleteData(eachId));
 
-        // 아래와 같은 작업을 하는게 좋을까?
+        // 질문: 아래와 같은 작업을 하는게 좋을까?
         // const editedOrCreatedExpenses = this.fetchedExpenses.filter(e => !this.expenses.includes(e));
         // console.log("editedOrCreatedExpenses = ", editedOrCreatedExpenses);
 
@@ -227,7 +226,8 @@ export default {
     },
     async fetchData() {
 
-      this.fetchDataForPage()
+      await this.fetchDataForPage()
+
       const a = await supabase
         .from('expense')
         .select()
@@ -235,7 +235,10 @@ export default {
       const { data } = a;
 
       this.totalExpenses = data;
+      console.log("this.totalExpenses = ", this.totalExpenses);
+
       this.selectPage();
+
       this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
 
       this.expenses.forEach(e => {
@@ -257,7 +260,7 @@ export default {
       if (selectedPage.length == 0) {
         selectedPage = [this.expensePages[0]]
       }
-      console.log("selectedPage[0] = ", selectedPage[0] ); // 질문
+      console.log("selectedPage[0] = ", selectedPage[0] ); // 질문-해결!
       this.selectedPageId = selectedPage[0].id
 
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
@@ -275,6 +278,7 @@ export default {
         .select()
       const { data } = a;
       this.expensePages = data;
+      console.log("this.expensePages @fetchDataForPage= ", this.expensePages);
     },
 
   }
