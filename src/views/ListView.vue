@@ -238,12 +238,14 @@ export default {
             return expenseLength + 1;
         },
         cancelEditing() {
-            const confirmValue = confirm("편집을 취소하시겠습니까? 취소하면, 편집 중인 내용은 저장되지 않습니다.")
+            this.$emit('cancel-editing')
 
-            if (confirmValue) {
-                // this.expenses = ""; // 복구하기
-                // this.expenses = JSON.parse(JSON.stringify(this.fetchedExpenses));
-            }
+            // const confirmValue = confirm("편집을 취소하시겠습니까? 취소하면, 편집 중인 내용은 저장되지 않습니다.")
+
+            // if (confirmValue) {
+            //     // this.expenses = ""; // 복구하기
+            //     // this.expenses = JSON.parse(JSON.stringify(this.fetchedExpenses));
+            // }
         }
     },
     components: {

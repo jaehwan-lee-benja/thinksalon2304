@@ -49,7 +49,7 @@
         </div>
         <div :class="listViewDiv">
           <ListView v-bind:expenses="expenses" @create-new-expense="createNewExpense" @remove-expense="removeExpense"
-            @upsert-data="upsertData" />
+            @upsert-data="upsertData" @cancel-editing="cancelEditing"/>
         </div>
       </div>
     </div>
@@ -131,6 +131,14 @@ export default {
     },
   },
   methods: {
+    cancelEditing() {
+      const confirmValue = confirm("편집을 취소하시겠습니까? 취소하면, 편집 중인 내용은 저장되지 않습니다.")
+
+      if (confirmValue) {
+        this.expenses = "";
+        this.expenses = JSON.parse(JSON.stringify(this.fetchedExpenses));
+      }
+    },
     removeExpense(expenseHere) {
       console.log("expenseHere @remove = ", expenseHere);
       this.$emit('remove-expense', expenseHere)
@@ -249,6 +257,7 @@ export default {
       if (selectedPage.length == 0) {
         selectedPage = [this.expensePages[0]]
       }
+      console.log("selectedPage[0] = ", selectedPage[0] ); // 질문
       this.selectedPageId = selectedPage[0].id
 
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)

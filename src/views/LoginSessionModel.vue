@@ -26,7 +26,7 @@ export default {
         provider: 'google',
         //   options: {
         //   redirectTo: 'https://thinksalon.github.io/moneyflow/'
-        // } // 질문
+        // }
       })
       console.log("data = ", data);
       console.log("error = ", error);

@@ -23,7 +23,7 @@ export default {
         }, 
     },
     mounted() {
-        //this.formatExpenses() 
+        this.setTimeoutForFormatExpenses() 
     },
     data() {
         return {
@@ -114,9 +114,15 @@ export default {
             
             
         },
+        setTimeoutForFormatExpenses() {
+            setTimeout(this.formatExpenses(), 10000); //[질문]
+        },
         formatExpenses() {
- 
+
+            console.log("check!")
+
             const expensesLength = Object.keys(this.expenses).length;
+
             if (expensesLength > 0) {
 
                 const nodesResult = {}
