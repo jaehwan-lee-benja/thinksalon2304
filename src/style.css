@@ -119,7 +119,7 @@ button:hover{
 .flowViewDiv {
   padding: 10px;
   border-radius: 10px;
-  background-color:white;
+  background-color:#EFEFEF;
   width: 100%;
   height: 100%;
   box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 5px 5px rgba(0,0,0,0.22);

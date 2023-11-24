@@ -39,11 +39,11 @@ export default {
                 node: {
                     normal: {
                         type: "circle",
-                        color: "#004EFC",
+                        color: "#3774CC",
                         radius: node => Math.pow(node.size / 50, 1 / 3),
                     },
                     hover: {
-                        color: "#FFC805",
+                        color: "#F6C5C5",
                     }
                 },
                 edge: {
@@ -52,7 +52,7 @@ export default {
                         color: "#D3D2D0"
                     },
                     hover: {
-                        color: "#FFC805",
+                        color: "#F6C5C5",
                     }
                 }
             },
