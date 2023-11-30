@@ -48,8 +48,9 @@
           <FlowView v-bind:expenses="expenses" />
         </div>
         <div :class="listViewDiv">
-          <ListView v-bind:expenses="expenses" @create-new-expense="createNewExpense" @remove-expense="removeExpense"
-            @upsert-data="upsertData" @cancel-editing="cancelEditing"/>
+          <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler"
+            @create-new-expense="createNewExpense" @remove-expense="removeExpense" @upsert-data="upsertData"
+            @cancel-editing="cancelEditing" @toggle-sub-list="toggleSubList"/>
         </div>
       </div>
     </div>
@@ -74,6 +75,7 @@ export default {
 
       expensePages: [],
       isPageDivOpened: false,
+      toggleActiveHandler: {},
 
       loginmenuGrid: 'loginmenuGrid',
       menuMainGrid: 'menuMainGrid',
@@ -130,6 +132,20 @@ export default {
     },
   },
   methods: {
+    toggleSubList(expenseHere) {
+      this.controlToggleActiveHandler(expenseHere);
+      if (expenseHere.level < 5) {
+        expenseHere.show_sub_list = !expenseHere.show_sub_list;
+        this.upsertData(expenseHere)
+      }
+    },
+    controlToggleActiveHandler(expenseHere) {
+      if (expenseHere.level == 5) {
+        this.toggleActiveHandler[expenseHere.id] = false;
+      } else {
+        this.toggleActiveHandler[expenseHere.id] = true;
+      }
+    },
     cancelEditing() {
       const confirmValue = confirm("편집을 취소하시겠습니까? 취소하면, 편집 중인 내용은 저장되지 않습니다.")
 
@@ -206,10 +222,6 @@ export default {
 
         willBeDeletedIdArray.forEach(eachId => this.deleteData(eachId));
 
-        // 질문: 아래와 같은 작업을 하는게 좋을까?
-        // const editedOrCreatedExpenses = this.fetchedExpenses.filter(e => !this.expenses.includes(e));
-        // console.log("editedOrCreatedExpenses = ", editedOrCreatedExpenses);
-
         this.expenses.forEach(e => {
           this.upsertData(e)
         })
@@ -220,9 +232,35 @@ export default {
       }
 
     },
-    createNewExpense(oHere) {
-      oHere.page_id = this.selectedPageId; // 부모쪽으로 온다면, 여기서 넣고, 자식쪽으로 보낸다면, 자식으로 그 데이터를 보내는게 깔끔할듯함
-      this.expenses.push(oHere);
+    createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere) {
+
+      console.log("* =", parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere);
+
+      const levelForO = parentsLevelHere + 1;
+
+      const o = {
+        id: this.getUuidv4(),
+        parents_id: parentsIdHere,
+        category: newCategoryHere,
+        amount: newAmountHere,
+        order: this.setOrder(parentsIdHere),
+        level: levelForO,
+        show_sub_list: false,
+        page_id: this.selectedPageId
+      };
+
+      if (levelForO < 5) {
+        this.toggleActiveHandler[o.id] = true;
+      } else {
+        this.toggleActiveHandler[o.id] = false;
+      }
+
+      this.expenses.push(o);
+    },
+    setOrder(parentsIdHere) {
+      const arr = this.expenses.filter(e => e.parents_id === parentsIdHere)
+      const expenseLength = Object.keys(arr).length;
+      return expenseLength + 1;
     },
     async fetchData() {
 
@@ -260,7 +298,7 @@ export default {
       if (selectedPage.length == 0) {
         selectedPage = [this.expensePages[0]]
       }
-      console.log("selectedPage[0] = ", selectedPage[0] ); // 질문-해결!
+
       this.selectedPageId = selectedPage[0].id
 
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)

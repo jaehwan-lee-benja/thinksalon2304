@@ -77,6 +77,10 @@ export default {
             type: Object,
             default: () => { }
         },
+        toggleActiveHandler: {
+            type: Object,
+            default: () => { }
+        },
     },
 
     data() {
@@ -104,7 +108,6 @@ export default {
             moreBtn: 'moreBtn',
 
             isLiMoreDivOpened: false,
-            toggleActiveHandler: {},
 
         }
     },
@@ -145,13 +148,15 @@ export default {
         handlerLiMoreDiv() {
             this.isLiMoreDivOpened = !this.isLiMoreDivOpened;
         },
-        controlToggleActiveHandler(expenseHere) {
-            if (expenseHere.level == 5) {
-                this.toggleActiveHandler[expenseHere.id] = false;
-            } else {
-                this.toggleActiveHandler[expenseHere.id] = true;
-            }
-        },
+        // controlToggleActiveHandler(expenseHere) {
+        //     console.log("toggleActiveHandler = ", this.toggleActiveHandler);
+        //     this.$emit('control-toggle-active-handler', expenseHere)
+        //     // if (expenseHere.level == 5) {
+        //     //     this.toggleActiveHandler[expenseHere.id] = false;
+        //     // } else {
+        //     //     this.toggleActiveHandler[expenseHere.id] = true;
+        //     // }
+        // },
         sumExpensesForTotal(parentsIdHere) {
             const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
                 .reduce((acc, item) => acc + Number(item.amount), 0);
@@ -194,36 +199,39 @@ export default {
             return this.expenses.filter(e => e.parents_id === parentIdHere && e.level === parentsLevelHere + 1);
         },
         toggleSubList(expenseHere) {
-            this.controlToggleActiveHandler(expenseHere);
-            if (expenseHere.level < 5) {
-                expenseHere.show_sub_list = !expenseHere.show_sub_list;
-                this.$emit('upsert-data', expenseHere)
-            }
+            this.$emit('toggle-sub-list', expenseHere)
+            // this.controlToggleActiveHandler(expenseHere);
+            // if (expenseHere.level < 5) {
+            //     expenseHere.show_sub_list = !expenseHere.show_sub_list;
+            //     this.$emit('upsert-data', expenseHere)
+            // }
         },
         createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere) {
 
             // 이 내용을 여기에 적을지, App.vue에 적을지 고민 [질문 - 해결!]
 
-            const levelForO = parentsLevelHere + 1;
+            this.$emit('create-new-expense', parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere)
 
-            const o = {
-                id: this.getUuidv4(),
-                parents_id: parentsIdHere,
-                category: newCategoryHere,
-                amount: newAmountHere,
-                order: this.setOrder(parentsIdHere),
-                level: levelForO,
-                show_sub_list: false,
-                page_id: this.selectedPageId
-            };
+            // const levelForO = parentsLevelHere + 1;
 
-            if (levelForO < 5) {
-                this.toggleActiveHandler[o.id] = true;
-            } else {
-                this.toggleActiveHandler[o.id] = false;
-            }
+            // const o = {
+            //     id: this.getUuidv4(),
+            //     parents_id: parentsIdHere,
+            //     category: newCategoryHere,
+            //     amount: newAmountHere,
+            //     order: this.setOrder(parentsIdHere),
+            //     level: levelForO,
+            //     show_sub_list: false,
+            //     page_id: this.selectedPageId
+            // };
 
-            this.$emit('create-new-expense', o)
+            // if (levelForO < 5) {
+            //     this.toggleActiveHandler[o.id] = true;
+            // } else {
+            //     this.toggleActiveHandler[o.id] = false;
+            // }
+
+            // this.$emit('create-new-expense', o)
 
         },
         
