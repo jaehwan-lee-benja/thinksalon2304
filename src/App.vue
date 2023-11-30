@@ -12,7 +12,8 @@
         <button :class="pageSettingBtn" @click="openPageDiv()">페이지 설정하기</button>
         <div v-if="isPageDivOpened" :class="modal">
           <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages"
-            @remove-e-by-pageId="removeExpenseByPageDelete" />
+            @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @upsert-page="upsertPage"
+            @delete-page="deletePage" />
         </div>
         <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
 
@@ -49,8 +50,8 @@
         </div>
         <div :class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler"
-            @create-new-expense="createNewExpense" @remove-expense="removeExpense" @upsert-data="upsertData"
-            @cancel-editing="cancelEditing" @toggle-sub-list="toggleSubList"/>
+            @create-new-expense="createNewExpense" @remove-expense="removeExpense" @cancel-editing="cancelEditing"
+            @toggle-sub-list="toggleSubList" />
         </div>
       </div>
     </div>
@@ -132,11 +133,66 @@ export default {
     },
   },
   methods: {
+    async deletePage(pageIdHere) {
+
+      this.removeExpenseByPageDelete(pageIdHere);
+
+      try {
+        const { error } = await supabase
+          .from('expense_page')
+          .delete()
+          .eq('id', pageIdHere)
+
+        alert('삭제되었습니다.')
+
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    removeExpenseByPageDelete(pageIdHere) {
+      const deleteExpensesArray = this.totalExpenses.filter((e) => e.page_id == pageIdHere)
+      deleteExpensesArray.forEach(e => this.deleteData(e.id))
+    },
+    createNewPage(newPageNameHere) {
+      const o = {
+        id: this.getUuidv4(),
+        page_name: newPageNameHere,
+      }
+      this.upsertPage(o);
+      this.upsertInitailExpense(o.id);
+    },
+    async upsertPage(oHere) {
+      try {
+        const { error } = await supabase
+          .from('expense_page')
+          .upsert(oHere)
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    upsertInitailExpense(idHere) {
+      const initialExpenseData = {
+        id: this.getUuidv4(),
+        parents_id: null,
+        category: '총계',
+        amount: 0,
+        order: null,
+        level: 1,
+        page_id: idHere
+      }
+      this.upsertExpense(initialExpenseData)
+    },
     toggleSubList(expenseHere) {
       this.controlToggleActiveHandler(expenseHere);
       if (expenseHere.level < 5) {
         expenseHere.show_sub_list = !expenseHere.show_sub_list;
-        this.upsertData(expenseHere)
+        this.upsertExpense(expenseHere)
       }
     },
     controlToggleActiveHandler(expenseHere) {
@@ -147,42 +203,31 @@ export default {
       }
     },
     cancelEditing() {
-      const confirmValue = confirm("편집을 취소하시겠습니까? 취소하면, 편집 중인 내용은 저장되지 않습니다.")
-
-      if (confirmValue) {
-        this.expenses = "";
-        this.expenses = JSON.parse(JSON.stringify(this.fetchedExpenses));
-      }
+      this.expenses = "";
+      this.expenses = JSON.parse(JSON.stringify(this.fetchedExpenses));
     },
     removeExpense(expenseHere) {
-      console.log("expenseHere @remove = ", expenseHere);
-      this.$emit('remove-expense', expenseHere)
-      const confirmValue = confirm("내용을 삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
 
-      if (confirmValue) {
+      const parentsId = expenseHere.parents_id;
+      const orderRemoved = expenseHere.order;
 
-        const parentsId = expenseHere.parents_id;
-        const orderRemoved = expenseHere.order;
-
-        this.expenses.forEach(e => {
-          const order = e.order;
-          if (e.parents_id == parentsId) {
-            if (order > orderRemoved) {
-              this.expenses[this.expenses.indexOf(e)].order = order - 1;
-            }
+      this.expenses.forEach(e => {
+        const order = e.order;
+        if (e.parents_id == parentsId) {
+          if (order > orderRemoved) {
+            this.expenses[this.expenses.indexOf(e)].order = order - 1;
           }
-        });
-
-        this.expenses = this.expenses.filter((t) => t !== expenseHere)
-
-        if (expenseHere.level > 1) {
-          this.expenses = this.expenses.filter((t) => t.parents_id !== expenseHere.id)
         }
+      });
 
+      this.expenses = this.expenses.filter((t) => t !== expenseHere)
+
+      if (expenseHere.level > 1) {
+        this.expenses = this.expenses.filter((t) => t.parents_id !== expenseHere.id)
       }
 
     },
-    async upsertData(expenseHere) {
+    async upsertExpense(expenseHere) {
       console.log("expenseHere = ", expenseHere);
       try {
         const { error } = await supabase
@@ -223,7 +268,7 @@ export default {
         willBeDeletedIdArray.forEach(eachId => this.deleteData(eachId));
 
         this.expenses.forEach(e => {
-          this.upsertData(e)
+          this.upsertExpense(e)
         })
 
         this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
@@ -233,8 +278,6 @@ export default {
 
     },
     createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere) {
-
-      console.log("* =", parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere);
 
       const levelForO = parentsLevelHere + 1;
 
@@ -316,7 +359,6 @@ export default {
         .select()
       const { data } = a;
       this.expensePages = data;
-      console.log("this.expensePages @fetchDataForPage= ", this.expensePages);
     },
 
   }

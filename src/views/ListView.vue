@@ -148,63 +148,22 @@ export default {
         handlerLiMoreDiv() {
             this.isLiMoreDivOpened = !this.isLiMoreDivOpened;
         },
-        // controlToggleActiveHandler(expenseHere) {
-        //     console.log("toggleActiveHandler = ", this.toggleActiveHandler);
-        //     this.$emit('control-toggle-active-handler', expenseHere)
-        //     // if (expenseHere.level == 5) {
-        //     //     this.toggleActiveHandler[expenseHere.id] = false;
-        //     // } else {
-        //     //     this.toggleActiveHandler[expenseHere.id] = true;
-        //     // }
-        // },
         sumExpensesForTotal(parentsIdHere) {
             const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
                 .reduce((acc, item) => acc + Number(item.amount), 0);
             return sum
         },
         removeExpense(expenseHere) {
-            console.log("expenseHere @remove = ", expenseHere);
-            this.$emit('remove-expense', expenseHere) // UI부분은 남기기
-            // const confirmValue = confirm("내용을 삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
-
-            // if (confirmValue) {
-
-            //     const parentsId = expenseHere.parents_id;
-            //     const orderRemoved = expenseHere.order;
-
-            //     console.log("this.expenses = ", this.expenses);
-            //     this.expenses.forEach(e => {
-            //         const order = e.order;
-            //         if (e.parents_id == parentsId) {
-            //             if (order > orderRemoved) {
-            //                 this.expenses[this.expenses.indexOf(e)].order = order - 1;
-            //             }
-            //         }
-            //     });
-
-            //     this.expenses = this.expenses.filter((t) => t !== expenseHere)
-
-            //     if (expenseHere.level > 1) {
-            //         this.expenses = this.expenses.filter((t) => t.parents_id !== expenseHere.id)
-            //     }
-
-            // }
-
-        },
-        removeExpenseByPageDelete(pageIdHere) {
-            const deleteExpensesArray = this.totalExpenses.filter((e) => e.page_id == pageIdHere)
-            deleteExpensesArray.forEach(e => this.deleteData(e.id))
+            const confirmValue = confirm("내용을 삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
+            if (confirmValue) {
+                this.$emit('remove-expense', expenseHere) 
+            }
         },
         sortChildrenByIdAndLevel(parentIdHere, parentsLevelHere) {
             return this.expenses.filter(e => e.parents_id === parentIdHere && e.level === parentsLevelHere + 1);
         },
         toggleSubList(expenseHere) {
             this.$emit('toggle-sub-list', expenseHere)
-            // this.controlToggleActiveHandler(expenseHere);
-            // if (expenseHere.level < 5) {
-            //     expenseHere.show_sub_list = !expenseHere.show_sub_list;
-            //     this.$emit('upsert-data', expenseHere)
-            // }
         },
         createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere) {
 
@@ -246,14 +205,12 @@ export default {
             return expenseLength + 1;
         },
         cancelEditing() {
-            this.$emit('cancel-editing')
 
-            // const confirmValue = confirm("편집을 취소하시겠습니까? 취소하면, 편집 중인 내용은 저장되지 않습니다.")
+            const confirmValue = confirm("편집을 취소하시겠습니까? 취소하면, 편집 중인 내용은 저장되지 않습니다.")
 
-            // if (confirmValue) {
-            //     // this.expenses = ""; // 복구하기
-            //     // this.expenses = JSON.parse(JSON.stringify(this.fetchedExpenses));
-            // }
+            if (confirmValue) {
+                this.$emit('cancel-editing')
+            }
         }
     },
     components: {

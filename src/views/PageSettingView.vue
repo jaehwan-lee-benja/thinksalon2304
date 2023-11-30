@@ -22,7 +22,6 @@
 </template>
 
 <script>
-import { supabase } from '../lib/supabaseClient.js'
 
 export default {
     name: 'PageListView',
@@ -45,87 +44,20 @@ export default {
     },
     methods: {
         createNewPage() {
-            const o = {
-                id: this.getUuidv4(),
-                page_name: this.newPageName,
-            }
-            this.upsertPage(o);
-            this.upsertInitailData(o.id);
-        },
-        upsertInitailData(idHere) {
-            const initialExpenseData = {
-                id: this.getUuidv4(),
-                parents_id: null,
-                category: '총계',
-                amount: 0,
-                order: null,
-                level: 1,
-                page_id: idHere
-            }
-            this.upsertData(initialExpenseData)
-        },
-        async upsertData(dataHere) {
-            try {
-                const { error } = await supabase
-                    .from('expense')
-                    .upsert(dataHere)
-                if (error) {
-                    throw error;
-                }
-            } catch (error) {
-                console.error(error);
-            }
+            this.$emit('create-new-page', this.newPageName);
         },
         editPage(pageHere) {
             const confirmValue = confirm("저장하시겠습니까?")
             if (confirmValue) {
-                this.upsertPage(pageHere);
+                this.$emit('upsert-page', pageHere);
                 alert('수정되었습니다.')
             }
-        },
-        async upsertPage(oHere) {
-
-            try {
-                const { error } = await supabase
-                    .from('expense_page')
-                    .upsert(oHere)
-                if (error) {
-                    throw error;
-                }
-            } catch (error) {
-                console.error(error);
-            }
-
-
         },
         async deletePage(pageIdHere) {
             const confirmValue = confirm("정말로 삭제하시겠습니까? 삭제된 데이터는 복구가 불가능합니다.")
             if (confirmValue) {
-
-                this.removeExpenseByPageDelete(pageIdHere);
-                try {
-                    const { error } = await supabase
-                        .from('expense_page')
-                        .delete()
-                        .eq('id', pageIdHere)
-
-                    alert('삭제되었습니다.')
-
-                    if (error) {
-                        throw error;
-                    }
-                } catch (error) {
-                    console.error(error);
-                }
+                this.$emit('delete-page', pageIdHere);
             }
-        },
-        async removeExpenseByPageDelete(pageIdHere) {
-            this.$emit('remove-e-by-pageId', pageIdHere);
-        },
-        getUuidv4() {
-            return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-            );
         },
     }
 
