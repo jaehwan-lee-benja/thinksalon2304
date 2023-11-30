@@ -133,6 +133,11 @@ export default {
     },
   },
   methods: {
+    getUuidv4() {
+      return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      );
+    },
     async deletePage(pageIdHere) {
 
       this.removeExpenseByPageDelete(pageIdHere);
@@ -228,7 +233,6 @@ export default {
 
     },
     async upsertExpense(expenseHere) {
-      console.log("expenseHere = ", expenseHere);
       try {
         const { error } = await supabase
           .from('expense')
@@ -316,7 +320,6 @@ export default {
       const { data } = a;
 
       this.totalExpenses = data;
-      console.log("this.totalExpenses = ", this.totalExpenses);
 
       this.selectPage();
 

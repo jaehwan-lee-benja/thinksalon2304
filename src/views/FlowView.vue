@@ -65,12 +65,11 @@ export default {
         expenses: {
             handler() {
                 const expensesLength = this.expenses.length;
-                if(expensesLength > 0) {
+                if (expensesLength > 0) {
                     this.formatExpenses()
                 }
-                console.log("* =", this.expenses)
             },
-            deep:true
+            deep: true
         }
     },
     methods: {
@@ -113,7 +112,6 @@ export default {
                 const x = g.node(nodeId).x
                 const y = g.node(nodeId).y
                 this.layouts.nodes[nodeId] = { x, y }
-                // console.log(nodeId, " | ", x, " | ", y)
             })
 
 
@@ -121,28 +119,24 @@ export default {
         },
         formatExpenses() {
 
-            console.log("check!")
-            
+            const nodesResult = {}
+            this.expenses.forEach((e) => {
+                nodesResult[e.id] = { 'name': e.category, 'size': e.amount }
+            })
+            this.nodes = nodesResult
 
+            const edgeResult = {}
+            this.expenses.forEach((e) => {
+                if (e.parents_id != null) {
+                    edgeResult[e.id] = { 'source': e.parents_id, 'target': e.id, 'size': e.amount }
+                }
+            })
+            this.edges = edgeResult
 
-                const nodesResult = {}
-                this.expenses.forEach((e) => {
-                    nodesResult[e.id] = { 'name': e.category, 'size': e.amount }
-                })
-                this.nodes = nodesResult
+            this.formatLayout()
 
-                const edgeResult = {}
-                this.expenses.forEach((e) => {
-                    if (e.parents_id != null) {
-                        edgeResult[e.id] = { 'source': e.parents_id, 'target': e.id, 'size': e.amount }
-                    }
-                })
-                this.edges = edgeResult
-
-                this.formatLayout()
-
-                const vngref = this.$refs.vng
-                vngref?.transitionWhile(() => vngref.fitToContents())
+            const vngref = this.$refs.vng
+            vngref?.transitionWhile(() => vngref.fitToContents())
 
 
         },
