@@ -13,7 +13,7 @@
         <div v-if="isPageDivOpened" :class="modal">
           <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages"
             @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @upsert-page="upsertPage"
-            @delete-page="deletePage" />
+            @delete-page="deletePage"/>
         </div>
         <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
 
@@ -49,7 +49,7 @@
           <FlowView v-bind:expenses="expenses" />
         </div>
         <div :class="listViewDiv">
-          <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :totalExpense="getTotalExpense"
+          <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :totalExpenseId="totalExpenseId"
             @create-new-expense="createNewExpense" @remove-expense="removeExpense" @cancel-editing="cancelEditing"
             @toggle-sub-list="toggleSubList" />
         </div>
@@ -108,19 +108,15 @@ export default {
   },
   mounted() {
     this.fetchData()
-    // this.getTotalExpense()
   },
   computed: {
-    // getTotalExpense() {
-    //       const totalExpenseArr = this.expenses.filter(e => e.level === 1)
-    //       const totalExpense = totalExpenseArr[0]
-    //       let o = ''
-    //       if (totalExpense) {
-    //           o = totalExpense
-    //       }
-    //       console.log("o =", o);
-    //       return o
-    //   },
+    totalExpenseId() {
+      if(this.expenses.length > 0 ) {
+        return this.expenses.filter(e => e.level === 1)[0].id
+      } else {
+        return "1"
+      }
+    },
     isEdited() {
 
       const fetched = this.fetchedExpenses.map(e => ({
@@ -144,16 +140,6 @@ export default {
     },
   },
   methods: {
-    // async getTotalExpense() {
-    //         const totalExpenseArr = await this.expenses.filter(e => e.level === 1)
-    //         // const totalExpense = totalExpenseArr[0]
-    //         console.log("totalExpenseArr2 = ", totalExpenseArr)
-    //         // let o = ''
-    //         // if (totalExpense) {
-    //         //     o = totalExpense
-    //         // }
-    //         return totalExpenseArr
-    //     },
     getUuidv4() {
       return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)

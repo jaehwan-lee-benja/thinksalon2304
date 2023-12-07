@@ -40,7 +40,8 @@ export default {
                     normal: {
                         type: "circle",
                         color: "#3774CC",
-                        radius: node => Math.pow(node.size / 50, 1 / 3),
+                        // radius: node => node.size / 60000
+                        radius: node => Math.pow(node.size/1000, 1/2),
                     },
                     hover: {
                         color: "#F6C5C5",
@@ -48,7 +49,7 @@ export default {
                 },
                 edge: {
                     normal: {
-                        width: edge => Math.pow(edge.size / 100, 1 / 4),
+                        width: edge => Math.pow(edge.size/100, 1/4),
                         color: "#D3D2D0"
                     },
                     hover: {

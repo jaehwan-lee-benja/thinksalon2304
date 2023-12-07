@@ -1,19 +1,19 @@
 <template>
     <div :class="listViewLiDiv">
-        <input :class="categoryStyle" :value="this.totalExpense.category">
+        <input :class="categoryStyle" v-model="getExpenseById[0].category">
         <span> : </span>
-        <input :class="amountStyle" :value="this.totalExpense.amount">
+        <input :class="amountStyle" v-model="getExpenseById[0].amount">
     </div>
     <button :class="moreBtn" @click="handlerLiMoreDiv()"> … </button>
     <div :class="liMoreDiv" v-if="isLiMoreDivOpened">
         <span> *하위 합계 : </span>
-        <input :class="amountStyle" :value="sumExpensesForTotal(this.totalExpense.id)" readonly>
+        <input :class="amountStyle" :value="sumExpensesForTotal(getExpenseById[0].id)" readonly>
     </div>
 
     <ol :class="olBgStyle">
 
         <li :class="listViewLiStyle"
-            v-for="expense2 in sortChildrenByIdAndLevel(this.totalExpense.id, this.totalExpense.level)"
+            v-for="expense2 in sortChildrenByIdAndLevel(getExpenseById[0].id, getExpenseById[0].level)"
             :key="expense2.index">
 
             <ListModel v-bind:expenses="expenses" :expenseId="expense2.id" @remove-expense="removeExpense"
@@ -59,7 +59,7 @@
 
         </li>
 
-        <NewListModel v-bind:expenses="expenses" :expenseId="this.getTotalExpense.id"
+        <NewListModel v-bind:expenses="expenses" :expenseId="getExpenseById[0].id"
             @create-new-expense="createNewExpense" />
     </ol>
 </template>
@@ -76,6 +76,10 @@ export default {
             type: Object,
             default: () => { }
         },
+        totalExpenseId: {
+            type: String,
+            default: '',
+        },
         toggleActiveHandler: {
             type: Object,
             default: () => { }
@@ -84,8 +88,6 @@ export default {
 
     data() {
         return {
-
-            totalExpense: '',
 
             unitDiv: 'unitDiv',
             subGrid: 'subGrid',
@@ -107,30 +109,16 @@ export default {
 
         }
     },
-    // mounted() {
-    //     this.getTotalExpense()
-    // },
     computed: {
-        
-    },
-    watch: {
-        expenses: {
-            handler() {
-                console.log("check!")
-                const expensesLength = this.expenses.length;
-                if (expensesLength > 0) {
-                    this.getTotalExpense()
-                }
-            },
-            deep: true
+        getExpenseById() {
+            if(this.expenses.length > 0){
+                return this.expenses.filter(expense => expense.id === this.totalExpenseId)
+            } else {
+                return [{category: "로딩중..", amount: "로딩중..", id: ""}]
+            }
         }
     },
     methods: {
-        async getTotalExpense() {
-                const totalExpenseArr = await this.expenses?.filter(e => e.level === 1)
-                console.log("totalExpenseArr = ", totalExpenseArr)
-                this.totalExpense = totalExpenseArr[0] // 바인딩이 안된다.
-        },
         handlerLiMoreDiv() {
             this.isLiMoreDivOpened = !this.isLiMoreDivOpened;
         },
