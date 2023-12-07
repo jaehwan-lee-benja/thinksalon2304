@@ -11,9 +11,6 @@ body {
 div {
   box-sizing: border-box;
 }
-h2 {
-  padding-left: 20px;
-}
 h3 {
   padding-left: 40px;
 }
@@ -39,10 +36,11 @@ button:hover{
 .loginBtn {
   margin: 0;
 }
-.liMoreBtn {
+.moreBtn {
   background-color: transparent;
   border: 1px solid #9BA8AB;
   color: #9BA8AB;
+  margin: 0 10px;
 }
 .flowViewBtn {
   position: absolute;
@@ -51,7 +49,10 @@ button:hover{
   color: white;
   z-index: 1;
 }
-
+.pageSettingBtn {
+  width: 100%;
+  margin: 10px 0;
+}
 
 /* layout */
 .menuMainGrid {
@@ -82,27 +83,29 @@ button:hover{
 
 .controlGrid {
   display: grid;
-  grid-template-columns: 3fr 1fr;
+  grid-template-columns: 1fr 2fr;
   grid-gap: 10px;
   margin: 20px;
   height: 50px;
+  min-width: 1000px;
 }
+
 .pageSelect {
-  font-weight: bold;
-  background-color: transparent;
-  border-color: transparent;
-  font-size: 30px;
-  height: 50px;
-  width: 50%;
-  margin: 0 10px;
-  -webkit-appearance: none;
+  background-color: white;
+  border-radius: 4px;
+  width: 100%;
+  margin: 10px 0;
+  padding: 4px;
+  cursor: pointer;
+  /* border-color: transparent; */
+  /* -webkit-appearance: none;
   -moz-appearance: none;
-  appearance: none;
+  appearance: none; */
 }
 
 .viewGrid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 500px 1fr;
   grid-gap: 10px;
   margin: 10px;
   height: 100%;
@@ -110,18 +113,17 @@ button:hover{
 
 .listViewDiv {
   white-space: nowrap;
-  width: 700px;
+  /* width: 700px; */
 }
 
 .flowViewDiv {
   padding: 10px;
   border-radius: 10px;
-  background-color:white;
+  background-color:#EFEFEF;
   width: 100%;
   height: 100%;
   box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 5px 5px rgba(0,0,0,0.22);
 }
-
 
 .graphDiv {
   /* --svg-height: 200px; */
@@ -134,6 +136,13 @@ button:hover{
   height : 90%;
   width : var(--svg-height);
 } */
+
+.createNewPageDiv {
+  padding: 15px 0;
+  margin: 10px 0;
+  border-top: 1px solid #9BA8AB;
+  border-bottom: 1px solid #9BA8AB;
+}
 
 /* --이하 정리 필요-- */
 
@@ -177,7 +186,7 @@ input:read-only {
   color: #11212D;
 }
 .saveEditedStyle_active {
-  width: 100%;
+  width: 49%;
   height: 40px;
   color: white;
   background-color: #004EFC;
@@ -185,13 +194,41 @@ input:read-only {
   margin: 0.5%;
 }
 .saveEditedStyle_inactive {
-  width: 100%;
+  width: 49%;
   height: 40px;
   color: white;
-  background-color: #9BA8AB;
-  border: 1px solid #9BA8AB;
+  background-color: #e2e2e2;
+  border: 1px solid #e2e2e2;
   margin: 0.5%;
 }
+
+.saveEditedStyle_inactive:hover{
+  box-shadow: none;
+  cursor: default;
+}
+
+.cancelEditedStyle_active {
+  width: 49%;
+  height: 40px;
+  color: rgb(168, 40, 40);
+  background-color: transparent;
+  border: 1px solid rgb(168, 40, 40);
+  margin: 0.5%;
+}
+.cancelEditedStyle_inactive {
+  width: 49%;
+  height: 40px;
+  color: #e2e2e2;
+  background-color: transparent;
+  border: 1px solid #e2e2e2;
+  margin: 0.5%;
+}
+
+.cancelEditedStyle_inactive:hover{
+  box-shadow: none;
+  cursor: default;
+}
+
 .toggleBtnStyle_active {
   color: rgb(0, 33, 45);
   background-color: transparent;
@@ -216,24 +253,9 @@ input:read-only {
   
 }
 
-.cancelEditedStyle_active {
-  width: 49%;
-  height: 40px;
-  color: rgb(168, 40, 40);
-  background-color: transparent;
-  border: 1px solid rgb(168, 40, 40);
-  margin: 0.5%;
-}
-.cancelEditedStyle_inactive {
-  width: 49%;
-  height: 40px;
-  color: #9BA8AB;
-  background-color: transparent;
-  border: 1px solid #9BA8AB;
-  margin: 0.5%;
-}
+
 .saveEditedDiv {
-  width: 50%;
+  width: 100%;
   margin: auto;
 }
 .listViewLiDiv {
@@ -241,7 +263,7 @@ input:read-only {
   border: 0px solid white;
   border-radius: 2px;
   background-color: white;
-  margin: 5px 10px;
+  margin: 5px 0px 5px 10px;
   /* max-width: 300px; */
   display: inline;
 }
@@ -275,18 +297,19 @@ input:read-only {
 /* .olBgStyle_hover {
   border: 2px solid #FFFFFF;
 } */
-.newListDivStyle {
+/*.newListDiv {
   margin-top: 7px;
-  /* margin-left: -4px; */
+  margin-left: -4px;
   opacity: 0.5;
-  filter: Alpha(opacity=50); /* IE8 이하 호환을 위해서 */
-}
-.newListDivStyle:hover {
+  filter: Alpha(opacity=50); 
+} */
+/* .newListDiv:hover {
   opacity: 1;
-  filter: Alpha(opacity=100); /* IE8 이하 호환을 위해서 */
-}
+  filter: Alpha(opacity=100);
+} */
 .pageListStyle {
-  margin: 20px;
+  margin: 10px;
+  padding: 10px;
 }
 
 .modal {

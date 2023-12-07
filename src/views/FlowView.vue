@@ -1,34 +1,27 @@
 <template>
-        <button @click="formatExpenses" :class="flowViewBtn">새로고침</button>
-        <div :class="graphDiv">
-            <VNetworkGraph ref="vng" 
-            class="graph"
-            :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs" />  
-        </div>
-    
-    
+    <button @click="formatExpenses" :class="flowViewBtn">새로고침</button>
+    <div :class="graphDiv">
+        <VNetworkGraph ref="vng" class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs" />
+    </div>
 </template>
 
-<script> 
+<script>
 import { VNetworkGraph } from "v-network-graph"
 import "v-network-graph/lib/style.css"
 import dagre from "dagre/dist/dagre.min.js"
 
-export default { 
+export default {
     name: 'FlowView',
     props: {
         expenses: {
             type: Object,
-            default: () => { } 
-        }, 
-    },
-    mounted() {
-        //this.formatExpenses() 
+            default: () => { }
+        },
     },
     data() {
         return {
             nodes: {},
-            edges: {}, 
+            edges: {},
             layouts: {
                 nodes: {},
             },
@@ -46,11 +39,12 @@ export default {
                 node: {
                     normal: {
                         type: "circle",
-                        color: "#004EFC",
-                        radius: node => Math.pow(node.size / 50, 1 / 3),
+                        color: "#3774CC",
+                        // radius: node => node.size / 60000
+                        radius: node => Math.pow(node.size/1000, 1/2),
                     },
                     hover: {
-                        color: "#FFC805",
+                        color: "#F6C5C5",
                     }
                 },
                 edge: {
@@ -59,7 +53,7 @@ export default {
                         color: "#D3D2D0"
                     },
                     hover: {
-                        color: "#FFC805",
+                        color: "#F6C5C5",
                     }
                 }
             },
@@ -68,13 +62,24 @@ export default {
             flowViewBtn: 'flowViewBtn',
         }
     },
+    watch: {
+        expenses: {
+            handler() {
+                const expensesLength = this.expenses.length;
+                if (expensesLength > 0) {
+                    this.formatExpenses()
+                }
+            },
+            deep: true
+        }
+    },
     methods: {
         formatLayout() {
             const nodeSize = 30
             const direction = "TB" // "TB" | "LR"
             if (Object.keys(this.nodes).length <= 1 || Object.keys(this.edges).length == 0) {
                 return
-            }  
+            }
 
             // convert graph
             // ref: https://github.com/dagrejs/dagre/wiki
@@ -84,7 +89,7 @@ export default {
                 rankdir: direction,
                 nodesep: nodeSize,
                 edgesep: nodeSize,
-                ranksep: nodeSize * 4,  
+                ranksep: nodeSize * 4,
             })
             // Default to assigning a new object as a label for each new edge.
             g.setDefaultEdgeLabel(() => ({}))
@@ -108,47 +113,36 @@ export default {
                 const x = g.node(nodeId).x
                 const y = g.node(nodeId).y
                 this.layouts.nodes[nodeId] = { x, y }
-                // console.log(nodeId, " | ", x, " | ", y)
             })
 
-            
-            
+
+
         },
         formatExpenses() {
- 
-            const expensesLength = Object.keys(this.expenses).length;
-            if (expensesLength > 0) {
 
-                const nodesResult = {}
-                this.expenses.forEach((e) => {
-                    nodesResult[e.id] = { 'name': e.category, 'size': e.amount }
-                })
-                this.nodes = nodesResult
+            const nodesResult = {}
+            this.expenses.forEach((e) => {
+                nodesResult[e.id] = { 'name': e.category, 'size': e.amount }
+            })
+            this.nodes = nodesResult
 
-                const edgeResult = {}
-                this.expenses.forEach((e) => {
-                    if (e.parents_id != null) {
-                        edgeResult[e.id] = { 'source': e.parents_id, 'target': e.id, 'size': e.amount }
-                    }
-                })
-                this.edges = edgeResult
-                
-                this.formatLayout()
+            const edgeResult = {}
+            this.expenses.forEach((e) => {
+                if (e.parents_id != null) {
+                    edgeResult[e.id] = { 'source': e.parents_id, 'target': e.id, 'size': e.amount }
+                }
+            })
+            this.edges = edgeResult
 
-                const vngref = this.$refs.vng
+            this.formatLayout()
 
-                vngref?.transitionWhile(() => {
-                    console.log('vng ref', vngref)
-                    vngref.fitToContents()
-                })
-                // vngref.setViewBox({top: -100, bottom: 500, left: -100, right: 500})
-                // console.log(vngref.getViewBox())    
- 
+            const vngref = this.$refs.vng
+            vngref?.transitionWhile(() => vngref.fitToContents())
 
-            }
+
         },
 
-    }, 
+    },
     components: {
         VNetworkGraph
     }
