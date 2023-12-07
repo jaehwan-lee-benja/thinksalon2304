@@ -4,8 +4,8 @@
       <div :class="pageListDiv">
 
         <select :class="pageSelect" v-model="pageName" @change="selectPage()">
-          <option v-for="(page, index) in this.expensePages" :key="index" :value="page.page_name">
-            {{ page.page_name }}
+          <option v-for="page in sortExpensePages" :key="page.id" :value="page.page_name">
+            {{ page.order+","+page.page_name }}
           </option>
         </select>
 
@@ -13,7 +13,7 @@
         <div v-if="isPageDivOpened" :class="modal">
           <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages"
             @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @upsert-page="upsertPage"
-            @delete-page="deletePage"/>
+            @delete-page="deletePage" />
         </div>
         <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
 
@@ -91,8 +91,12 @@ export default {
     this.fetchData()
   },
   computed: {
+    sortExpensePages() {
+      const clonedExpensePages = this.expensePages;
+      return clonedExpensePages.sort((a,b) => a.order - b.order);
+    },
     totalExpenseId() {
-      if(this.expenses.length > 0 ) {
+      if (this.expenses.length > 0) {
         return this.expenses.filter(e => e.level === 1)[0].id
       } else {
         return "1"
@@ -130,6 +134,21 @@ export default {
 
       this.removeExpenseByPageDelete(pageIdHere);
 
+      const removePage = this.expensePages.filter((e) => e.id == pageIdHere)[0]
+      const orderRemoved = removePage.order;
+
+      this.expensePages.forEach(e => {
+        const order = e.order;
+        if (order > orderRemoved) {
+          const expensePageOrderChanged = this.expensePages[this.expensePages.indexOf(e)]
+          expensePageOrderChanged.order = order - 1; //숫자 확인하기
+        }
+      });
+
+      this.expensePages = this.expensePages.filter((t) => t !== removePage)
+
+      this.expensePages.forEach(o => this.upsertPage(o))
+
       try {
         const { error } = await supabase
           .from('expense_page')
@@ -149,13 +168,16 @@ export default {
       const deleteExpensesArray = this.totalExpenses.filter((e) => e.page_id == pageIdHere)
       deleteExpensesArray.forEach(e => this.deleteData(e.id))
     },
-    createNewPage(newPageNameHere) {
+    async createNewPage(newPageNameHere) {
       const o = {
         id: this.getUuidv4(),
         page_name: newPageNameHere,
+        order: this.setOrderForPage()
       }
       this.upsertPage(o);
       this.upsertInitailExpense(o.id);
+      await this.fetchDataForPage()
+      alert('신규 페이지가 생성되었습니다.')
     },
     async upsertPage(oHere) {
       try {
@@ -297,6 +319,10 @@ export default {
       const expenseLength = Object.keys(arr).length;
       return expenseLength + 1;
     },
+    setOrderForPage() {
+      const expensePagesLength = Object.keys(this.expensePages).length;
+      return expensePagesLength;
+    },
     async fetchData() {
 
       await this.fetchDataForPage()
@@ -324,16 +350,18 @@ export default {
     closePageDiv() {
       this.isPageDivOpened = false;
     },
-
     selectPage() {
 
-      let selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)
+      let selectedPage = {}
 
-      if (selectedPage.length == 0) {
-        selectedPage = [this.expensePages[0]]
+      if (this.pageName == undefined) {
+        selectedPage = this.expensePages.filter(e => e.order === 0)[0]
+        this.pageName = selectedPage.page_name;
+      } else {
+        selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)[0]
       }
 
-      this.selectedPageId = selectedPage[0].id
+      this.selectedPageId = selectedPage.id
 
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
 
@@ -341,7 +369,6 @@ export default {
       this.expenses.forEach(e => {
         if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
       })
-      return this.expenses
     },
 
     async fetchDataForPage() {

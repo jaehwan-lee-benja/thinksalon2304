@@ -11,7 +11,7 @@
         <div>
             <h4>기존 페이지 수정하기</h4>
             <ol>
-                <li v-for="page in this.expensePages" :key="page.index">
+                <li v-for="page in this.expensePages" :key="page.index" :value="page.order">
                     <input v-model="page.page_name">
                     <button @click="editPage(page)">수정하기</button>
                     <button @click="deletePage(page.id)">삭제하기</button>
@@ -45,6 +45,7 @@ export default {
     methods: {
         createNewPage() {
             this.$emit('create-new-page', this.newPageName);
+            this.newPageName = "";
         },
         editPage(pageHere) {
             const confirmValue = confirm("저장하시겠습니까?")
