@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import CssData from './CssData.vue'
 
 export default {
     name: 'PageListView',
@@ -35,11 +36,10 @@ export default {
             default: () => { }
         },
     },
+    mixins: [CssData],
     data() {
         return {
             newPageName: '',
-            pageListStyle: 'pageListStyle',
-            createNewPageDiv: 'createNewPageDiv'
         }
     },
     methods: {

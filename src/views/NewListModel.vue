@@ -13,6 +13,7 @@
 </template>
 
 <script>
+import CssData from './CssData.vue'
 
 export default {
     name: 'NewListModel',
@@ -26,16 +27,11 @@ export default {
             default: () => {}
         }
     }, 
+    mixins: [CssData],
     data() {
         return {
-            listViewLiDiv: 'listViewLiDiv',
-            categoryStyle: 'categoryStyle',
-            amountStyle: 'amountStyle',
             newCategory: '',
             newAmount: '',
-            newListDiv: 'newListDiv',
-            moreBtn: 'moreBtn',
-
             isNewListDivOpened: false,
         }
     },

@@ -185,7 +185,7 @@ input:read-only {
   border: 0px solid white;
   color: #11212D;
 }
-.saveEditedStyle_active {
+.saveEditedBtn_active {
   width: 49%;
   height: 40px;
   color: white;
@@ -193,7 +193,7 @@ input:read-only {
   border: 1px solid #004EFC;
   margin: 0.5%;
 }
-.saveEditedStyle_inactive {
+.saveEditedBtn_inactive {
   width: 49%;
   height: 40px;
   color: white;
@@ -202,12 +202,12 @@ input:read-only {
   margin: 0.5%;
 }
 
-.saveEditedStyle_inactive:hover{
+.saveEditedBtn_inactive:hover{
   box-shadow: none;
   cursor: default;
 }
 
-.cancelEditedStyle_active {
+.cancelEditedBtn_active {
   width: 49%;
   height: 40px;
   color: rgb(168, 40, 40);
@@ -215,7 +215,7 @@ input:read-only {
   border: 1px solid rgb(168, 40, 40);
   margin: 0.5%;
 }
-.cancelEditedStyle_inactive {
+.cancelEditedBtn_inactive {
   width: 49%;
   height: 40px;
   color: #e2e2e2;
@@ -224,12 +224,12 @@ input:read-only {
   margin: 0.5%;
 }
 
-.cancelEditedStyle_inactive:hover{
+.cancelEditedBtn_inactive:hover{
   box-shadow: none;
   cursor: default;
 }
 
-.toggleBtnStyle_active {
+.toggleBtn_active {
   color: rgb(0, 33, 45);
   background-color: transparent;
   border: 0px solid transparent;
@@ -241,7 +241,7 @@ input:read-only {
 
 }
 
-.toggleBtnStyle_inactive {
+.toggleBtn_inactive {
   color: rgb(0, 33, 45, 0.3);
   background-color: transparent;
   border: 1px solid transparent;

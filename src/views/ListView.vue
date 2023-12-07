@@ -65,7 +65,7 @@
 </template>
   
 <script>
-
+import CssData from './CssData.vue'
 import ListModel from './ListModel.vue'
 import NewListModel from './NewListModel.vue'
 
@@ -85,28 +85,10 @@ export default {
             default: () => { }
         },
     },
-
+    mixins: [CssData],
     data() {
         return {
-
-            unitDiv: 'unitDiv',
-            subGrid: 'subGrid',
-            viewGrid: 'viewGrid',
-            flowViewDiv: 'flowViewDiv',
-            listViewDiv: 'listViewDiv',
-            listViewLiDiv: 'listViewLiDiv',
-
-            categoryStyle: 'categoryStyle',
-            amountStyle: 'amountStyle',
-
-            listViewLiStyle: 'listViewLiStyle',
-            listViewOlStyle: 'listViewOlStyle',
-            olBgStyle: 'olBgStyle',
-            liMoreDiv: 'liMoreDiv',
-            moreBtn: 'moreBtn',
-
             isLiMoreDivOpened: false,
-
         }
     },
     computed: {

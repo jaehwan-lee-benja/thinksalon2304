@@ -33,12 +33,12 @@
       <div :class="controlGrid">
         <div :class="saveEditedDiv">
           <button :class="{
-            'saveEditedStyle_active': isEdited === true,
-            'saveEditedStyle_inactive': isEdited === false
+            'saveEditedBtn_active': isEdited === true,
+            'saveEditedBtn_inactive': isEdited === false
           }" :disabled="!isEdited" @click="editExpenses">편집한 내용 저장</button>
           <button :class="{
-            'cancelEditedStyle_active': isEdited === true,
-            'cancelEditedStyle_inactive': isEdited === false
+            'cancelEditedBtn_active': isEdited === true,
+            'cancelEditedBtn_inactive': isEdited === false
           }" :disabled="!isEdited" @click="cancelEditing">편집 취소</button>
         </div>
         <div></div>
@@ -64,6 +64,7 @@ import LoginSessionModel from './views/LoginSessionModel.vue'
 import ListView from './views/ListView.vue'
 import FlowView from './views/FlowView.vue'
 import PageSettingView from './views/PageSettingView.vue'
+import CssData from './views/CssData.vue'
 
 export default {
   data() {
@@ -78,29 +79,9 @@ export default {
       isPageDivOpened: false,
       toggleActiveHandler: {},
 
-      loginmenuGrid: 'loginmenuGrid',
-      menuMainGrid: 'menuMainGrid',
-      menuGrid: 'menuGrid',
-      mainDiv: 'mainDiv',
-      loginBtn: 'loginBtn',
-      pageListDiv: 'pageListDiv',
-      loginDiv: 'loginDiv',
-      modal: 'modal',
-      modalOverlay: 'modalOverlay',
-      pageSelect: 'pageSelect',
-      controlGrid: 'controlGrid',
-      saveEditedDiv: 'saveEditedDiv',
-      saveEditedStyle_active: 'saveEditedStyle_active',
-      saveEditedStyle_inactive: 'saveEditedStyle_inactive',
-      cancelEditedStyle_active: 'cancelEditedStyle_active',
-      cancelEditedStyle_inactive: 'cancelEditedStyle_inactive',
-      viewGrid: 'viewGrid',
-      listViewDiv: 'listViewDiv',
-      flowViewDiv: 'flowViewDiv',
-      pageSettingBtn: 'pageSettingBtn',
     }
   },
-  mixins: [LoginSessionModel],
+  mixins: [LoginSessionModel, CssData],
   components: {
     ListView,
     FlowView,

@@ -1,8 +1,8 @@
 <template>
     <div :class="liAlignStyle">
         <button :class="{
-            'toggleBtnStyle_active': this.toggleActiveHandler === true,
-            'toggleBtnStyle_inactive': this.toggleActiveHandler === false
+            'toggleBtn_active': this.toggleActiveHandler === true,
+            'toggleBtn_inactive': this.toggleActiveHandler === false
         }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(getExpenseById[0])">
         {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }} 
         </button>
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+import CssData from './CssData.vue'
 
 export default {
     name: 'ListModel',
@@ -42,17 +43,9 @@ export default {
             default: true
         }
     }, 
+    mixins: [CssData],
     data() {
         return {
-            listViewLiDiv: 'listViewLiDiv',
-            categoryStyle: 'categoryStyle',
-            amountStyle: 'amountStyle',
-            toggleBtnStyle_active: 'toggleBtnStyle_active',
-            toggleBtnStyle_inactive: 'toggleBtnStyle_inactive',
-            liAlignStyle: 'liAlignStyle',
-            liMoreDiv: 'liMoreDiv',
-            moreBtn: 'moreBtn',
-
             isLiMoreDivOpened: false
         }
     },

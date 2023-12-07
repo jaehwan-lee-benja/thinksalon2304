@@ -6,6 +6,7 @@
 </template>
 
 <script>
+import CssData from './CssData.vue'
 import { VNetworkGraph } from "v-network-graph"
 import "v-network-graph/lib/style.css"
 import dagre from "dagre/dist/dagre.min.js"
@@ -18,6 +19,7 @@ export default {
             default: () => { }
         },
     },
+    mixins: [CssData],
     data() {
         return {
             nodes: {},
@@ -56,10 +58,7 @@ export default {
                         color: "#F6C5C5",
                     }
                 }
-            },
-            flowViewDiv2: 'flowViewDiv2',
-            graphDiv: 'graphDiv',
-            flowViewBtn: 'flowViewBtn',
+            }
         }
     },
     watch: {
