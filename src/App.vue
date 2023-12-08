@@ -11,9 +11,9 @@
 
         <button :class="pageSettingBtn" @click="openPageDiv()">페이지 설정하기</button>
         <div v-if="isPageDivOpened" :class="modal">
-          <PageSettingView v-bind:expenses="expenses" :expensePages="sortExpensePages"
+          <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageNameEdited="isPageNameEdited"
             @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @upsert-page="upsertPage"
-            @delete-page="deletePage" />
+            @delete-page="deletePage" @select-page="selectPage" @close-page-div="closePageDiv" />
         </div>
         <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
 
@@ -76,6 +76,7 @@ export default {
       selectedPageId: '',
 
       expensePages: [],
+      fetchedExpensePages: [],
       isPageDivOpened: false,
       toggleActiveHandler: {},
 
@@ -93,7 +94,7 @@ export default {
   computed: {
     sortExpensePages() {
       const clonedExpensePages = this.expensePages;
-      return clonedExpensePages.sort((a,b) => a.order - b.order);
+      return clonedExpensePages.sort((a, b) => a.order - b.order);
     },
     totalExpenseId() {
       if (this.expenses.length > 0) {
@@ -101,6 +102,28 @@ export default {
       } else {
         return "1"
       }
+    },
+    isPageNameEdited() {
+
+      const fetched = this.fetchedExpensePages.map(e => ({
+        name: e.page_name,
+        order: e.order
+      })
+      ).sort((a, b) => a.order - b.order);
+
+      const edited = this.expensePages.map(e => ({
+        name: e.page_name,
+        order: e.order
+      })
+      ).sort((a, b) => a.order - b.order);
+
+      const fetchedData = JSON.stringify(fetched);
+      const editedData = JSON.stringify(edited);
+
+      const result = (fetchedData || "") != (editedData || "")
+
+      return result
+
     },
     isEdited() {
 
@@ -174,7 +197,7 @@ export default {
         page_name: newPageNameHere,
         order: this.setOrderForPage()
       }
-      this.upsertPage(o);
+      await this.upsertPage(o);
       this.upsertInitailExpense(o.id);
       await this.fetchDataForPage()
       alert('신규 페이지가 생성되었습니다.')
@@ -191,7 +214,7 @@ export default {
         console.error(error);
       }
     },
-    upsertInitailExpense(idHere) {
+    async upsertInitailExpense(idHere) {
       const initialExpenseData = {
         id: this.getUuidv4(),
         parents_id: null,
@@ -201,7 +224,7 @@ export default {
         level: 1,
         page_id: idHere
       }
-      this.upsertExpense(initialExpenseData)
+      await this.upsertExpense(initialExpenseData)
     },
     toggleSubList(expenseHere) {
       this.controlToggleActiveHandler(expenseHere);
@@ -350,20 +373,30 @@ export default {
     closePageDiv() {
       this.isPageDivOpened = false;
     },
-    async selectPage() {
+    async selectPage(pageIdHere) {
+
+      console.log("pageIdHere = ", pageIdHere)
 
       let selectedPage = {}
 
-      if (this.pageName == undefined) {
-        selectedPage = this.expensePages.filter(e => e.order === 0)[0]
-        this.pageName = selectedPage.page_name;
+      if (pageIdHere != undefined) {
+        this.selectedPageId = pageIdHere
+        selectedPage = this.expensePages.filter(e => e.id === pageIdHere)[0]
+
       } else {
-        selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)[0]
+
+        if (this.pageName == undefined) {
+          selectedPage = this.expensePages.filter(e => e.order === 0)[0]
+        } else {
+          selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)[0]
+        }
+
+        // console.log("selectedPage = ", selectedPage);
+
+        this.selectedPageId = selectedPage.id
       }
 
-      // console.log("selectedPage = ", selectedPage);
-
-      this.selectedPageId = selectedPage.id
+      this.pageName = selectedPage.page_name;
 
       // console.log("this.selectedPageId(1) = ", this.selectedPageId);
 
@@ -374,9 +407,9 @@ export default {
       //     console.log("e.page_id(3) =", e.page_id)
       //     console.log("this.selectedPageId(3) = ", this.selectedPageId)
       //   }
-        
+
       // }) // 이 부분이 읽히지 않고 있음
-      
+
       // console.log("test = ", test);
 
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
@@ -387,6 +420,7 @@ export default {
       this.expenses.forEach(e => {
         if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
       })
+
     },
 
     async fetchDataForPage() {
@@ -396,6 +430,7 @@ export default {
         .select()
       const { data } = a;
       this.expensePages = data;
+      this.fetchedExpensePages = await JSON.parse(JSON.stringify(this.expensePages));
       console.log("check2")
     },
 

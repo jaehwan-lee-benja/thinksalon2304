@@ -224,6 +224,25 @@ input:read-only {
   margin: 0.5%;
 }
 
+.pageNameEditedBtn_active {
+  background-color: #11212D;
+  border: 1px solid #11212D;
+  color: #FFFFFF;
+  min-width: 30px;
+  padding: 5px;
+  margin: 0 5px;
+  border-radius: 4px;
+}
+.pageNameEditedBtn_inactive {
+  background-color: #bababa;
+  border: 1px solid #bababa;
+  color: #FFFFFF;
+  min-width: 30px;
+  padding: 5px;
+  margin: 0 5px;
+  border-radius: 4px;
+}
+
 .cancelEditedBtn_inactive:hover{
   box-shadow: none;
   cursor: default;
@@ -332,4 +351,8 @@ input:read-only {
   height: 100%;
   background: rgba(0, 0, 0, 0.7); /* 검정색 음영, 0.7은 투명도를 나타냅니다 */
   z-index: 998; /* 모달보다 아래에 위치해야 합니다 */
+}
+
+.pageNameStyle {
+  margin: 5px 5px;
 }

@@ -31,6 +31,8 @@ export default {
             saveEditedBtn_inactive: 'saveEditedBtn_inactive',
             cancelEditedBtn_active: 'cancelEditedBtn_active',
             cancelEditedBtn_inactive: 'cancelEditedBtn_inactive',
+            pageNameEditedBtn_active: 'cancelEditedBtn_active',
+            pageNameEditedBtn_inactive: 'cancelEditedBtn_inactive',
             pageSettingBtn: 'pageSettingBtn',
             flowViewBtn: 'flowViewBtn',
             toggleBtn_active: 'toggleBtn_active',
@@ -47,6 +49,7 @@ export default {
             listViewOlStyle: 'listViewOlStyle',
             olBgStyle: 'olBgStyle',
             pageListStyle: 'pageListStyle',
+            pageNameStyle: 'pageNameStyle',
         }
     }
 }

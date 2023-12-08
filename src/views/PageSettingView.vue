@@ -6,17 +6,23 @@
             <span>새 페이지명: </span>
             <input v-model="this.newPageName" placeholder="새 페이지명 적기">
             <button @click="createNewPage">만들기</button>
+
         </div>
 
         <div>
             <h4>기존 페이지 수정하기</h4>
+            <button :class="{
+                        'pageNameEditedBtn_active': isPageNameEdited === true,
+                        'pageNameEditedBtn_inactive': isPageNameEdited === false
+                    }" :disabled="!isPageNameEdited" @click="editPage()">수정 저장하기</button>
             <ol>
                 <li v-for="page in this.expensePages" :key="page.id">
-                    <input v-model="page.page_name">
-                    <button @click="editPage(page)">수정하기</button>
+                    <input :class="pageNameStyle" v-model="page.page_name">
                     <button @click="deletePage(page.id)">삭제하기</button>
+                    <button @click="selectPage(page.id)">페이지로 이동하기</button>
                 </li>
             </ol>
+            
         </div>
     </div>
 </template>
@@ -35,6 +41,10 @@ export default {
             type: Object,
             default: () => { }
         },
+        isPageNameEdited: {
+            type: Boolean,
+            default: false
+        },
     },
     mixins: [CssData],
     data() {
@@ -43,14 +53,18 @@ export default {
         }
     },
     methods: {
+        selectPage(pageIdHere) {
+            this.$emit('selectPage', pageIdHere);
+            this.$emit('close-page-div');
+        },
         createNewPage() {
             this.$emit('create-new-page', this.newPageName);
             this.newPageName = "";
         },
-        editPage(pageHere) {
+        editPage() {
             const confirmValue = confirm("저장하시겠습니까?")
             if (confirmValue) {
-                this.$emit('upsert-page', pageHere);
+                this.$emit('upsert-page');
                 alert('수정되었습니다.')
             }
         },
