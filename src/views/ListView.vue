@@ -93,6 +93,7 @@ export default {
     },
     computed: {
         getExpenseById() {
+            // console.log("this.expenses = ", this.expenses);
             if(this.expenses.length > 0){
                 return this.expenses.filter(expense => expense.id === this.totalExpenseId)
             } else {

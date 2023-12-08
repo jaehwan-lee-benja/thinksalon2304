@@ -5,13 +5,13 @@
 
         <select :class="pageSelect" v-model="pageName" @change="selectPage()">
           <option v-for="page in sortExpensePages" :key="page.id" :value="page.page_name">
-            {{ page.order+","+page.page_name }}
+            {{ page.page_name }}
           </option>
         </select>
 
         <button :class="pageSettingBtn" @click="openPageDiv()">페이지 설정하기</button>
         <div v-if="isPageDivOpened" :class="modal">
-          <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages"
+          <PageSettingView v-bind:expenses="expenses" :expensePages="sortExpensePages"
             @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @upsert-page="upsertPage"
             @delete-page="deletePage" />
         </div>
@@ -335,7 +335,7 @@ export default {
 
       this.totalExpenses = data;
 
-      this.selectPage();
+      await this.selectPage(); //페이지 선택 후 this.expenses가 만들어짐
 
       this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
 
@@ -350,7 +350,7 @@ export default {
     closePageDiv() {
       this.isPageDivOpened = false;
     },
-    selectPage() {
+    async selectPage() {
 
       let selectedPage = {}
 
@@ -361,9 +361,27 @@ export default {
         selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)[0]
       }
 
+      // console.log("selectedPage = ", selectedPage);
+
       this.selectedPageId = selectedPage.id
 
+      // console.log("this.selectedPageId(1) = ", this.selectedPageId);
+
+      // const test = this.totalExpenses.filter(e => {
+      //   // console.log("e.page_id(2) =", e.page_id)
+      //   // console.log("this.selectedPageId(2) = ", this.selectedPageId)
+      //   if(e.page_id === this.selectedPageId){
+      //     console.log("e.page_id(3) =", e.page_id)
+      //     console.log("this.selectedPageId(3) = ", this.selectedPageId)
+      //   }
+        
+      // }) // 이 부분이 읽히지 않고 있음
+      
+      // console.log("test = ", test);
+
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
+
+      // console.log("this.expenses = ", this.expenses);
 
       this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
       this.expenses.forEach(e => {
@@ -372,11 +390,13 @@ export default {
     },
 
     async fetchDataForPage() {
+      console.log("check1")
       const a = await supabase
         .from('expense_page')
         .select()
       const { data } = a;
       this.expensePages = data;
+      console.log("check2")
     },
 
   }
