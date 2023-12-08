@@ -93,7 +93,6 @@ export default {
     },
     computed: {
         getExpenseById() {
-            // console.log("this.expenses = ", this.expenses);
             if(this.expenses.length > 0){
                 return this.expenses.filter(expense => expense.id === this.totalExpenseId)
             } else {
@@ -111,7 +110,7 @@ export default {
             return sum
         },
         removeExpense(expenseHere) {
-            const confirmValue = confirm("내용을 삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
+            const confirmValue = confirm("삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
             if (confirmValue) {
                 this.$emit('remove-expense', expenseHere)
             }

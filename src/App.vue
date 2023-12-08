@@ -11,9 +11,9 @@
 
         <button :class="pageSettingBtn" @click="openPageDiv()">페이지 설정하기</button>
         <div v-if="isPageDivOpened" :class="modal">
-          <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageNameEdited="isPageNameEdited"
-            @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @upsert-page="upsertPage"
-            @delete-page="deletePage" @select-page="selectPage" @close-page-div="closePageDiv" />
+          <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
+            @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @edit-page="editPage" @remove-page="removePage"
+            @select-page="selectPage" @close-page-div="closePageDiv" />
         </div>
         <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
 
@@ -35,7 +35,7 @@
           <button :class="{
             'saveEditedBtn_active': isEdited === true,
             'saveEditedBtn_inactive': isEdited === false
-          }" :disabled="!isEdited" @click="editExpenses">편집한 내용 저장</button>
+          }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
           <button :class="{
             'cancelEditedBtn_active': isEdited === true,
             'cancelEditedBtn_inactive': isEdited === false
@@ -103,7 +103,7 @@ export default {
         return "1"
       }
     },
-    isPageNameEdited() {
+    isPageEdited() {
 
       const fetched = this.fetchedExpensePages.map(e => ({
         name: e.page_name,
@@ -148,35 +148,55 @@ export default {
     },
   },
   methods: {
+    editPage() {
+
+      const confirmValue = confirm("수정된 내용을 저장하시겠습니까?")
+
+      if (confirmValue) {
+        const idArray = this.expensePages.map(e => e.id);
+        const fetchedIdArray = this.fetchedExpensePages.map(e => e.id);
+
+        // fetchedArray 중 기존 Array에 없는 id를 필터링해서 모으기
+        const willBeDeletedIdArray = fetchedIdArray.filter(eachId => !idArray.includes(eachId));
+
+        willBeDeletedIdArray.forEach(eachId => this.deletePage(eachId));
+
+        this.expensePages.forEach(e => this.upsertPage(e))
+
+        this.fetchedExpensePages = JSON.parse(JSON.stringify(this.expensePages));
+
+        console.log("isPageEdited = ", this.isPageEdited)
+
+        alert('저장되었습니다.')
+      }
+
+    },
     getUuidv4() {
       return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
       );
     },
-    async deletePage(pageIdHere) {
-
-      this.removeExpenseByPageDelete(pageIdHere);
-
-      const removePage = this.expensePages.filter((e) => e.id == pageIdHere)[0]
-      const orderRemoved = removePage.order;
+    removePage(pageHere) {
+      const orderRemoved = pageHere.order;
 
       this.expensePages.forEach(e => {
         const order = e.order;
         if (order > orderRemoved) {
           const expensePageOrderChanged = this.expensePages[this.expensePages.indexOf(e)]
-          expensePageOrderChanged.order = order - 1; //숫자 확인하기
+          expensePageOrderChanged.order = order - 1;
         }
       });
 
-      this.expensePages = this.expensePages.filter((t) => t !== removePage)
+      this.expensePages = this.expensePages.filter((t) => t !== pageHere)
 
-      this.expensePages.forEach(o => this.upsertPage(o))
-
+    },
+    async deletePage(pageHere) {
+      this.removeExpenseByPageDelete(pageHere.id);
       try {
         const { error } = await supabase
           .from('expense_page')
           .delete()
-          .eq('id', pageIdHere)
+          .eq('id', pageHere.id)
 
         alert('삭제되었습니다.')
 
@@ -189,7 +209,7 @@ export default {
     },
     removeExpenseByPageDelete(pageIdHere) {
       const deleteExpensesArray = this.totalExpenses.filter((e) => e.page_id == pageIdHere)
-      deleteExpensesArray.forEach(e => this.deleteData(e.id))
+      deleteExpensesArray.forEach(e => this.deleteExpense(e.id))
     },
     async createNewPage(newPageNameHere) {
       const o = {
@@ -278,7 +298,7 @@ export default {
         console.error(error);
       }
     },
-    async deleteData(expenseId) {
+    async deleteExpense(expenseId) {
       try {
         const { error } = await supabase
           .from('expense')
@@ -291,23 +311,20 @@ export default {
         console.error(error);
       }
     },
-    editExpenses() {
+    editExpense() {
 
       const confirmValue = confirm("수정된 내용을 저장하시겠습니까?")
 
       if (confirmValue) {
-        const expensesIdArray = this.expenses.map(e => e.id);
-        const fetchedExpensesIdArray = this.fetchedExpenses.map(e => e.id);
+        const idArray = this.expenses.map(e => e.id);
+        const fetchedidArray = this.fetchedExpenses.map(e => e.id);
 
-        // fetchedExpenses 중 expenses에 없는 id를 필터링해서 모으기
-        const willBeDeletedIdArray = fetchedExpensesIdArray.filter(eachId => !expensesIdArray.includes(eachId));
+        // fetchedArray 중 기존 Array에 없는 id를 필터링해서 모으기
+        const willBeDeletedIdArray = fetchedidArray.filter(eachId => !idArray.includes(eachId));
 
-        willBeDeletedIdArray.forEach(eachId => this.deleteData(eachId));
+        willBeDeletedIdArray.forEach(eachId => this.deleteExpense(eachId));
 
-        this.expenses.forEach(e => {
-          this.upsertExpense(e)
-        })
-
+        this.expenses.forEach(e => this.upsertExpense(e))
         this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
 
         alert('저장되었습니다.')
@@ -371,50 +388,44 @@ export default {
       this.isPageDivOpened = true;
     },
     closePageDiv() {
-      this.isPageDivOpened = false;
+      if(!this.isPageEdited){
+        this.isPageDivOpened = false;
+      } else {
+        const text = "페이지에 수정된 내용이 있습니다. \n [확인]을 누르면, 수정된 내용은 저장되지 않고 진행됩니다. \n *수정 내용을 저장하고 싶은 경우, [취소]>[수정 저장하기] 후 종료"
+        const confirmValue = confirm(text)
+        if (confirmValue) {
+        this.isPageDivOpened = false;
+        } else {
+          // 수정을 취소하며 진행을 종료하는 경우, 편집 취소하기로 진행하기 // 편집 취소하기 버튼 구현부터하기
+        }
+      }
+      // this.isPageDivOpened = false;
     },
     async selectPage(pageIdHere) {
-
-      console.log("pageIdHere = ", pageIdHere)
 
       let selectedPage = {}
 
       if (pageIdHere != undefined) {
+        // PageSettingView.vue에서 '이동하기'를 통해 선택하는 경우
         this.selectedPageId = pageIdHere
         selectedPage = this.expensePages.filter(e => e.id === pageIdHere)[0]
 
       } else {
-
+        // selectbox를 통해 페이지를 선택하는 경우
         if (this.pageName == undefined) {
+          // 첫 로딩을 한 경우
           selectedPage = this.expensePages.filter(e => e.order === 0)[0]
         } else {
+          // selectbox를 통해 페이지를 선택하는 경우
           selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)[0]
         }
-
-        // console.log("selectedPage = ", selectedPage);
 
         this.selectedPageId = selectedPage.id
       }
 
       this.pageName = selectedPage.page_name;
 
-      // console.log("this.selectedPageId(1) = ", this.selectedPageId);
-
-      // const test = this.totalExpenses.filter(e => {
-      //   // console.log("e.page_id(2) =", e.page_id)
-      //   // console.log("this.selectedPageId(2) = ", this.selectedPageId)
-      //   if(e.page_id === this.selectedPageId){
-      //     console.log("e.page_id(3) =", e.page_id)
-      //     console.log("this.selectedPageId(3) = ", this.selectedPageId)
-      //   }
-
-      // }) // 이 부분이 읽히지 않고 있음
-
-      // console.log("test = ", test);
-
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
-
-      // console.log("this.expenses = ", this.expenses);
 
       this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
       this.expenses.forEach(e => {
@@ -424,14 +435,12 @@ export default {
     },
 
     async fetchDataForPage() {
-      console.log("check1")
       const a = await supabase
         .from('expense_page')
         .select()
       const { data } = a;
       this.expensePages = data;
       this.fetchedExpensePages = await JSON.parse(JSON.stringify(this.expensePages));
-      console.log("check2")
     },
 
   }

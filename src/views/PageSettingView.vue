@@ -12,17 +12,17 @@
         <div>
             <h4>기존 페이지 수정하기</h4>
             <button :class="{
-                        'pageNameEditedBtn_active': isPageNameEdited === true,
-                        'pageNameEditedBtn_inactive': isPageNameEdited === false
-                    }" :disabled="!isPageNameEdited" @click="editPage()">수정 저장하기</button>
+                'pageNameEditedBtn_active': isPageEdited === true,
+                'pageNameEditedBtn_inactive': isPageEdited === false
+            }" :disabled="!isPageEdited" @click="editPage()">수정 저장하기</button>
             <ol>
                 <li v-for="page in this.expensePages" :key="page.id">
                     <input :class="pageNameStyle" v-model="page.page_name">
-                    <button @click="deletePage(page.id)">삭제하기</button>
+                    <button @click="removePage(page)">삭제하기</button>
                     <button @click="selectPage(page.id)">페이지로 이동하기</button>
                 </li>
             </ol>
-            
+
         </div>
     </div>
 </template>
@@ -41,7 +41,7 @@ export default {
             type: Object,
             default: () => { }
         },
-        isPageNameEdited: {
+        isPageEdited: {
             type: Boolean,
             default: false
         },
@@ -62,16 +62,13 @@ export default {
             this.newPageName = "";
         },
         editPage() {
-            const confirmValue = confirm("저장하시겠습니까?")
-            if (confirmValue) {
-                this.$emit('upsert-page');
-                alert('수정되었습니다.')
-            }
+            this.$emit('edit-page');
+            alert('수정되었습니다.')
         },
-        async deletePage(pageIdHere) {
-            const confirmValue = confirm("정말로 삭제하시겠습니까? 삭제된 데이터는 복구가 불가능합니다.")
+        async removePage(pageHere) {
+            const confirmValue = confirm("삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
             if (confirmValue) {
-                this.$emit('delete-page', pageIdHere);
+                this.$emit('remove-page', pageHere);
             }
         },
     }
