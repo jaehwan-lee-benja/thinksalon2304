@@ -12,8 +12,9 @@
         <button :class="pageSettingBtn" @click="openPageDiv()">페이지 설정하기</button>
         <div v-if="isPageDivOpened" :class="modal">
           <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
-            @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @edit-page="editPage" @remove-page="removePage"
-            @select-page="selectPage" @close-page-div="closePageDiv" />
+            @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @edit-page="editPage"
+            @remove-page="removePage" @cancel-editing-page="cancelEditingPage" @select-page="selectPage"
+            @close-page-div="closePageDiv" />
         </div>
         <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
 
@@ -39,7 +40,7 @@
           <button :class="{
             'cancelEditedBtn_active': isEdited === true,
             'cancelEditedBtn_inactive': isEdited === false
-          }" :disabled="!isEdited" @click="cancelEditing">편집 취소</button>
+          }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
         </div>
         <div></div>
       </div>
@@ -50,8 +51,8 @@
         </div>
         <div :class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :totalExpenseId="totalExpenseId"
-            @create-new-expense="createNewExpense" @remove-expense="removeExpense" @cancel-editing="cancelEditing"
-            @toggle-sub-list="toggleSubList" />
+            @create-new-expense="createNewExpense" @remove-expense="removeExpense"
+            @cancel-editing-expense="cancelEditingExpense" @toggle-sub-list="toggleSubList" />
         </div>
       </div>
     </div>
@@ -148,9 +149,13 @@ export default {
     },
   },
   methods: {
+    async cancelEditingPage() {
+      this.expensePages = "";
+      this.expensePages = JSON.parse(JSON.stringify(this.fetchedExpensePages));
+    },
     editPage() {
 
-      const confirmValue = confirm("수정된 내용을 저장하시겠습니까?")
+      const confirmValue = confirm("편집된 내용을 저장하시겠습니까?")
 
       if (confirmValue) {
         const idArray = this.expensePages.map(e => e.id);
@@ -164,8 +169,6 @@ export default {
         this.expensePages.forEach(e => this.upsertPage(e))
 
         this.fetchedExpensePages = JSON.parse(JSON.stringify(this.expensePages));
-
-        console.log("isPageEdited = ", this.isPageEdited)
 
         alert('저장되었습니다.')
       }
@@ -260,7 +263,7 @@ export default {
         this.toggleActiveHandler[expenseHere.id] = true;
       }
     },
-    cancelEditing() {
+    cancelEditingExpense() {
       this.expenses = "";
       this.expenses = JSON.parse(JSON.stringify(this.fetchedExpenses));
     },
@@ -313,7 +316,7 @@ export default {
     },
     editExpense() {
 
-      const confirmValue = confirm("수정된 내용을 저장하시겠습니까?")
+      const confirmValue = confirm("편집된 내용을 저장하시겠습니까?")
 
       if (confirmValue) {
         const idArray = this.expenses.map(e => e.id);
@@ -387,19 +390,25 @@ export default {
     openPageDiv() {
       this.isPageDivOpened = true;
     },
-    closePageDiv() {
-      if(!this.isPageEdited){
+    async closePageDiv() {
+      if (!this.isPageEdited) {
+        // 편집 내용이 없는 경우, 모달창 바깥을 눌러서 종료하는 경우
         this.isPageDivOpened = false;
+        await this.cancelEditingPage();
       } else {
-        const text = "페이지에 수정된 내용이 있습니다. \n [확인]을 누르면, 수정된 내용은 저장되지 않고 진행됩니다. \n *수정 내용을 저장하고 싶은 경우, [취소]>[수정 저장하기] 후 종료"
+        // 편집한 내용이 있는 경우,
+        const text = "페이지에 편집된 내용이 있습니다. \n [확인]을 누르면, 편집된 내용은 저장되지 않고 진행됩니다. \n *편집 내용을 저장하고 싶은 경우, [취소]>[편집 저장하기] 후 종료"
         const confirmValue = confirm(text)
+        
         if (confirmValue) {
-        this.isPageDivOpened = false;
+          // 편집을 취소하며, 모달창을 종료하는 경우
+          this.isPageDivOpened = false;
+          await this.cancelEditingPage();
         } else {
-          // 수정을 취소하며 진행을 종료하는 경우, 편집 취소하기로 진행하기 // 편집 취소하기 버튼 구현부터하기
+          // 편집을 계속하기
+          return false
         }
       }
-      // this.isPageDivOpened = false;
     },
     async selectPage(pageIdHere) {
 
@@ -408,7 +417,19 @@ export default {
       if (pageIdHere != undefined) {
         // PageSettingView.vue에서 '이동하기'를 통해 선택하는 경우
         this.selectedPageId = pageIdHere
-        selectedPage = this.expensePages.filter(e => e.id === pageIdHere)[0]
+        if (!this.isPageEdited) {
+          console.log("편집된것 없음")
+          selectedPage = this.expensePages.filter(e => e.id === pageIdHere)[0]
+        } else {
+          console.log("편집된것 있음")
+          selectedPage = this.fetchedExpensePages.filter(e => e.id === pageIdHere)[0]
+        }
+
+        if(!this.closePageDiv()) {
+          // 이동하기를 했는데, 편집한 것이 있어, 편집 여부 확인 후, 편집하기로 결정한 경우, 
+          // 기존 select에 있는 this.pageName을 통해, 그 내용으로 selectedPage를 정한다.
+          selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)[0]
+        }
 
       } else {
         // selectbox를 통해 페이지를 선택하는 경우
@@ -421,9 +442,12 @@ export default {
         }
 
         this.selectedPageId = selectedPage.id
+
       }
 
       this.pageName = selectedPage.page_name;
+
+      console.log("this.pageName = ", this.pageName);
 
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
 
@@ -431,6 +455,8 @@ export default {
       this.expenses.forEach(e => {
         if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
       })
+
+
 
     },
 

@@ -124,10 +124,10 @@ export default {
         createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere) {
             this.$emit('create-new-expense', parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere)
         },
-        cancelEditing() {
+        cancelEditingExpense() {
             const confirmValue = confirm("편집을 취소하시겠습니까? 취소하면, 편집 중인 내용은 저장되지 않습니다.")
             if (confirmValue) {
-                this.$emit('cancel-editing')
+                this.$emit('cancel-editing-expense')
             }
         }
     },

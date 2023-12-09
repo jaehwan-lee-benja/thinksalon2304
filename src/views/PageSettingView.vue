@@ -10,11 +10,15 @@
         </div>
 
         <div>
-            <h4>기존 페이지 수정하기</h4>
+            <h4>기존 페이지 편집하기</h4>
             <button :class="{
                 'pageNameEditedBtn_active': isPageEdited === true,
                 'pageNameEditedBtn_inactive': isPageEdited === false
-            }" :disabled="!isPageEdited" @click="editPage()">수정 저장하기</button>
+            }" :disabled="!isPageEdited" @click="editPage()">편집 저장하기</button>
+            <button :class="{
+                'pageNameEditedBtn_active': isPageEdited === true,
+                'pageNameEditedBtn_inactive': isPageEdited === false
+            }" :disabled="!isPageEdited" @click="cancelEditingPage()">편집 취소하기</button>
             <ol>
                 <li v-for="page in this.expensePages" :key="page.id">
                     <input :class="pageNameStyle" v-model="page.page_name">
@@ -55,7 +59,6 @@ export default {
     methods: {
         selectPage(pageIdHere) {
             this.$emit('selectPage', pageIdHere);
-            this.$emit('close-page-div');
         },
         createNewPage() {
             this.$emit('create-new-page', this.newPageName);
@@ -63,7 +66,12 @@ export default {
         },
         editPage() {
             this.$emit('edit-page');
-            alert('수정되었습니다.')
+        },
+        cancelEditingPage() {
+            const confirmValue = confirm("편집을 취소하시겠습니까? 취소하면, 편집 중인 내용은 저장되지 않습니다.")
+            if (confirmValue) {
+                this.$emit('cancel-editing-page')
+            }
         },
         async removePage(pageHere) {
             const confirmValue = confirm("삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
