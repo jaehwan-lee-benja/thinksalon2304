@@ -23,7 +23,6 @@
                 <li v-for="page in this.expensePages" :key="page.id">
                     <input :class="pageNameStyle" v-model="page.page_name">
                     <button @click="removePage(page)">삭제하기</button>
-                    <button @click="selectPage(page.id)">페이지로 이동하기</button>
                 </li>
             </ol>
 
@@ -57,9 +56,6 @@ export default {
         }
     },
     methods: {
-        selectPage(pageIdHere) {
-            this.$emit('selectPage', pageIdHere);
-        },
         createNewPage() {
             this.$emit('create-new-page', this.newPageName);
             this.newPageName = "";

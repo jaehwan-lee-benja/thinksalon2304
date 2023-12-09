@@ -13,8 +13,7 @@
         <div v-if="isPageDivOpened" :class="modal">
           <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
             @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @edit-page="editPage"
-            @remove-page="removePage" @cancel-editing-page="cancelEditingPage" @select-page="selectPage"
-            @close-page-div="closePageDiv" />
+            @remove-page="removePage" @cancel-editing-page="cancelEditingPage" />
         </div>
         <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
 
@@ -390,73 +389,47 @@ export default {
     openPageDiv() {
       this.isPageDivOpened = true;
     },
-    async closePageDiv() {
+    closePageDiv() {
       if (!this.isPageEdited) {
         // 편집 내용이 없는 경우, 모달창 바깥을 눌러서 종료하는 경우
         this.isPageDivOpened = false;
-        await this.cancelEditingPage();
+        this.cancelEditingPage();
       } else {
         // 편집한 내용이 있는 경우,
         const text = "페이지에 편집된 내용이 있습니다. \n [확인]을 누르면, 편집된 내용은 저장되지 않고 진행됩니다. \n *편집 내용을 저장하고 싶은 경우, [취소]>[편집 저장하기] 후 종료"
         const confirmValue = confirm(text)
-        
+
         if (confirmValue) {
           // 편집을 취소하며, 모달창을 종료하는 경우
           this.isPageDivOpened = false;
-          await this.cancelEditingPage();
+          this.cancelEditingPage();
         } else {
           // 편집을 계속하기
-          return false
         }
       }
     },
-    async selectPage(pageIdHere) {
+    async selectPage() {
 
       let selectedPage = {}
 
-      if (pageIdHere != undefined) {
-        // PageSettingView.vue에서 '이동하기'를 통해 선택하는 경우
-        this.selectedPageId = pageIdHere
-        if (!this.isPageEdited) {
-          console.log("편집된것 없음")
-          selectedPage = this.expensePages.filter(e => e.id === pageIdHere)[0]
-        } else {
-          console.log("편집된것 있음")
-          selectedPage = this.fetchedExpensePages.filter(e => e.id === pageIdHere)[0]
-        }
-
-        if(!this.closePageDiv()) {
-          // 이동하기를 했는데, 편집한 것이 있어, 편집 여부 확인 후, 편집하기로 결정한 경우, 
-          // 기존 select에 있는 this.pageName을 통해, 그 내용으로 selectedPage를 정한다.
-          selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)[0]
-        }
-
+      if (this.pageName == undefined) {
+        // 첫 로딩을 한 경우
+        selectedPage = this.expensePages.filter(e => e.order === 0)[0]
       } else {
         // selectbox를 통해 페이지를 선택하는 경우
-        if (this.pageName == undefined) {
-          // 첫 로딩을 한 경우
-          selectedPage = this.expensePages.filter(e => e.order === 0)[0]
-        } else {
-          // selectbox를 통해 페이지를 선택하는 경우
-          selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)[0]
-        }
-
-        this.selectedPageId = selectedPage.id
-
+        selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)[0]
       }
+
+      this.selectedPageId = selectedPage.id
 
       this.pageName = selectedPage.page_name;
 
-      console.log("this.pageName = ", this.pageName);
-
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
-
       this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
+      
       this.expenses.forEach(e => {
         if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
       })
-
-
 
     },
 
