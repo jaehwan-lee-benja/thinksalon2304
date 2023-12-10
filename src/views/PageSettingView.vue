@@ -12,17 +12,17 @@
         <div>
             <h4>기존 페이지 편집하기</h4>
             <button :class="{
-                'pageNameEditedBtn_active': isPageEdited === true,
-                'pageNameEditedBtn_inactive': isPageEdited === false
-            }" :disabled="!isPageEdited" @click="editPage()">편집 저장하기</button>
+                'pageEditedBtn_active': isPageEdited === true,
+                'pageEditedBtn_inactive': isPageEdited === false
+            }" :disabled="!isPageEdited" @click="editPage()">편집한 내용 저장</button>
             <button :class="{
-                'pageNameEditedBtn_active': isPageEdited === true,
-                'pageNameEditedBtn_inactive': isPageEdited === false
-            }" :disabled="!isPageEdited" @click="cancelEditingPage()">편집 취소하기</button>
+                'cancelPageEditedBtn_active': isPageEdited === true,
+                'cancelPageEditedBtn_inactive': isPageEdited === false
+            }" :disabled="!isPageEdited" @click="cancelEditingPage()">편집 취소</button>
             <ol>
                 <li v-for="page in this.expensePages" :key="page.id">
                     <input :class="pageNameStyle" v-model="page.page_name">
-                    <button @click="removePage(page)">삭제하기</button>
+                    <button @click="removePage(page)">삭제</button>
                 </li>
             </ol>
 

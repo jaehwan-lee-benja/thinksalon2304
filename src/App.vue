@@ -3,7 +3,7 @@
     <div :class="menuGrid">
       <div :class="pageListDiv">
 
-        <select :class="pageSelect" v-model="pageName" @change="selectPage()">
+        <select :class="pageSelect" v-model="pageName" @change="selectPageBySelectBox()">
           <option v-for="page in sortExpensePages" :key="page.id" :value="page.page_name">
             {{ page.page_name }}
           </option>
@@ -152,24 +152,42 @@ export default {
       this.expensePages = "";
       this.expensePages = JSON.parse(JSON.stringify(this.fetchedExpensePages));
     },
-    editPage() {
+    isThereSamePageNameForEditPage(arrHere) {
+      const setCollection = new Set(arrHere.map(JSON.stringify));
+      const isDuplicate = setCollection.size < arrHere.length;
+      return isDuplicate;
+    },
+    async editPage() {
 
       const confirmValue = confirm("편집된 내용을 저장하시겠습니까?")
 
       if (confirmValue) {
-        const idArray = this.expensePages.map(e => e.id);
-        const fetchedIdArray = this.fetchedExpensePages.map(e => e.id);
 
-        // fetchedArray 중 기존 Array에 없는 id를 필터링해서 모으기
-        const willBeDeletedIdArray = fetchedIdArray.filter(eachId => !idArray.includes(eachId));
+        // 페이지 이름 수정시, 이름이 중복되는 경우 거르기
+        const pageNameArr = this.expensePages.map(e => ({ "name": e.page_name }))
+        const isDuplicate = this.isThereSamePageNameForEditPage(pageNameArr)
 
-        willBeDeletedIdArray.forEach(eachId => this.deletePage(eachId));
+        if (!isDuplicate) {
+          const idArray = this.expensePages.map(e => e.id);
+          const fetchedIdArray = this.fetchedExpensePages.map(e => e.id);
 
-        this.expensePages.forEach(e => this.upsertPage(e))
+          // fetchedArray 중 기존 Array에 없는 id를 필터링해서 모으기
+          const willBeDeletedIdArray = fetchedIdArray.filter(eachId => !idArray.includes(eachId));
 
-        this.fetchedExpensePages = JSON.parse(JSON.stringify(this.expensePages));
+          willBeDeletedIdArray.forEach(eachId => this.deletePage(eachId));
 
-        alert('저장되었습니다.')
+          this.expensePages.forEach(e => this.upsertPage(e))
+
+          this.fetchedExpensePages = JSON.parse(JSON.stringify(this.expensePages));
+
+          alert('저장되었습니다.')
+
+          // 페이지 이름이 업데이트 되거나, 페이지가 삭제된 경우를 위한 함수
+          this.selectPageByEditPage();
+
+        } else {
+          alert('같은 페이지 이름이 있습니다. 다른 이름으로 다시 작성해주시기 바랍니다.')
+        }
       }
 
     },
@@ -192,16 +210,13 @@ export default {
       this.expensePages = this.expensePages.filter((t) => t !== pageHere)
 
     },
-    async deletePage(pageHere) {
-      this.removeExpenseByPageDelete(pageHere.id);
+    async deletePage(pageIdHere) {
+      this.removeExpenseByPageDelete(pageIdHere);
       try {
         const { error } = await supabase
           .from('expense_page')
           .delete()
-          .eq('id', pageHere.id)
-
-        alert('삭제되었습니다.')
-
+          .eq('id', pageIdHere)
         if (error) {
           throw error;
         }
@@ -214,16 +229,21 @@ export default {
       deleteExpensesArray.forEach(e => this.deleteExpense(e.id))
     },
     async createNewPage(newPageNameHere) {
-      const o = {
-        id: this.getUuidv4(),
-        page_name: newPageNameHere,
-        order: this.setOrderForPage()
+      const isThereSamePageName = this.expensePages.filter((e) => e.page_name == newPageNameHere)
+      if (isThereSamePageName.length == 0) {
+        const o = {
+          id: this.getUuidv4(),
+          page_name: newPageNameHere,
+          order: this.setOrderForPage()
+        }
+        await this.upsertPage(o);
+        this.upsertInitailExpense(o.id);
+        await this.fetchDataForPage()
+        alert('신규 페이지가 생성되었습니다.')
+      } else {
+        alert('같은 페이지 이름이 있습니다. 다른 이름으로 다시 작성해주시기 바랍니다.')
       }
-      console.log("o = ", o);
-      await this.upsertPage(o);
-      this.upsertInitailExpense(o.id);
-      await this.fetchDataForPage()
-      alert('신규 페이지가 생성되었습니다.')
+
     },
     async upsertPage(oHere) {
       try {
@@ -382,7 +402,7 @@ export default {
 
       this.totalExpenses = data;
 
-      await this.selectPage(); //페이지 선택 후 this.expenses가 만들어짐
+      await this.selectPageByLoading(); //페이지 선택 후 this.expenses가 만들어짐
 
       this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
 
@@ -413,23 +433,39 @@ export default {
         }
       }
     },
-    async selectPage() {
+    async selectPageByLoading() {
 
-      let selectedPage = {}
-
-      if (this.pageName == undefined) {
-        // 첫 로딩을 한 경우
-        selectedPage = this.expensePages.filter(e => e.order === 0)[0]
-        console.log("selectedPage(1) =", selectedPage)
-      } else {
-        // selectbox를 통해 페이지를 선택하는 경우
-        selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)[0]
-        console.log("selectedPage(2) =", selectedPage)
-      }
-
+      const selectedPage = this.sortExpensePages.filter(e => e.order === 0)[0]
       this.selectedPageId = selectedPage.id
 
-      this.pageName = selectedPage.page_name;
+      this.setPageBySelectPage(selectedPage)
+
+    },
+    selectPageBySelectBox() {
+      const selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)[0]
+      this.selectedPageId = selectedPage.id
+
+      this.setPageBySelectPage(selectedPage)
+
+    },
+    selectPageByEditPage() {
+
+      let selectedPage = this.expensePages.filter(e => e.id === this.selectedPageId)
+
+      // selectedPage.length가 0이라면, this.selectedPageId에 대항하는 이전 page가 없어졌다는 뜻이다.(즉, 삭제된 페이지)
+      if (selectedPage.length == 0) {
+        // 보고 있던 페이지에서, 페이지 설정 창으로 들어가, 해당 페이지를 삭제하는 경우 (selectPageByLoading()와 같음)
+        selectedPage = this.sortExpensePages.filter(e => e.order === 0)[0]
+      } else {
+        // 그외 경우, 기존에 열려있던 페이지가 selectedPage가 된다.
+        selectedPage = selectedPage[0]
+      }
+
+      this.setPageBySelectPage(selectedPage)
+
+    },
+    setPageBySelectPage(selectedPageHere) {
+      this.pageName = selectedPageHere.page_name;
 
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
       this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
@@ -437,7 +473,6 @@ export default {
       this.expenses.forEach(e => {
         if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
       })
-
     },
 
     async fetchDataForPage() {

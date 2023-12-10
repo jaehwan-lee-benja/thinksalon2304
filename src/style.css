@@ -188,20 +188,19 @@ input:read-only {
 .saveEditedBtn_active {
   width: 49%;
   height: 40px;
+  margin: 0.5%;
   color: white;
   background-color: #004EFC;
   border: 1px solid #004EFC;
-  margin: 0.5%;
 }
 .saveEditedBtn_inactive {
   width: 49%;
   height: 40px;
+  margin: 0.5%;
   color: white;
   background-color: #e2e2e2;
   border: 1px solid #e2e2e2;
-  margin: 0.5%;
 }
-
 .saveEditedBtn_inactive:hover{
   box-shadow: none;
   cursor: default;
@@ -210,40 +209,62 @@ input:read-only {
 .cancelEditedBtn_active {
   width: 49%;
   height: 40px;
+  margin: 0.5%;
   color: rgb(168, 40, 40);
   background-color: transparent;
   border: 1px solid rgb(168, 40, 40);
-  margin: 0.5%;
 }
 .cancelEditedBtn_inactive {
   width: 49%;
   height: 40px;
+  margin: 0.5%;
   color: #e2e2e2;
   background-color: transparent;
   border: 1px solid #e2e2e2;
-  margin: 0.5%;
 }
-
-.pageNameEditedBtn_active {
-  background-color: #11212D;
-  border: 1px solid #11212D;
-  color: #FFFFFF;
-  min-width: 30px;
-  padding: 5px;
-  margin: 0 5px;
-  border-radius: 4px;
-}
-.pageNameEditedBtn_inactive {
-  background-color: #bababa;
-  border: 1px solid #bababa;
-  color: #FFFFFF;
-  min-width: 30px;
-  padding: 5px;
-  margin: 0 5px;
-  border-radius: 4px;
-}
-
 .cancelEditedBtn_inactive:hover{
+  box-shadow: none;
+  cursor: default;
+}
+
+.pageEditedBtn_active {
+  width: 49%;
+  height: 40px;
+  margin: 0.5%;
+  color: white;
+  background-color: #004EFC;
+  border: 1px solid #004EFC;
+}
+.pageEditedBtn_inactive {
+  width: 49%;
+  height: 40px;
+  margin: 0.5%;
+  color: white;
+  background-color: #e2e2e2;
+  border: 1px solid #e2e2e2;
+}
+.pageEditedBtn_inactive:hover{
+  box-shadow: none;
+  cursor: default;
+}
+
+.cancelPageEditedBtn_active {
+  width: 49%;
+  height: 40px;
+  margin: 0.5%;
+  color: rgb(168, 40, 40);
+  background-color: transparent;
+  border: 1px solid rgb(168, 40, 40);
+}
+.cancelPageEditedBtn_inactive {
+  width: 49%;
+  height: 40px;
+  margin: 0.5%;
+  color: #e2e2e2;
+  background-color: transparent;
+  border: 1px solid #e2e2e2;
+}
+.cancelPageEditedBtn_inactive:hover{
   box-shadow: none;
   cursor: default;
 }
