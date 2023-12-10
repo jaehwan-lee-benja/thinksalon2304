@@ -219,6 +219,7 @@ export default {
         page_name: newPageNameHere,
         order: this.setOrderForPage()
       }
+      console.log("o = ", o);
       await this.upsertPage(o);
       this.upsertInitailExpense(o.id);
       await this.fetchDataForPage()
@@ -246,6 +247,8 @@ export default {
         level: 1,
         page_id: idHere
       }
+      this.totalExpenses.push(initialExpenseData);
+
       await this.upsertExpense(initialExpenseData)
     },
     toggleSubList(expenseHere) {
@@ -354,7 +357,9 @@ export default {
         this.toggleActiveHandler[o.id] = false;
       }
 
+      this.totalExpenses.push(o);
       this.expenses.push(o);
+
     },
     setOrder(parentsIdHere) {
       const arr = this.expenses.filter(e => e.parents_id === parentsIdHere)
@@ -415,9 +420,11 @@ export default {
       if (this.pageName == undefined) {
         // 첫 로딩을 한 경우
         selectedPage = this.expensePages.filter(e => e.order === 0)[0]
+        console.log("selectedPage(1) =", selectedPage)
       } else {
         // selectbox를 통해 페이지를 선택하는 경우
         selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)[0]
+        console.log("selectedPage(2) =", selectedPage)
       }
 
       this.selectedPageId = selectedPage.id
@@ -426,7 +433,7 @@ export default {
 
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
       this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
-      
+
       this.expenses.forEach(e => {
         if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
       })
@@ -439,7 +446,7 @@ export default {
         .select()
       const { data } = a;
       this.expensePages = data;
-      this.fetchedExpensePages = await JSON.parse(JSON.stringify(this.expensePages));
+      this.fetchedExpensePages = JSON.parse(JSON.stringify(this.expensePages));
     },
 
   }
