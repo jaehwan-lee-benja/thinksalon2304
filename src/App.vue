@@ -456,6 +456,7 @@ export default {
       if (selectedPage.length == 0) {
         // 보고 있던 페이지에서, 페이지 설정 창으로 들어가, 해당 페이지를 삭제하는 경우 (selectPageByLoading()와 같음)
         selectedPage = this.sortExpensePages.filter(e => e.order === 0)[0]
+        this.selectedPageId = selectedPage.id
       } else {
         // 그외 경우, 기존에 열려있던 페이지가 selectedPage가 된다.
         selectedPage = selectedPage[0]
