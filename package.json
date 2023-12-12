@@ -13,6 +13,7 @@
     "core-js": "^3.8.3",
     "dagre": "^0.8.5",
     "v-network-graph": "^0.9.8",
+    "vls": "^0.8.5",
     "vue": "^3.2.13",
     "vue-chartjs": "^4.0.0",
     "vue-router": "^4.2.2"
