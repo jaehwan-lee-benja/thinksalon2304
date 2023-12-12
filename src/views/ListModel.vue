@@ -56,13 +56,20 @@ export default {
     methods: {
         onInputChange() {
             // ListView.vue에도 같은 함수 있음
-            const isNumber = !isNaN(this.getExpenseById[0].amount);
-            if (!isNumber) {
-                alert("숫자가 아닌 문자가 입력되었습니다. 숫자로 입력해주시기 바랍니다.")
-                this.getExpenseById[0].amount = this.getExpenseById[0].amount.replace(/[^0-9]/g, '');
-            }
+            // 비동기로 다음 렌더링 사이클로 함수 예약
+            this.$nextTick(() => {
+                const isNumber = !isNaN(this.getExpenseById[0].amount);
+                // 값이 바로 적용되도록 $nextTick 내에서 값을 변경
+                this.$nextTick(() => {
+                    if (!isNumber) {
+                        alert("숫자가 아닌 문자가 입력되었습니다. 숫자로 입력해주시기 바랍니다.");
+                        this.getExpenseById[0].amount = this.getExpenseById[0].amount.replace(/[^0-9]/g, '');
+                    }
+                });
+            });
         },
         handlerLiMoreDiv() {
+            // ListView.vue에도 같은 함수 있음
             this.isLiMoreDivOpened = !this.isLiMoreDivOpened;
         },
         sumExpenses(parentsIdHere) {
