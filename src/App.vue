@@ -323,12 +323,12 @@ export default {
         console.error(error);
       }
     },
-    async deleteExpense(expenseId) {
+    async deleteExpense(expenseIdHere) {
       try {
         const { error } = await supabase
           .from('expense')
           .delete()
-          .eq('id', expenseId)
+          .eq('id', expenseIdHere)
         if (error) {
           throw error;
         }

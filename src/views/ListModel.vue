@@ -4,13 +4,13 @@
             'toggleBtn_active': this.toggleActiveHandler === true,
             'toggleBtn_inactive': this.toggleActiveHandler === false
         }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(getExpenseById[0])">
-        {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }} 
+            {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }}
         </button>
 
         <div :class="listViewLiDiv">
             <input :class="categoryStyle" v-model="getExpenseById[0].category">
             <span> : </span>
-            <input :class="amountStyle" v-model="getExpenseById[0].amount">
+            <input :class="amountStyle" v-model="getExpenseById[0].amount" @input="onInputChange">
         </div>
 
         <button :class="moreBtn" @click="handlerLiMoreDiv()"> … </button>
@@ -19,9 +19,8 @@
             <span> *하위 합계 : </span>
             <input :class="amountStyle" :value="sumExpenses(getExpenseById[0].id)" readonly>
         </div>
-        
+
     </div>
-    
 </template>
 
 <script>
@@ -36,13 +35,13 @@ export default {
         },
         expenses: {
             type: Object,
-            default: () => {}
+            default: () => { }
         },
         toggleActiveHandler: {
             type: Boolean,
             default: true
         }
-    }, 
+    },
     mixins: [CssData],
     data() {
         return {
@@ -55,6 +54,14 @@ export default {
         }
     },
     methods: {
+        onInputChange() {
+            // ListView.vue에도 같은 함수 있음
+            const isNumber = !isNaN(this.getExpenseById[0].amount);
+            if (!isNumber) {
+                alert("숫자가 아닌 문자가 입력되었습니다. 숫자로 입력해주시기 바랍니다.")
+                this.getExpenseById[0].amount = this.getExpenseById[0].amount.replace(/[^0-9]/g, '');
+            }
+        },
         handlerLiMoreDiv() {
             this.isLiMoreDivOpened = !this.isLiMoreDivOpened;
         },

@@ -2,7 +2,7 @@
     <div :class="listViewLiDiv">
         <input :class="categoryStyle" v-model="getExpenseById[0].category">
         <span> : </span>
-        <input :class="amountStyle" v-model="getExpenseById[0].amount">
+        <input :class="amountStyle" v-model="getExpenseById[0].amount" @input="onInputChange">
     </div>
     <button :class="moreBtn" @click="handlerLiMoreDiv()"> … </button>
     <div :class="liMoreDiv" v-if="isLiMoreDivOpened">
@@ -59,8 +59,7 @@
 
         </li>
 
-        <NewListModel v-bind:expenses="expenses" :expenseId="getExpenseById[0].id"
-            @create-new-expense="createNewExpense" />
+        <NewListModel v-bind:expenses="expenses" :expenseId="getExpenseById[0].id" @create-new-expense="createNewExpense" />
     </ol>
 </template>
   
@@ -93,14 +92,36 @@ export default {
     },
     computed: {
         getExpenseById() {
-            if(this.expenses.length > 0){
+            if (this.expenses.length > 0) {
                 return this.expenses.filter(expense => expense.id === this.totalExpenseId)
             } else {
-                return [{category: "로딩중..", amount: "로딩중..", id: ""}]
+                return [{ category: "로딩중..", amount: 0, id: "" }]
             }
         }
     },
     methods: {
+        onInputChange() { //지연문제 있음 해결 필요!
+            // ListModel.vue에도 같은 함수 있음
+            // const isNumber = !isNaN(this.getExpenseById[0].amount); // [질문]  타이밍이슈?
+            // console.log("check = ", this.getExpenseById[0].amount);
+            // console.log("isNumber = ", isNumber);
+            // if (!isNumber) {
+            //     alert("숫자가 아닌 문자가 입력되었습니다. 숫자로 입력해주시기 바랍니다.")
+            //     this.getExpenseById[0].amount = this.getExpenseById[0].amount.replace(/[^0-9]/g, '');
+            // }
+            // 비동기로 다음 렌더링 사이클로 함수 예약
+            this.$nextTick(() => {
+                const isNumber = !isNaN(this.getExpenseById[0].amount);
+                if (!isNumber) {
+                    alert("숫자가 아닌 문자가 입력되었습니다. 숫자로 입력해주시기 바랍니다.");
+
+                    // 값이 바로 적용되도록 $nextTick 내에서 값을 변경
+                    this.$nextTick(() => {
+                        this.getExpenseById[0].amount = this.getExpenseById[0].amount.replace(/[^0-9]/g, '');
+                    });
+                }
+            });
+        },
         handlerLiMoreDiv() {
             this.isLiMoreDivOpened = !this.isLiMoreDivOpened;
         },
