@@ -51,8 +51,9 @@ export default {
                     // 추가: 툴팁 생성 지연
                     this.tooltipTimeout = setTimeout(() => {
                         const amount = this.nodes[node].size;
+                        const name = this.nodes[node].name;
                         this.tooltipElement = document.createElement('div');
-                        this.tooltipElement.textContent = `${amount}`;
+                        this.tooltipElement.textContent = `${name} : ${amount}`;
                         this.tooltipElement.className = 'tooltip';
                         this.tooltipElement.style.position = 'absolute';
                         this.setTooltipPosition(event.clientX, event.clientY);
@@ -219,16 +220,18 @@ export default {
     beforeUnmount() {
         // 추가: 컴포넌트가 파괴되기 전에 기존 툴팁 제거 및 타이머 해제
         this.removeTooltip();
+        this.tooltipTimeout = null;
     }
 }
 </script>
 
 <style>
-/* [질문] scoped를 없애도 될까? */
+/* [질문]scoped를 없애도 될까? */
 @import '../style.css';
 
 .tooltip {
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: #EFEFEF;
+    font-size: 12px;
     border: 1px solid #ccc;
     padding: 5px;
     border-radius: 4px;
