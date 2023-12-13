@@ -2,13 +2,12 @@
     <button @click="formatExpenses" :class="flowViewBtn">새로고침</button>
     <!-- <div :class="graphDiv"> -->
     <div :class="graphDiv" ref="graphContainer">
-
         <VNetworkGraph ref="vng" class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs"
             :event-handlers="eventHandlers" />
         <!-- <div v-for="node in Object.keys(nodes)" :key="'overlay-' + node" class="node-overlay" :style="{
             left: `${layouts.nodes[node].x}px`,
             top: `${layouts.nodes[node].y}px`,
-        }">
+        }"> // [질문] template에 넣는게 좋을까?
             {{ nodes[node].size }}
         </div> -->
     </div>
@@ -17,7 +16,7 @@
 <script>
 import CssData from './CssData.vue'
 import { VNetworkGraph } from "v-network-graph"
-// import { EventHandlers } from "v-network-graph"
+// import { EventHandlers } from "v-network-graph" // [질문] 이것은 빼는게 좋을까?
 import "v-network-graph/lib/style.css"
 import dagre from "dagre/dist/dagre.min.js"
 
@@ -37,40 +36,15 @@ export default {
             layouts: {
                 nodes: {},
             },
-            // eventHandlers: {
-            //     "node:pointerover": ({ node }) => {
-            //         // 여기서 노드 위에 표시할 정보를 설정하세요
-            //         const amount = this.nodes[node].size;
-            //         // 예시: 콘솔에 금액을 출력
-            //         console.log(`Amount: ${amount}`);
-            //     },
-            // },
-            // tooltipElement: null, // 추가: 툴팁 엘리먼트를 저장하기 위한 변수
-            // eventHandlers: {
-            //     "node:pointerover": ({ node, event }) => {
-            //         const amount = this.nodes[node].size;
-
-            //         // 추가: 툴팁 엘리먼트 생성 및 스타일 설정
-            //         this.tooltipElement = document.createElement('div');
-            //         this.tooltipElement.textContent = `Amount: ${amount}`;
-            //         this.tooltipElement.className = 'tooltip';
-            //         this.tooltipElement.style.position = 'absolute';
-            //         this.tooltipElement.style.top = `${event.clientY}px`;
-            //         this.tooltipElement.style.left = `${event.clientX}px`;
-
-            //         // 추가: 툴팁을 그래프 컨테이너에 추가
-            //         this.$refs.graphContainer.appendChild(this.tooltipElement);
-            //     },
-            //     "node:pointerout": () => {
-            //         // 추가: 마우스가 노드를 벗어날 때 툴팁 제거
-            //         if (this.tooltipElement) {
-            //             this.tooltipElement.remove();
-            //         }
-            //     },
-            // },
             tooltipElement: null,
             tooltipTimeout: null, // 추가: 툴팁 지연을 위한 타이머 변수
             eventHandlers: {
+                "node:click": ({ node }) => {
+                    // 여기서 노드 위에 표시할 정보를 설정하세요
+                    const amount = this.nodes[node].size;
+                    // 예시: 콘솔에 금액을 출력
+                    console.log(`${amount}`);
+                },
                 "node:pointerover": ({ node, event }) => {
                     // 추가: 기존 툴팁 제거
                     this.removeTooltip();
@@ -78,14 +52,14 @@ export default {
                     this.tooltipTimeout = setTimeout(() => {
                         const amount = this.nodes[node].size;
                         this.tooltipElement = document.createElement('div');
-                        this.tooltipElement.textContent = `Amount: ${amount}`;
+                        this.tooltipElement.textContent = `${amount}`;
                         this.tooltipElement.className = 'tooltip';
                         this.tooltipElement.style.position = 'absolute';
                         this.setTooltipPosition(event.clientX, event.clientY);
 
                         // 그래프 컨테이너에 추가
                         this.$refs.graphContainer.appendChild(this.tooltipElement);
-                    }, 500); // 500ms 지연
+                    }, 200); // 500ms 지연
                 },
                 "node:pointerout": () => {
                     // 추가: 기존 툴팁 제거
@@ -149,7 +123,7 @@ export default {
             this.tooltipTimeout = setTimeout(() => {
                 const amount = this.nodes[node].size;
                 this.createTooltip(amount, event.clientX, event.clientY);
-            }, 200); // 적절한 딜레이 값을 설정합니다.
+            }, 100); // 적절한 딜레이 값을 설정합니다.
         },
         setTooltipPosition(x, y) {
             // 추가: 툴팁 위치 조정
@@ -249,12 +223,12 @@ export default {
 }
 </script>
 
-<style scoped>
+<style>
+/* [질문] scoped를 없애도 될까? */
 @import '../style.css';
 
 .tooltip {
-    /* background-color: rgba(255, 255, 255, 0.9); */
-    background-color: yellow;
+    background-color: rgba(255, 255, 255, 0.9);
     border: 1px solid #ccc;
     padding: 5px;
     border-radius: 4px;
