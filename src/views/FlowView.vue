@@ -105,7 +105,11 @@ export default {
             handler() {
                 const expensesLength = this.expenses.length;
                 if (expensesLength > 0) {
-                    this.formatExpenses()
+                    this.$nextTick(() => {
+
+                        this.formatExpenses()
+                    });
+
                 }
             },
             deep: true

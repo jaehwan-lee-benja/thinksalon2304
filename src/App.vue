@@ -310,7 +310,7 @@ export default {
 
       if (expenseHere.level > 1) {
         this.expenses = this.expenses.filter((t) => t.parents_id !== expenseHere.id)
-      }
+      } // 친가 외가 반영필요
 
     },
     async upsertExpense(expenseHere) {
