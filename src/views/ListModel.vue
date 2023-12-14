@@ -40,9 +40,21 @@ export default {
         toggleActiveHandler: {
             type: Boolean,
             default: true
-        }
+        },
+        selectedPageId: {
+            type: String,
+            default: '',
+        },
     },
     mixins: [CssData],
+    watch: {
+        selectedPageId: {
+            handler() {
+                this.handlerLiMoreDivForPageChange()
+            },
+            deep: true
+        }
+    },
     data() {
         return {
             isLiMoreDivOpened: false
@@ -67,6 +79,10 @@ export default {
                     }
                 });
             });
+        },
+        handlerLiMoreDivForPageChange() {
+            // Page가 바뀔 때, LiMoreDiv가 열려있는 경우, 없애도록하는 기능
+            if(this.isLiMoreDivOpened) { this.isLiMoreDivOpened = false;}
         },
         handlerLiMoreDiv() {
             // ListView.vue에도 같은 함수 있음

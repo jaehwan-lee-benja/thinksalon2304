@@ -49,7 +49,7 @@
           <FlowView v-bind:expenses="expenses" />
         </div>
         <div :class="listViewDiv">
-          <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :totalExpenseId="totalExpenseId"
+          <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :totalExpenseId="totalExpenseId" :selectedPageId="selectedPageId"
             @create-new-expense="createNewExpense" @remove-expense="removeExpense"
             @cancel-editing-expense="cancelEditingExpense" @toggle-sub-list="toggleSubList" />
         </div>

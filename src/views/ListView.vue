@@ -17,14 +17,14 @@
             :key="expense2.index">
 
             <ListModel v-bind:expenses="expenses" :expenseId="expense2.id" @remove-expense="removeExpense"
-                @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[expense2.id]" />
+                @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[expense2.id]" :selectedPageId="selectedPageId"/>
 
             <ol :class="olBgStyle" v-if="expense2.show_sub_list">
                 <li :class="listViewLiStyle" v-for="expense3 in sortChildrenByIdAndLevel(expense2.id, expense2.level)"
                     :key="expense3.index">
 
                     <ListModel v-bind:expenses="expenses" :expenseId="expense3.id" @remove-expense="removeExpense"
-                        @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[expense3.id]" />
+                        @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[expense3.id]" :selectedPageId="selectedPageId"/>
 
                     <ol :class="olBgStyle" v-if="expense3.show_sub_list">
                         <li :class="listViewLiStyle"
@@ -32,7 +32,7 @@
 
                             <ListModel v-bind:expenses="expenses" :expenseId="expense4.id" @remove-expense="removeExpense"
                                 @toggle-sub-list="toggleSubList"
-                                :toggleActiveHandler="this.toggleActiveHandler[expense4.id]" />
+                                :toggleActiveHandler="this.toggleActiveHandler[expense4.id]" :selectedPageId="selectedPageId"/>
 
                             <ol :class="olBgStyle" v-if="expense4.show_sub_list">
                                 <li :class="listViewLiStyle"
@@ -41,7 +41,7 @@
 
                                     <ListModel v-bind:expenses="expenses" :expenseId="expense5.id"
                                         @remove-expense="removeExpense" @toggle-sub-list="toggleSubList"
-                                        :toggleActiveHandler="this.toggleActiveHandler[expense5.id]" />
+                                        :toggleActiveHandler="this.toggleActiveHandler[expense5.id]" :selectedPageId="selectedPageId"/>
 
                                 </li>
                                 <NewListModel v-bind:expenses="expenses" :expenseId="expense4.id"
@@ -83,6 +83,10 @@ export default {
             type: Object,
             default: () => { }
         },
+        selectedPageId: {
+            type: String,
+            default: '',
+        },
     },
     mixins: [CssData],
     data() {
@@ -99,7 +103,19 @@ export default {
             }
         }
     },
+    watch: {
+        selectedPageId: {
+            handler() {
+                this.handlerLiMoreDivForPageChange()
+            },
+            deep: true
+        }
+    },
     methods: {
+        handlerLiMoreDivForPageChange() {
+            // Page가 바뀔 때, LiMoreDiv가 열려있는 경우, 없애도록하는 기능
+            if(this.isLiMoreDivOpened) { this.isLiMoreDivOpened = false;}
+        },
         onInputChange() { //지연문제 있음 해결 필요!
             // ListModel.vue에도 같은 함수 있음
             // 비동기로 다음 렌더링 사이클로 함수 예약
