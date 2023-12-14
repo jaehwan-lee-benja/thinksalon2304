@@ -16,8 +16,10 @@
         <button :class="moreBtn" @click="handlerLiMoreDiv()"> … </button>
         <div :class="liMoreDiv" v-if="isLiMoreDivOpened">
             <button @click="removeExpense(getExpenseById[0])">삭제</button>
-            <span> *하위 합계 : </span>
+            <span> 하위 합계 : </span>
             <input :class="amountStyle" :value="sumExpenses(getExpenseById[0].id)" readonly>
+            <span> 메모 : </span>
+            <input :class="memo" v-model="getExpenseById[0].memo">
         </div>
 
     </div>
@@ -57,7 +59,8 @@ export default {
     },
     data() {
         return {
-            isLiMoreDivOpened: false
+            isLiMoreDivOpened: false,
+            memoSaveBtnHandler: false
         }
     },
     computed: {
@@ -82,7 +85,7 @@ export default {
         },
         handlerLiMoreDivForPageChange() {
             // Page가 바뀔 때, LiMoreDiv가 열려있는 경우, 없애도록하는 기능
-            if(this.isLiMoreDivOpened) { this.isLiMoreDivOpened = false;}
+            if (this.isLiMoreDivOpened) { this.isLiMoreDivOpened = false; }
         },
         handlerLiMoreDiv() {
             // ListView.vue에도 같은 함수 있음
@@ -94,7 +97,9 @@ export default {
             return sum
         },
         removeExpense(expenseHere) {
+            console.log("expenseHere = ", expenseHere);
             this.$emit('remove-expense', expenseHere);
+            this.handlerLiMoreDivForPageChange();
         },
         toggleSubList(expenseHere) {
             this.$emit('toggle-sub-list', expenseHere);

@@ -49,9 +49,9 @@
           <FlowView v-bind:expenses="expenses" />
         </div>
         <div :class="listViewDiv">
-          <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :totalExpenseId="totalExpenseId" :selectedPageId="selectedPageId"
-            @create-new-expense="createNewExpense" @remove-expense="removeExpense"
-            @cancel-editing-expense="cancelEditingExpense" @toggle-sub-list="toggleSubList" />
+          <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :totalExpenseId="totalExpenseId"
+            :selectedPageId="selectedPageId" @create-new-expense="createNewExpense" @remove-expense="removeExpense"
+            @cancel-editing-expense="cancelEditingExpense" @toggle-sub-list="toggleSubList" @memo-save="memoSave" />
         </div>
       </div>
     </div>
@@ -129,13 +129,15 @@ export default {
 
       const fetched = this.fetchedExpenses.map(e => ({
         category: e.category,
-        amount: Number(e.amount)
+        amount: Number(e.amount),
+        memo: e.memo,
       })
       );
 
       const edited = this.expenses.map(e => ({
         category: e.category,
-        amount: Number(e.amount)
+        amount: Number(e.amount),
+        memo: e.memo,
       })
       );
 
@@ -263,6 +265,7 @@ export default {
         parents_id: null,
         category: '총계',
         amount: 0,
+        memo: null,
         order: null,
         level: 1,
         page_id: idHere
@@ -365,6 +368,7 @@ export default {
         parents_id: parentsIdHere,
         category: newCategoryHere,
         amount: newAmountHere,
+        memo: null,
         order: this.setOrder(parentsIdHere),
         level: levelForO,
         show_sub_list: false,

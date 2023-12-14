@@ -39,12 +39,11 @@ export default {
             tooltipElement: null,
             tooltipTimeout: null, // 추가: 툴팁 지연을 위한 타이머 변수
             eventHandlers: {
-                "node:click": ({ node }) => {
-                    // 여기서 노드 위에 표시할 정보를 설정하세요
-                    const amount = this.nodes[node].size;
-                    // 예시: 콘솔에 금액을 출력
-                    console.log(`${amount}`);
-                },
+                // "node:click": ({ node }) => {
+                //     // 여기서 노드 위에 표시할 정보를 설정하세요
+                //     // const amount = this.nodes[node].size;
+                //     // 예시: 콘솔에 금액을 출력
+                // },
                 "node:pointerover": ({ node, event }) => {
                     // 추가: 기존 툴팁 제거
                     this.removeTooltip();
@@ -115,7 +114,7 @@ export default {
     methods: {
 
         showTooltip(node, event) {
-            console.log("showTooltip")
+            console.log("showTooltip") //[질문] 이것이 콘솔에 찍히지는 않는다. 그럼 작동하지 않는 것일텐데..
             // 추가: 마우스 이벤트 디바운싱
             if (this.tooltipTimeout) {
                 clearTimeout(this.tooltipTimeout);

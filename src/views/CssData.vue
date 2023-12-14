@@ -50,6 +50,7 @@ export default {
             olBgStyle: 'olBgStyle',
             pageListStyle: 'pageListStyle',
             pageNameStyle: 'pageNameStyle',
+            memo: 'memo'
         }
     }
 }
