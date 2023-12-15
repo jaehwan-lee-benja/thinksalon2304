@@ -25,6 +25,8 @@ export default {
             unitDiv: 'unitDiv',
             newListDiv: 'newListDiv',
             createNewPageDiv: 'createNewPageDiv',
+            newExpenseDiv: 'newExpenseDiv',
+            newExpenseLiDiv: 'newExpenseLiDiv',
 
             loginBtn: 'loginBtn',
             saveEditedBtn_active: 'saveEditedBtn_active',
@@ -38,6 +40,8 @@ export default {
             toggleBtn_active: 'toggleBtn_active',
             toggleBtn_inactive: 'toggleBtn_inactive',
             moreBtn: 'moreBtn',
+            newExpenseBtn: 'newExpenseBtn',
+            newExpenseDoneBtn: 'newExpenseDoneBtn',
 
             modal: 'modal',
             modalOverlay: 'modalOverlay',
