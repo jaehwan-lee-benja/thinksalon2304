@@ -97,7 +97,6 @@ export default {
             return sum
         },
         removeExpense(expenseHere) {
-            console.log("expenseHere = ", expenseHere);
             this.$emit('remove-expense', expenseHere);
             this.handlerLiMoreDivForPageChange();
         },

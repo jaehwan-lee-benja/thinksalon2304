@@ -307,26 +307,26 @@ export default {
       });
 
       this.expenses = this.expenses.filter((t) => t !== expenseHere);
-      this.removeChildrenAndSelf(expenseHere);
+      this.removeChildrenExpense(expenseHere);
 
     },
-    removeChildrenAndSelf(expenseHere) {
+    removeChildrenExpense(expenseHere) {
       // 레벨 이하의 모든 자식 요소를 찾아내기
-      const childrenToDelete = this.findChildren(expenseHere, []);
+      const childrenToDelete = this.findChildrenExpense(expenseHere, []);
 
       // 자식 요소와 자신을 삭제
       this.expenses = this.expenses.filter((t) => !childrenToDelete.includes(t));
 
     },
-    findChildren(parentHere, result) {
+    findChildrenExpense(parentHere, resultHere) {
       const children = this.expenses.filter((t) => t.parents_id === parentHere.id);
 
       children.forEach((child) => {
-        result.push(child);
-        this.findChildren(child, result);
+        resultHere.push(child);
+        this.findChildrenExpense(child, resultHere);
       });
 
-      return result;
+      return resultHere;
     },
     async upsertExpense(expenseHere) {
       try {
