@@ -306,12 +306,27 @@ export default {
         }
       });
 
-      this.expenses = this.expenses.filter((t) => t !== expenseHere)
+      this.expenses = this.expenses.filter((t) => t !== expenseHere);
+      this.removeChildrenAndSelf(expenseHere);
 
-      if (expenseHere.level > 1) {
-        this.expenses = this.expenses.filter((t) => t.parents_id !== expenseHere.id)
-      } // 친가 외가 반영필요
+    },
+    removeChildrenAndSelf(expenseHere) {
+      // 레벨 이하의 모든 자식 요소를 찾아내기
+      const childrenToDelete = this.findChildren(expenseHere, []);
 
+      // 자식 요소와 자신을 삭제
+      this.expenses = this.expenses.filter((t) => !childrenToDelete.includes(t));
+
+    },
+    findChildren(parentHere, result) {
+      const children = this.expenses.filter((t) => t.parents_id === parentHere.id);
+
+      children.forEach((child) => {
+        result.push(child);
+        this.findChildren(child, result);
+      });
+
+      return result;
     },
     async upsertExpense(expenseHere) {
       try {

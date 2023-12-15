@@ -120,7 +120,7 @@ export default {
             // Page가 바뀔 때, LiMoreDiv가 열려있는 경우, 없애도록하는 기능
             if (this.isLiMoreDivOpened) { this.isLiMoreDivOpened = false; }
         },
-        onInputChange() { //지연문제 있음 해결 필요!
+        onInputChange() {
             // ListModel.vue에도 같은 함수 있음
             // 비동기로 다음 렌더링 사이클로 함수 예약
             this.$nextTick(() => {
