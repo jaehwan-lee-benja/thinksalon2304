@@ -283,22 +283,10 @@ export default {
       console.log("expense = ", expense);
 
       const ParentsToUpdate = this.findParentsExpense(expense, []);
-
-      console.log("ParentsToUpdate = ", ParentsToUpdate);
       ParentsToUpdate.forEach(e => {
-        console.log("e = ", e);
-        if (e.level > 1) {
-          console.log(e.level)
-          if (e.show_sub_list == true) {
-            console.log("check!")
-            e.show_sub_list = true // 이 부분부터가 잘 안된다.
-            // this.upsertExpense(e)
-          }
-        } else {
-          console.log("레벨2입니다.")
-        }
+        e.show_sub_list = true;
+        this.upsertExpense(e)
       })
-
 
     },
     findParentsExpense(childHere, resultHere) {

@@ -63,17 +63,6 @@ export default {
             },
             deep: true
         },
-        expenses: {
-            handler() {
-                const expensesLength = this.expenses.length;
-                if (expensesLength > 0) {
-                    this.$nextTick(() => {
-                        this.getExpenseById()
-                    });
-                }
-            },
-            deep: true
-        }
     },
     data() {
         return {
