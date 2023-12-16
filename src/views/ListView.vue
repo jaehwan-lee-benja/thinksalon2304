@@ -1,4 +1,5 @@
 <template>
+        
     <div :class="{
         'listViewLiDiv_clicked': this.updateClickedExpenseId === true,
         'listViewLiDiv': this.updateClickedExpenseId === false,
@@ -12,6 +13,9 @@
         <span> *하위 합계 : </span>
         <input :class="amountStyle" :value="sumExpensesForTotal(getExpenseById[0].id)" readonly>
     </div>
+    <button :class="normalBtn" @click="openOrCloseLi">
+        {{ this.isAnyOpenedLi ? "모두 닫기" : "모두 펴기" }}
+    </button>
 
     <ol :class="olBgStyle">
 
@@ -21,7 +25,7 @@
 
             <ListModel v-bind:expenses="expenses" :expenseId="expense2.id" @remove-expense="removeExpense"
                 @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[expense2.id]"
-                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId"/>
+                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" />
 
             <ol :class="olBgStyle" v-if="expense2.show_sub_list">
                 <li :class="listViewLiStyle" v-for="expense3 in sortChildrenByIdAndLevel(expense2.id, expense2.level)"
@@ -29,7 +33,7 @@
 
                     <ListModel v-bind:expenses="expenses" :expenseId="expense3.id" @remove-expense="removeExpense"
                         @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[expense3.id]"
-                        :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId"/>
+                        :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" />
 
                     <ol :class="olBgStyle" v-if="expense3.show_sub_list">
                         <li :class="listViewLiStyle"
@@ -38,7 +42,7 @@
                             <ListModel v-bind:expenses="expenses" :expenseId="expense4.id" @remove-expense="removeExpense"
                                 @toggle-sub-list="toggleSubList"
                                 :toggleActiveHandler="this.toggleActiveHandler[expense4.id]"
-                                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId"/>
+                                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" />
 
                             <ol :class="olBgStyle" v-if="expense4.show_sub_list">
                                 <li :class="listViewLiStyle"
@@ -48,7 +52,7 @@
                                     <ListModel v-bind:expenses="expenses" :expenseId="expense5.id"
                                         @remove-expense="removeExpense" @toggle-sub-list="toggleSubList"
                                         :toggleActiveHandler="this.toggleActiveHandler[expense5.id]"
-                                        :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId"/>
+                                        :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" />
 
                                 </li>
                                 <NewListModel v-bind:expenses="expenses" :expenseId="expense4.id"
@@ -98,6 +102,10 @@ export default {
             type: String,
             default: '',
         },
+        isAnyOpenedLi: {
+            type: Boolean,
+            default: false,
+        },
     },
     mixins: [CssData],
     data() {
@@ -114,7 +122,7 @@ export default {
             }
         },
         updateClickedExpenseId() {
-            if(this.clickedExpenseId === this.getExpenseById[0].id) {
+            if (this.clickedExpenseId === this.getExpenseById[0].id) {
                 return true
             } else {
                 return false
@@ -136,6 +144,9 @@ export default {
         // }
     },
     methods: {
+        openOrCloseLi() {
+            this.$emit('open-or-close-li')
+        },
         handlerLiMoreDivForPageChange() {
             // Page가 바뀔 때, LiMoreDiv가 열려있는 경우, 없애도록하는 기능
             if (this.isLiMoreDivOpened) { this.isLiMoreDivOpened = false; }
@@ -192,4 +203,6 @@ export default {
 }
 </script>
   
-<style scoped>@import '../style.css';</style>
+<style scoped>
+@import '../style.css';
+</style>

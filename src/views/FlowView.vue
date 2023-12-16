@@ -42,7 +42,6 @@ export default {
                 "node:click": ({ node }) => {
                     // 여기서 노드 위에 표시할 정보를 설정하세요
                     const id = this.nodes[node].id;
-                    console.log(id)
                     this.$emit('point-clicked-li', id);
                     // 예시: 콘솔에 금액을 출력
                 },

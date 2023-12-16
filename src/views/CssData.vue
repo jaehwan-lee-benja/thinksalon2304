@@ -43,6 +43,7 @@ export default {
             moreBtn: 'moreBtn',
             newExpenseBtn: 'newExpenseBtn',
             newExpenseDoneBtn: 'newExpenseDoneBtn',
+            normalBtn: 'normalBtn',
 
             modal: 'modal',
             modalOverlay: 'modalOverlay',

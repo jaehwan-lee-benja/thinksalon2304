@@ -46,9 +46,10 @@
         </div>
         <div :class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :totalExpenseId="totalExpenseId"
-            :clickedExpenseId="clickedExpenseId" :selectedPageId="selectedPageId" @create-new-expense="createNewExpense"
-            @remove-expense="removeExpense" @cancel-editing-expense="cancelEditingExpense"
-            @toggle-sub-list="toggleSubList" @memo-save="memoSave" />
+            :clickedExpenseId="clickedExpenseId" :selectedPageId="selectedPageId" :isAnyOpenedLi="isAnyOpenedLi"
+            @create-new-expense="createNewExpense" @remove-expense="removeExpense"
+            @cancel-editing-expense="cancelEditingExpense" @toggle-sub-list="toggleSubList" @memo-save="memoSave"
+            @open-or-close-li="openOrCloseLi" />
         </div>
       </div>
     </div>
@@ -91,6 +92,14 @@ export default {
     this.fetchData()
   },
   computed: {
+    isAnyOpenedLi() {
+      const anyOpened = this.expenses.filter(e => e.show_sub_list === true);
+      if (anyOpened.length > 0) {
+        return true
+      } else {
+        return false
+      }
+    },
     sortExpensePages() {
       const clonedExpensePages = this.expensePages;
       return clonedExpensePages.sort((a, b) => a.order - b.order);
@@ -149,6 +158,19 @@ export default {
     },
   },
   methods: {
+    openOrCloseLi() {
+      if (this.isAnyOpenedLi) {
+        this.expenses.forEach(e => {
+          if(e.level > 1){ e.show_sub_list = false;}
+          this.upsertExpense(e);
+        })
+      } else {
+        this.expenses.forEach(e => {
+          if(e.level > 1){ e.show_sub_list = true;}
+          this.upsertExpense(e);
+        })
+      }
+    },
     pointClickedLi(idHere) {
       this.clickedExpenseId = idHere
       this.updateParentsToggle(idHere)
@@ -271,7 +293,8 @@ export default {
         memo: null,
         order: null,
         level: 1,
-        page_id: idHere
+        page_id: idHere,
+        show_sub_list: null,
       }
       this.totalExpenses.push(initialExpenseData);
 
@@ -280,12 +303,12 @@ export default {
     updateParentsToggle(idHere) {
 
       const expense = this.expenses.filter(e => e.id === idHere)[0]
-      console.log("expense = ", expense);
-
       const ParentsToUpdate = this.findParentsExpense(expense, []);
       ParentsToUpdate.forEach(e => {
-        e.show_sub_list = true;
-        this.upsertExpense(e)
+        if (e.level > 1) {
+          e.show_sub_list = true;
+          this.upsertExpense(e)
+        }
       })
 
     },

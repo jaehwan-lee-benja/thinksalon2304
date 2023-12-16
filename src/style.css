@@ -48,6 +48,12 @@ button:hover{
   border: 1px solid #FFFFFF;
   margin: 10px 0px;
 }
+.normalBtn {
+  background-color: transparent;
+  border: 1px solid #4a5c6a;
+  color: #4a5c6a;
+  margin: 10px 5px;
+}
 .moreBtn {
   background-color: transparent;
   border: 1px solid #9BA8AB;
@@ -91,8 +97,9 @@ button:hover{
 .flowViewBtn {
   position: absolute;
   margin: 20px;
-  background-color: #11212D;
-  color: white;
+  background-color: transparent;
+  border: 1px solid #4a5c6a;
+  color: #4a5c6a;
   z-index: 1;
 }
 .pageSettingBtn {
