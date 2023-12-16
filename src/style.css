@@ -1,3 +1,8 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 html, body {
   height: 100%;
   width: 100%;
@@ -34,7 +39,14 @@ button:hover{
 
 /* btn */
 .loginBtn {
-  margin: 0;
+  background-color: #004EFC;
+  border: 1px solid #004EFC;
+  margin: 10px 0px;
+}
+.logoutBtn {
+  background-color: transparent;
+  border: 1px solid #FFFFFF;
+  margin: 10px 0px;
 }
 .moreBtn {
   background-color: transparent;
@@ -107,21 +119,13 @@ button:hover{
 }
 
 .loginDiv {
+  padding: 10px 0px;
   border-top: 1px solid #9BA8AB;
 }
 
 .mainDiv {
   height: 80%;
   padding: 30px;
-}
-
-.controlGrid {
-  display: grid;
-  grid-template-columns: 1fr 2fr;
-  grid-gap: 10px;
-  margin: 20px;
-  height: 50px;
-  min-width: 1000px;
 }
 
 .pageSelect {
@@ -147,6 +151,8 @@ button:hover{
 
 .listViewDiv {
   white-space: nowrap;
+  width: 600px;
+  padding: 10px 5px;
   /* width: 700px; */
 }
 
@@ -265,7 +271,7 @@ input:read-only {
 .pageEditedBtn_active {
   width: 49%;
   height: 40px;
-  margin: 0.5%;
+  margin: 10px 0.5%;
   color: white;
   background-color: #004EFC;
   border: 1px solid #004EFC;
@@ -273,7 +279,7 @@ input:read-only {
 .pageEditedBtn_inactive {
   width: 49%;
   height: 40px;
-  margin: 0.5%;
+  margin: 10px 0.5%;
   color: white;
   background-color: #e2e2e2;
   border: 1px solid #e2e2e2;
@@ -286,7 +292,7 @@ input:read-only {
 .cancelPageEditedBtn_active {
   width: 49%;
   height: 40px;
-  margin: 0.5%;
+  margin: 10px 0.5%;
   color: rgb(168, 40, 40);
   background-color: transparent;
   border: 1px solid rgb(168, 40, 40);
@@ -294,7 +300,7 @@ input:read-only {
 .cancelPageEditedBtn_inactive {
   width: 49%;
   height: 40px;
-  margin: 0.5%;
+  margin: 10px 0.5%;
   color: #e2e2e2;
   background-color: transparent;
   border: 1px solid #e2e2e2;
@@ -330,13 +336,23 @@ input:read-only {
 
 
 .saveEditedDiv {
-  width: 100%;
-  margin: auto;
+  width: 400px;
+  text-align: left;
+  margin: 10px;
 }
 .listViewLiDiv {
   padding: 5px;
   border: 0px solid white;
   border-radius: 2px;
+  background-color: white;
+  margin: 5px 0px 5px 10px;
+  /* max-width: 300px; */
+  display: inline;
+}
+.listViewLiDiv_clicked {
+  padding: 5px;
+  border: 2px solid #004EFC;
+  border-radius: 4px;
   background-color: white;
   margin: 5px 0px 5px 10px;
   /* max-width: 300px; */
@@ -412,4 +428,9 @@ input:read-only {
 
 .pageNameStyle {
   margin: 5px 5px;
+}
+
+.pageSettingOlStyle {
+  margin-top: 10px;
+  padding: 15px;
 }

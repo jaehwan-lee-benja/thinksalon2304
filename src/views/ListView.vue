@@ -1,5 +1,8 @@
 <template>
-    <div :class="listViewLiDiv">
+    <div :class="{
+        'listViewLiDiv_clicked': this.updateClickedExpenseId === true,
+        'listViewLiDiv': this.updateClickedExpenseId === false,
+    }">
         <input :class="categoryStyle" v-model="getExpenseById[0].category">
         <span> : </span>
         <input :class="amountStyle" v-model="getExpenseById[0].amount" @input="onInputChange">
@@ -18,7 +21,7 @@
 
             <ListModel v-bind:expenses="expenses" :expenseId="expense2.id" @remove-expense="removeExpense"
                 @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[expense2.id]"
-                :selectedPageId="selectedPageId" />
+                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId"/>
 
             <ol :class="olBgStyle" v-if="expense2.show_sub_list">
                 <li :class="listViewLiStyle" v-for="expense3 in sortChildrenByIdAndLevel(expense2.id, expense2.level)"
@@ -26,7 +29,7 @@
 
                     <ListModel v-bind:expenses="expenses" :expenseId="expense3.id" @remove-expense="removeExpense"
                         @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[expense3.id]"
-                        :selectedPageId="selectedPageId" />
+                        :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId"/>
 
                     <ol :class="olBgStyle" v-if="expense3.show_sub_list">
                         <li :class="listViewLiStyle"
@@ -35,7 +38,7 @@
                             <ListModel v-bind:expenses="expenses" :expenseId="expense4.id" @remove-expense="removeExpense"
                                 @toggle-sub-list="toggleSubList"
                                 :toggleActiveHandler="this.toggleActiveHandler[expense4.id]"
-                                :selectedPageId="selectedPageId" />
+                                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId"/>
 
                             <ol :class="olBgStyle" v-if="expense4.show_sub_list">
                                 <li :class="listViewLiStyle"
@@ -45,7 +48,7 @@
                                     <ListModel v-bind:expenses="expenses" :expenseId="expense5.id"
                                         @remove-expense="removeExpense" @toggle-sub-list="toggleSubList"
                                         :toggleActiveHandler="this.toggleActiveHandler[expense5.id]"
-                                        :selectedPageId="selectedPageId" />
+                                        :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId"/>
 
                                 </li>
                                 <NewListModel v-bind:expenses="expenses" :expenseId="expense4.id"
@@ -91,6 +94,10 @@ export default {
             type: String,
             default: '',
         },
+        clickedExpenseId: {
+            type: String,
+            default: '',
+        },
     },
     mixins: [CssData],
     data() {
@@ -105,6 +112,13 @@ export default {
             } else {
                 return [{ category: "로딩중..", amount: 0, id: "" }]
             }
+        },
+        updateClickedExpenseId() {
+            if(this.clickedExpenseId === this.getExpenseById[0].id) {
+                return true
+            } else {
+                return false
+            }
         }
     },
     watch: {
@@ -113,7 +127,13 @@ export default {
                 this.handlerLiMoreDivForPageChange()
             },
             deep: true
-        }
+        },
+        // clickedExpenseId: {
+        //     handler() {
+        //         this.updateClickedExpenseId()
+        //     },
+        //     deep: true
+        // }
     },
     methods: {
         handlerLiMoreDivForPageChange() {

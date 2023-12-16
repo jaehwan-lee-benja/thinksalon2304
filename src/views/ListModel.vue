@@ -7,7 +7,10 @@
             {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }}
         </button>
 
-        <div :class="listViewLiDiv">
+        <div :class="{
+            'listViewLiDiv_clicked': this.updateClickedExpenseId === true,
+            'listViewLiDiv': this.updateClickedExpenseId === false,
+        }">
             <input :class="categoryStyle" v-model="getExpenseById[0].category">
             <span> : </span>
             <input :class="amountStyle" v-model="getExpenseById[0].amount" @input="onInputChange">
@@ -47,12 +50,27 @@ export default {
             type: String,
             default: '',
         },
+        clickedExpenseId: {
+            type: String,
+            default: '',
+        },
     },
     mixins: [CssData],
     watch: {
         selectedPageId: {
             handler() {
                 this.handlerLiMoreDivForPageChange()
+            },
+            deep: true
+        },
+        expenses: {
+            handler() {
+                const expensesLength = this.expenses.length;
+                if (expensesLength > 0) {
+                    this.$nextTick(() => {
+                        this.getExpenseById()
+                    });
+                }
             },
             deep: true
         }
@@ -66,6 +84,13 @@ export default {
     computed: {
         getExpenseById() {
             return this.expenses.filter(expense => expense.id === this.expenseId)
+        },
+        updateClickedExpenseId() {
+            if (this.clickedExpenseId === this.getExpenseById[0].id) {
+                return true
+            } else {
+                return false
+            }
         }
     },
     methods: {

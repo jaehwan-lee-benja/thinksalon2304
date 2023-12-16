@@ -35,7 +35,7 @@ export default {
     data() {
         return {
             newCategory: '',
-            newAmount: '',
+            newAmount: 0,
             isNewListDivOpened: false,
             newExpenseBtnOpened: false,
         }
@@ -51,13 +51,13 @@ export default {
             this.newExpenseBtnOpened = !this.newExpenseBtnOpened;
             if(!this.newExpenseBtnOpened) {
                 this.newCategory = ''
-                this.newAmount = ''
+                this.newAmount = 0
             }
         },
         createNewExpense(parentsIdHere, parentsLevelHere) {
             this.$emit('create-new-expense', parentsIdHere, parentsLevelHere, this.newCategory, this.newAmount);
             this.newCategory = ''
-            this.newAmount = ''
+            this.newAmount = 0
         },
     }
 }

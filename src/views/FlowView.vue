@@ -39,11 +39,13 @@ export default {
             tooltipElement: null,
             tooltipTimeout: null, // 추가: 툴팁 지연을 위한 타이머 변수
             eventHandlers: {
-                // "node:click": ({ node }) => {
-                //     // 여기서 노드 위에 표시할 정보를 설정하세요
-                //     // const amount = this.nodes[node].size;
-                //     // 예시: 콘솔에 금액을 출력
-                // },
+                "node:click": ({ node }) => {
+                    // 여기서 노드 위에 표시할 정보를 설정하세요
+                    const id = this.nodes[node].id;
+                    console.log(id)
+                    this.$emit('point-clicked-li', id);
+                    // 예시: 콘솔에 금액을 출력
+                },
                 "node:pointerover": ({ node, event }) => {
                     // 추가: 기존 툴팁 제거
                     this.removeTooltip();
@@ -80,7 +82,7 @@ export default {
                 node: {
                     normal: {
                         type: "circle",
-                        color: "#3774CC",
+                        color: "#4a5c6a",
                         // radius: node => node.size / 60000
                         radius: node => Math.pow(node.size / 1000, 1 / 2),
                     },
@@ -196,14 +198,14 @@ export default {
 
             const nodesResult = {}
             this.expenses.forEach((e) => {
-                nodesResult[e.id] = { 'name': e.category, 'size': e.amount }
+                nodesResult[e.id] = {'id':e.id, 'name': e.category, 'size': e.amount }
             })
             this.nodes = nodesResult
 
             const edgeResult = {}
             this.expenses.forEach((e) => {
                 if (e.parents_id != null) {
-                    edgeResult[e.id] = { 'source': e.parents_id, 'target': e.id, 'size': e.amount }
+                    edgeResult[e.id] = {'id':e.id, 'source': e.parents_id, 'target': e.id, 'size': e.amount }
                 }
             })
             this.edges = edgeResult

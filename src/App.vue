@@ -20,38 +20,35 @@
       </div>
       <div :class="loginDiv">
         <div v-if="loginMode">
-          <button @click="loginGoogle">구글 로그인</button>
+          <button :class="loginBtn" @click="loginGoogle">구글 로그인</button>
           <p> *버튼을 눌러 로그인할 수 있습니다.</p>
         </div>
         <div v-else>
           <p> 로그인 계정: {{ email }}</p>
-          <button :class="loginBtn" @click="signout">로그아웃</button>
+          <button :class="logoutBtn" @click="signout">로그아웃</button>
         </div>
       </div>
     </div>
     <div :class="mainDiv">
-      <div :class="controlGrid">
-        <div :class="saveEditedDiv">
-          <button :class="{
-            'saveEditedBtn_active': isEdited === true,
-            'saveEditedBtn_inactive': isEdited === false
-          }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
-          <button :class="{
-            'cancelEditedBtn_active': isEdited === true,
-            'cancelEditedBtn_inactive': isEdited === false
-          }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
-        </div>
-        <div></div>
+      <div :class="saveEditedDiv">
+        <button :class="{
+          'saveEditedBtn_active': isEdited === true,
+          'saveEditedBtn_inactive': isEdited === false
+        }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
+        <button :class="{
+          'cancelEditedBtn_active': isEdited === true,
+          'cancelEditedBtn_inactive': isEdited === false
+        }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
       </div>
       <div :class="viewGrid">
-
         <div :class="flowViewDiv">
-          <FlowView v-bind:expenses="expenses" />
+          <FlowView v-bind:expenses="expenses" @point-clicked-li="pointClickedLi" />
         </div>
         <div :class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :totalExpenseId="totalExpenseId"
-            :selectedPageId="selectedPageId" @create-new-expense="createNewExpense" @remove-expense="removeExpense"
-            @cancel-editing-expense="cancelEditingExpense" @toggle-sub-list="toggleSubList" @memo-save="memoSave" />
+            :clickedExpenseId="clickedExpenseId" :selectedPageId="selectedPageId" @create-new-expense="createNewExpense"
+            @remove-expense="removeExpense" @cancel-editing-expense="cancelEditingExpense"
+            @toggle-sub-list="toggleSubList" @memo-save="memoSave" />
         </div>
       </div>
     </div>
@@ -79,6 +76,8 @@ export default {
       fetchedExpensePages: [],
       isPageDivOpened: false,
       toggleActiveHandler: {},
+
+      clickedExpenseId: '',
 
     }
   },
@@ -150,6 +149,10 @@ export default {
     },
   },
   methods: {
+    pointClickedLi(idHere) {
+      this.clickedExpenseId = idHere
+      this.updateParentsToggle(idHere)
+    },
     async cancelEditingPage() {
       this.expensePages = "";
       this.expensePages = JSON.parse(JSON.stringify(this.fetchedExpensePages));
@@ -274,6 +277,41 @@ export default {
 
       await this.upsertExpense(initialExpenseData)
     },
+    updateParentsToggle(idHere) {
+
+      const expense = this.expenses.filter(e => e.id === idHere)[0]
+      console.log("expense = ", expense);
+
+      const ParentsToUpdate = this.findParentsExpense(expense, []);
+
+      console.log("ParentsToUpdate = ", ParentsToUpdate);
+      ParentsToUpdate.forEach(e => {
+        console.log("e = ", e);
+        if (e.level > 1) {
+          console.log(e.level)
+          if (e.show_sub_list == true) {
+            console.log("check!")
+            e.show_sub_list = true // 이 부분부터가 잘 안된다.
+            // this.upsertExpense(e)
+          }
+        } else {
+          console.log("레벨2입니다.")
+        }
+      })
+
+
+    },
+    findParentsExpense(childHere, resultHere) {
+      const parents = this.expenses.filter((t) => t.id === childHere.parents_id);
+
+      parents.forEach((parents) => {
+        resultHere.push(parents);
+        this.findParentsExpense(parents, resultHere);
+      });
+
+      return resultHere;
+    },
+
     toggleSubList(expenseHere) {
       this.controlToggleActiveHandler(expenseHere);
       if (expenseHere.level < 5) {

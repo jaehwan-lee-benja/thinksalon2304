@@ -16,7 +16,7 @@ export default {
   },
   mounted() {
     this.fetchDataForLogIn(),
-    this.sessionListener()
+      this.sessionListener()
   },
   methods: {
     async loginGoogle() {
@@ -30,13 +30,17 @@ export default {
       console.log("error = ", error);
     },
     async signout() {
-      const { error } = await supabase.auth.signOut()
-      console.log("error = ", error);
-      if (error == null) {
-        alert('로그아웃 되었습니다.')
-        window.location.reload(true); // 리로드 방식 expense를 []로
-      } else {
-        alert('checking..')
+      const confirmValue = confirm("로그아웃하시겠습니까?")
+
+      if (confirmValue) {
+        const { error } = await supabase.auth.signOut()
+        console.log("error = ", error);
+        if (error == null) {
+          alert('로그아웃 되었습니다.')
+          window.location.reload(true); // 리로드 방식 expense를 []로
+        } else {
+          alert('checking..')
+        }
       }
     },
     async fetchDataForLogIn() {
@@ -77,7 +81,7 @@ export default {
       }
 
       data.forEach(e => {
-        if(e.amount !== null) {
+        if (e.amount !== null) {
           e.amount = e.amount.toLocaleString()
         }
       });

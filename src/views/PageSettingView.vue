@@ -11,6 +11,12 @@
 
         <div>
             <h4>기존 페이지 편집하기</h4>
+            <ol :class="pageSettingOlStyle">
+                <li v-for="page in this.expensePages" :key="page.id">
+                    <input :class="pageNameStyle" v-model="page.page_name">
+                    <button @click="removePage(page)">삭제</button>
+                </li>
+            </ol>
             <button :class="{
                 'pageEditedBtn_active': isPageEdited === true,
                 'pageEditedBtn_inactive': isPageEdited === false
@@ -19,13 +25,6 @@
                 'cancelPageEditedBtn_active': isPageEdited === true,
                 'cancelPageEditedBtn_inactive': isPageEdited === false
             }" :disabled="!isPageEdited" @click="cancelEditingPage()">편집 취소</button>
-            <ol>
-                <li v-for="page in this.expensePages" :key="page.id">
-                    <input :class="pageNameStyle" v-model="page.page_name">
-                    <button @click="removePage(page)">삭제</button>
-                </li>
-            </ol>
-
         </div>
     </div>
 </template>

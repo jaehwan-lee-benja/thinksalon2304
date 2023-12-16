@@ -8,7 +8,6 @@ export default {
             loginmenuGrid: 'loginmenuGrid',
             menuMainGrid: 'menuMainGrid',
             menuGrid: 'menuGrid',
-            controlGrid: 'controlGrid',
             viewGrid: 'viewGrid',
             subGrid: 'subGrid',
 
@@ -27,8 +26,10 @@ export default {
             createNewPageDiv: 'createNewPageDiv',
             newExpenseDiv: 'newExpenseDiv',
             newExpenseLiDiv: 'newExpenseLiDiv',
+            listViewLiDiv_clicked: 'listViewLiDiv_clicked',
 
             loginBtn: 'loginBtn',
+            logoutBtn: 'logoutBtn',
             saveEditedBtn_active: 'saveEditedBtn_active',
             saveEditedBtn_inactive: 'saveEditedBtn_inactive',
             cancelEditedBtn_active: 'cancelEditedBtn_active',
@@ -54,7 +55,8 @@ export default {
             olBgStyle: 'olBgStyle',
             pageListStyle: 'pageListStyle',
             pageNameStyle: 'pageNameStyle',
-            memo: 'memo'
+            memo: 'memo',
+            pageSettingOlStyle:'pageSettingOlStyle',
         }
     }
 }
