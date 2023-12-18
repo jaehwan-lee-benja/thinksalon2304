@@ -116,8 +116,27 @@ export default {
             deep: true
         }
     },
+    mounted() {
+        document.addEventListener("click", this.handleDocumentClick);
+    },
+    beforeUnmount() {
+        // 추가: 컴포넌트가 파괴되기 전에 기존 툴팁 제거 및 타이머 해제
+        this.removeTooltip();
+        this.tooltipTimeout = null;
+        // 컴포넌트가 파괴되기 전에 이벤트 리스너를 제거합니다
+        document.removeEventListener("click", this.handleDocumentClick);
+    },
     methods: {
 
+        handleDocumentClick(event) { //[작업중!]클릭이 node의 외부에 해당하는 것으로 변경 필요
+            // 클릭이 그래프 컨테이너 외부에서 발생했는지 확인합니다
+            const graphContainer = this.$refs.graphContainer;
+            if (graphContainer && !graphContainer.contains(event.target)) {
+                // 클릭이 그래프 컨테이너 외부에서 발생한 경우, 노드 클릭 효과를 취소합니다
+                console.log("event.target = ", event.target);
+                this.$emit('cancel-point-clicked-li', 'id');
+            }
+        },
         showTooltip(node, event) {
             console.log("showTooltip") //[질문] 이것이 콘솔에 찍히지는 않는다. 그럼 작동하지 않는 것일텐데..
             // 추가: 마우스 이벤트 디바운싱
@@ -197,14 +216,14 @@ export default {
 
             const nodesResult = {}
             this.expenses.forEach((e) => {
-                nodesResult[e.id] = {'id':e.id, 'name': e.category, 'size': e.amount }
+                nodesResult[e.id] = { 'id': e.id, 'name': e.category, 'size': e.amount }
             })
             this.nodes = nodesResult
 
             const edgeResult = {}
             this.expenses.forEach((e) => {
                 if (e.parents_id != null) {
-                    edgeResult[e.id] = {'id':e.id, 'source': e.parents_id, 'target': e.id, 'size': e.amount }
+                    edgeResult[e.id] = { 'id': e.id, 'source': e.parents_id, 'target': e.id, 'size': e.amount }
                 }
             })
             this.edges = edgeResult
@@ -221,11 +240,7 @@ export default {
     components: {
         VNetworkGraph,
     },
-    beforeUnmount() {
-        // 추가: 컴포넌트가 파괴되기 전에 기존 툴팁 제거 및 타이머 해제
-        this.removeTooltip();
-        this.tooltipTimeout = null;
-    }
+
 }
 </script>
 
