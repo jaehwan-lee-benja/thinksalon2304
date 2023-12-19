@@ -42,7 +42,7 @@
       </div>
       <div :class="viewGrid">
         <div :class="flowViewDiv">
-          <FlowView v-bind:expenses="expenses" @point-clicked-li="pointClickedLi" />
+          <FlowView v-bind:expenses="expenses" @point-clicked-li="pointClickedLi" @cancel-point-clicked-li="cancelPointClickedLi"/>
         </div>
         <div :class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :totalExpenseId="totalExpenseId"
@@ -158,6 +158,9 @@ export default {
     },
   },
   methods: {
+    cancelPointClickedLi() {
+      this.clickedExpenseId = ""
+    },
     openOrCloseLi() {
       if (this.isAnyOpenedLi) {
         this.expenses.forEach(e => {

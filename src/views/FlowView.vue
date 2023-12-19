@@ -76,7 +76,7 @@ export default {
                     },
                     autoPanAndZoomOnLoad: "fit-content",
                     autoPanOnResize: false,
-                    // onBeforeInitialDisplay: () => this.formatExpenses(),
+                    onBeforeInitialDisplay: () => this.formatLayout(),
                 },
                 node: {
                     normal: {
@@ -95,7 +95,7 @@ export default {
                         color: "#D3D2D0"
                     },
                     hover: {
-                        color: "#F6C5C5",
+                        color: "#4a5c6a",
                     }
                 }
             }
@@ -131,10 +131,11 @@ export default {
         handleDocumentClick(event) { //[작업중!]클릭이 node의 외부에 해당하는 것으로 변경 필요
             // 클릭이 그래프 컨테이너 외부에서 발생했는지 확인합니다
             const graphContainer = this.$refs.graphContainer;
-            if (graphContainer && !graphContainer.contains(event.target)) {
+            // console.log("event.target(1) = ", event.target);
+            if (graphContainer || !graphContainer.contains(event.target)) {
                 // 클릭이 그래프 컨테이너 외부에서 발생한 경우, 노드 클릭 효과를 취소합니다
-                console.log("event.target = ", event.target);
-                this.$emit('cancel-point-clicked-li', 'id');
+                // console.log("event.target(2) = ", event.target);
+                this.$emit('cancel-point-clicked-li');
             }
         },
         showTooltip(node, event) {
@@ -209,8 +210,6 @@ export default {
                 this.layouts.nodes[nodeId] = { x, y }
             })
 
-
-
         },
         formatExpenses() {
 
@@ -231,7 +230,8 @@ export default {
             this.formatLayout()
 
             const vngref = this.$refs.vng
-            vngref?.transitionWhile(() => vngref.fitToContents())
+
+            vngref?.transitionWhile(() => vngref.fitToContents(), { duration: 0 })
 
 
         },
