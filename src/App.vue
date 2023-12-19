@@ -30,6 +30,7 @@
       </div>
     </div>
     <div :class="mainDiv">
+      <h2>{{  this.pageName  }}</h2>
       <div :class="saveEditedDiv">
         <button :class="{
           'saveEditedBtn_active': isEdited === true,
@@ -158,6 +159,9 @@ export default {
     },
   },
   methods: {
+    updatedPageName() {
+      return this.expenses.filter(e => e.id === this.selectedPageId)[0].name
+    },
     cancelPointClickedLi() {
       this.clickedExpenseId = ""
     },
