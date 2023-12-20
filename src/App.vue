@@ -30,7 +30,8 @@
       </div>
     </div>
     <div :class="mainDiv">
-      <h2>{{  this.pageName  }}</h2>
+      <div> <h2>{{  this.pageName  }}</h2> </div>
+      
       <div :class="saveEditedDiv">
         <button :class="{
           'saveEditedBtn_active': isEdited === true,

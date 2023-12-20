@@ -119,18 +119,22 @@ button:hover{
 }
 
 .menuGrid {
-  display: grid;
+  /* display: grid;
   grid-template-rows: 4fr 1fr;
-  grid-gap: 10px;
+  grid-gap: 10px; */
   background: #4a5c6a;
   color: #FFFFFF;
   font-size: 13px;
   padding: 30px;
+  margin: 0px;
 }
 
 .loginDiv {
-  padding: 10px 0px;
-  border-top: 1px solid #9BA8AB;
+  margin-top: 30px;
+  padding: 10px;
+  border: 1px solid #9BA8AB;
+  border-radius: 4px;
+  word-wrap: break-word;
 }
 
 .mainDiv {
