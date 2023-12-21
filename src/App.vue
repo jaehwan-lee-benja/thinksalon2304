@@ -30,8 +30,10 @@
       </div>
     </div>
     <div :class="mainDiv">
-      <div> <h2>{{  this.pageName  }}</h2> </div>
-      
+      <div>
+        <h2>{{ this.pageName }}</h2>
+      </div>
+
       <div :class="saveEditedDiv">
         <button :class="{
           'saveEditedBtn_active': isEdited === true,
@@ -44,7 +46,8 @@
       </div>
       <div :class="viewGrid">
         <div :class="flowViewDiv">
-          <FlowView v-bind:expenses="expenses" @point-clicked-li="pointClickedLi" @cancel-point-clicked-li="cancelPointClickedLi"/>
+          <FlowView v-bind:expenses="expenses" @point-clicked-li="pointClickedLi"
+            @cancel-point-clicked-li="cancelPointClickedLi" />
         </div>
         <div :class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :totalExpenseId="totalExpenseId"
@@ -169,14 +172,30 @@ export default {
     openOrCloseLi() {
       if (this.isAnyOpenedLi) {
         this.expenses.forEach(e => {
-          if(e.level > 1){ e.show_sub_list = false;}
+          if (e.level > 1) { e.show_sub_list = false; }
           this.upsertExpense(e);
         })
       } else {
-        this.expenses.forEach(e => {
-          if(e.level > 1){ e.show_sub_list = true;}
-          this.upsertExpense(e);
+
+        // 자식요소가 없을 때는, 펼치지지 않도록 설정
+        const parentsAndChildArr = this.expenses.map(e2 => {
+          return {
+            "parents": this.expenses.filter(e3 => e3.id === e2.id),
+            "children": this.expenses.filter(e3 => e3.parents_id === e2.id)
+          }
         })
+
+        parentsAndChildArr.forEach(e4 => {
+          const parentsExpense = e4.parents[0]
+          if (e4.children.length > 0 && parentsExpense.level > 1) {
+            parentsExpense.show_sub_list = true;
+            this.upsertExpense(parentsExpense);
+          } else if(parentsExpense.level > 1) {
+            parentsExpense.show_sub_list = false;
+            this.upsertExpense(parentsExpense);
+          }
+        })
+
       }
     },
     pointClickedLi(idHere) {
