@@ -128,13 +128,11 @@ export default {
     },
     methods: {
 
-        handleDocumentClick(event) { //[작업중!]클릭이 node의 외부에 해당하는 것으로 변경 필요
+        handleDocumentClick(event) {
             // 클릭이 그래프 컨테이너 외부에서 발생했는지 확인합니다
             const graphContainer = this.$refs.graphContainer;
-            // console.log("event.target(1) = ", event.target);
             if (graphContainer || !graphContainer.contains(event.target)) {
                 // 클릭이 그래프 컨테이너 외부에서 발생한 경우, 노드 클릭 효과를 취소합니다
-                // console.log("event.target(2) = ", event.target);
                 this.$emit('cancel-point-clicked-li');
             }
         },
