@@ -142,6 +142,7 @@ button:hover{
   overflow: auto;
   /* 가로 스크롤이 필요한 경우만 표시되도록 */
   white-space: nowrap;
+  /* position: relative; */
 }
 
 .pageSelect {
@@ -179,6 +180,10 @@ button:hover{
   width: 100%;
   height: 80vh;
   box-shadow: 0 14px 28px rgba(0,0,0,0.1), 0 5px 5px rgba(0,0,0,0.22);
+  /* position: relative; */
+}
+
+.flowViewBtnDiv {
   position: relative;
 }
 

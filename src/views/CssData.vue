@@ -38,6 +38,7 @@ export default {
             pageEditedBtn_inactive: 'cancelEditedBtn_inactive',
             pageSettingBtn: 'pageSettingBtn',
             flowViewBtn: 'flowViewBtn',
+            flowViewBtnDiv: 'flowViewBtnDiv',
             toggleBtn_active: 'toggleBtn_active',
             toggleBtn_inactive: 'toggleBtn_inactive',
             moreBtn: 'moreBtn',
