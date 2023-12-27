@@ -12,6 +12,7 @@ export default {
             subGrid: 'subGrid',
 
             mainDiv: 'mainDiv',
+            pageNameDiv: 'pageNameDiv',
             pageListDiv: 'pageListDiv',
             loginDiv: 'loginDiv',
             saveEditedDiv: 'saveEditedDiv',
