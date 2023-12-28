@@ -28,6 +28,7 @@ export default {
             newExpenseDiv: 'newExpenseDiv',
             newExpenseLiDiv: 'newExpenseLiDiv',
             listViewLiDiv_clicked: 'listViewLiDiv_clicked',
+            mainBtnDiv: 'mainBtnDiv',
 
             loginBtn: 'loginBtn',
             logoutBtn: 'logoutBtn',

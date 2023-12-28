@@ -33,15 +33,17 @@
       <div :class="pageNameDiv">
         <h2>{{ this.pageName }}</h2>
       </div>
-      <div :class="saveEditedDiv">
-        <button :class="{
-          'saveEditedBtn_active': isEdited === true,
-          'saveEditedBtn_inactive': isEdited === false
-        }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
-        <button :class="{
-          'cancelEditedBtn_active': isEdited === true,
-          'cancelEditedBtn_inactive': isEdited === false
-        }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
+      <div :class="mainBtnDiv">
+        <div :class="saveEditedDiv">
+          <button :class="{
+            'saveEditedBtn_active': isEdited === true,
+            'saveEditedBtn_inactive': isEdited === false
+          }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
+          <button :class="{
+            'cancelEditedBtn_active': isEdited === true,
+            'cancelEditedBtn_inactive': isEdited === false
+          }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
+        </div>
       </div>
       <div :class="viewGrid">
         <div :class="flowViewDiv">
@@ -189,7 +191,7 @@ export default {
           if (e4.children.length > 0 && parentsExpense.level > 1) {
             parentsExpense.show_sub_list = true;
             this.upsertExpense(parentsExpense);
-          } else if(parentsExpense.level > 1) {
+          } else if (parentsExpense.level > 1) {
             parentsExpense.show_sub_list = false;
             this.upsertExpense(parentsExpense);
           }
