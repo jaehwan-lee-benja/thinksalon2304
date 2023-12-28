@@ -20,11 +20,11 @@
             <button :class="{
                 'pageEditedBtn_active': isPageEdited === true,
                 'pageEditedBtn_inactive': isPageEdited === false
-            }" :disabled="!isPageEdited" @click="editPage()">편집한 내용 저장</button>
+            }" :disabled="!isPageEdited" @click="editPage">편집한 내용 저장</button>
             <button :class="{
                 'cancelPageEditedBtn_active': isPageEdited === true,
                 'cancelPageEditedBtn_inactive': isPageEdited === false
-            }" :disabled="!isPageEdited" @click="cancelEditingPage()">편집 취소</button>
+            }" :disabled="!isPageEdited" @click="cancelEditingPage">편집 취소</button>
         </div>
     </div>
 </template>

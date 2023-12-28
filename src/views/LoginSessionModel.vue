@@ -11,7 +11,8 @@ export default {
       isNewUser: '',
       session: '',
       loginMode: true,
-      email: ''
+      email: '',
+      initialPageData: '',
     }
   },
   mounted() {
@@ -49,7 +50,6 @@ export default {
         .from('expense')
         .select()
         .order('order', { ascending: true })
-      const { data } = fetchedData;
 
       const session = this.session;
 
@@ -77,17 +77,13 @@ export default {
       }
 
       if (this.isNewUser && session !== null) {
-        this.insertInitailData();
+        await this.insertInitailData();
       }
 
-      data.forEach(e => {
-        if (e.amount !== null) {
-          e.amount = e.amount.toLocaleString()
-        }
-      });
+      await this.fetchData()
 
     },
-    insertInitailData() {
+    async insertInitailData() {
       const initialExpenseData = {
         id: this.getUuidv4(),
         parents_id: null,
@@ -95,18 +91,21 @@ export default {
         amount: 0,
         order: null,
         level: 1,
-        page_id: this.getPageId()
+        page_id: await this.getPageId()
       }
       this.insertData(initialExpenseData)
     },
-    getPageId() {
-      const initialPageData = {
+    async getPageId() {
+      this.initialPageData = {
         id: this.getUuidv4(),
         page_name: '새 페이지',
         order: 0,
       }
-      this.insertPageData(initialPageData)
-      return initialPageData.id
+
+      await this.insertPageData(this.initialPageData)
+      this.selectedPageId = this.initialPageData.id
+
+      return this.initialPageData.id
     },
     async insertPageData(dataHere) {
       try {

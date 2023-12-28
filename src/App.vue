@@ -9,7 +9,7 @@
           </option>
         </select>
 
-        <button :class="pageSettingBtn" @click="openPageDiv()">페이지 설정하기</button>
+        <button :class="pageSettingBtn" @click="openPageDiv">페이지 설정하기</button>
         <div v-if="isPageDivOpened" :class="modal">
           <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
             @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @edit-page="editPage"
@@ -295,6 +295,8 @@ export default {
         this.upsertInitailExpense(o.id);
         await this.fetchDataForPage()
         alert('신규 페이지가 생성되었습니다.')
+      } else if (newPageNameHere == '') {
+        alert('페이지 이름이 비어있습니다. 페이지 이름을 작성해주시기 바랍니다.')
       } else {
         alert('같은 페이지 이름이 있습니다. 다른 이름으로 다시 작성해주시기 바랍니다.')
       }
@@ -498,13 +500,17 @@ export default {
 
       this.totalExpenses = data;
 
-      await this.selectPageByLoading(); //페이지 선택 후 this.expenses가 만들어짐
+      if (data.length > 0) {
 
-      this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
+        await this.selectPageByLoading(); //페이지 선택 후 this.expenses가 만들어짐
 
-      this.expenses.forEach(e => {
-        if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
-      })
+        this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
+
+        this.expenses.forEach(e => {
+          if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
+        })
+
+      }
 
     },
     openPageDiv() {
@@ -531,9 +537,13 @@ export default {
     },
     async selectPageByLoading() {
 
-      const selectedPage = this.sortExpensePages.filter(e => e.order === 0)[0]
-      this.selectedPageId = selectedPage.id
-
+      let selectedPage = this.sortExpensePages.filter(e => e.order === 0)[0]
+      if (selectedPage != undefined) {
+        this.selectedPageId = selectedPage.id
+      } else {
+        // undefined인 경우, 첫 방문 유저인 경우임
+        selectedPage = this.initialPageData
+      }
       this.setPageBySelectPage(selectedPage)
 
     },

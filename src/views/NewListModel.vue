@@ -1,6 +1,6 @@
 <template>
     <div :class="newExpenseDiv">
-        <button :class="newExpenseBtn" @click="handlerNewListDiv()">
+        <button :class="newExpenseBtn" @click="handlerNewListDiv">
             {{ newExpenseBtnOpened ? "-" : "+" }}
         </button>
         <div :class="newListDiv" v-if="isNewListDivOpened">

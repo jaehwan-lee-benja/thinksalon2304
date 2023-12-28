@@ -164,11 +164,10 @@ button:hover{
   height: 86%;
   width: 100%;
   padding-left: 20px;
-  padding-top: 20px;
+  padding-top: 30px;
   display: grid;
   grid-template-columns: 500px 1fr;
   grid-gap: 10px;
-  flex-grow: 1;
   overflow-y: scroll;
   overflow-x: scroll;
   white-space: nowrap;
@@ -222,10 +221,10 @@ button:hover{
 .flowViewDiv {
   padding: 10px;
   border-radius: 10px;
-  background-color:#EFEFEF;
+  background-color:#f4f4f4;
   width: 100%;
-  height: 90%;
-  box-shadow: 10px 14px 40px 20px rgba(0,0,0,0.1), 0 5px 5px rgba(0,0,0,0.22);
+  height: 80%;
+  box-shadow: 10px 14px 40px 3px rgba(0,0,0,0.1), 0 5px 5px rgba(0,0,0,0.22);
   /* position: relative; */
 }
 
@@ -236,7 +235,7 @@ button:hover{
 .flowViewBtn {
   position: absolute;
   margin: 20px;
-  background-color: transparent;
+  background-color: #f4f4f4;
   border: 1px solid #4a5c6a;
   color: #4a5c6a;
   z-index: 1;

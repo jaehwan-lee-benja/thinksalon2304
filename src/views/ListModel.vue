@@ -17,7 +17,7 @@
             <!-- <input :class="amountStyle" ref="amountInput" v-model="formattedAmount" @click="removeComma"> -->
         </div>
 
-        <button :class="moreBtn" @click="handlerLiMoreDiv()"> … </button>
+        <button :class="moreBtn" @click="handlerLiMoreDiv"> … </button>
         <div :class="liMoreDiv" v-if="isLiMoreDivOpened">
             <button @click="removeExpense(getExpenseById[0])">삭제</button>
             <span> 하위 합계 : </span>

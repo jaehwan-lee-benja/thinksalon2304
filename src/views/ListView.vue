@@ -8,7 +8,7 @@
         <span> : </span>
         <input :class="amountStyle" v-model="getExpenseById[0].amount" @input="onInputChange">
     </div>
-    <button :class="moreBtn" @click="handlerLiMoreDiv()"> … </button>
+    <button :class="moreBtn" @click="handlerLiMoreDiv"> … </button>
     <div :class="liMoreDiv" v-if="isLiMoreDivOpened">
         <span> *하위 합계 : </span>
         <input :class="amountStyle" :value="sumExpensesForTotal(getExpenseById[0].id)" readonly>
