@@ -10,12 +10,7 @@
         </select>
 
         <button :class="pageSettingBtn" @click="openPageDiv">페이지 설정하기</button>
-        <div v-if="isPageDivOpened" :class="modal">
-          <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
-            @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @edit-page="editPage"
-            @remove-page="removePage" @cancel-editing-page="cancelEditingPage" />
-        </div>
-        <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
+
 
       </div>
       <div :class="loginDiv">
@@ -58,6 +53,12 @@
             @open-or-close-li="openOrCloseLi" />
         </div>
       </div>
+      <div v-if="isPageDivOpened" :class="modal">
+        <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
+          @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @edit-page="editPage"
+          @remove-page="removePage" @cancel-editing-page="cancelEditingPage" />
+      </div>
+      <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
     </div>
   </div>
 </template>
