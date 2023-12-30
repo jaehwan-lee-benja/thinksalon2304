@@ -1,5 +1,11 @@
 <template>
-        
+    <div>
+        <button :class="normalBtn" @click="openOrCloseLi">
+            {{ this.isAnyOpenedLi ? "모두 닫기" : "모두 펴기" }}
+        </button>
+    </div>
+
+
     <div :class="{
         'listViewLiDiv_clicked': this.updateClickedExpenseId === true,
         'listViewLiDiv': this.updateClickedExpenseId === false,
@@ -13,9 +19,10 @@
         <span> *하위 합계 : </span>
         <input :class="amountStyle" :value="sumExpensesForTotal(getExpenseById[0].id)" readonly>
     </div>
-    <button :class="normalBtn" @click="openOrCloseLi">
-        {{ this.isAnyOpenedLi ? "모두 닫기" : "모두 펴기" }}
-    </button>
+
+    <!-- <ListModel v-bind:expenses="expenses" :expenseId="getExpenseById[0].id" @remove-expense="removeExpense"
+        @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[getExpenseById[0].id]"
+        :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" /> -->
 
     <ol :class="olBgStyle">
 
@@ -179,6 +186,10 @@ export default {
             if (confirmValue) {
                 this.$emit('remove-expense', expenseHere)
             }
+        },
+        getTotalExpense() {
+            console.log("getTotalExpense =", this.expenses.filter(e => e.level === 1))
+            return this.expenses.filter(e => e.level === 1);
         },
         sortChildrenByIdAndLevel(parentIdHere, parentsLevelHere) {
             return this.expenses.filter(e => e.parents_id === parentIdHere && e.level === parentsLevelHere + 1);

@@ -14,7 +14,6 @@
             <input :class="categoryStyle" v-model="getExpenseById[0].category">
             <span> : </span>
             <input :class="amountStyle" ref="amountInput" v-model="formattedAmount" @input="onInputChange">
-            <!-- <input :class="amountStyle" ref="amountInput" v-model="formattedAmount" @click="removeComma"> -->
         </div>
 
         <button :class="moreBtn" @click="handlerLiMoreDiv"> … </button>
@@ -65,6 +64,9 @@ export default {
             deep: true
         },
     },
+    mounted() {
+        this.test()
+    },
     data() {
         return {
             isLiMoreDivOpened: false,
@@ -85,23 +87,6 @@ export default {
                     this.getExpenseById[0].amount = numericValue;
                 }
             },
-            // set(value) {
-            //     // 사용자가 수정 중일 때만 값 처리
-            //     if (this.$refs.amountInput === document.activeElement) {
-            //         const isCommaInput = value.includes(',');
-            //         const numericValue = parseFloat(value.replace(/,/g, ''));
-
-            //         if (!isNaN(numericValue) || isCommaInput) {
-            //             this.getExpenseById[0].amount = isCommaInput ? value : numericValue;
-            //         } else {
-            //             // 값이 유효한 숫자가 아니면 경고 후 이전 값으로 되돌림
-            //             alert("숫자가 아닌 문자가 입력되었습니다. 숫자로 입력해주시기 바랍니다.");
-            //             this.$nextTick(() => {
-            //                 this.formattedAmount = this.getExpenseById[0].amount.toLocaleString();
-            //             });
-            //         }
-            //     }
-            // },
         },
         getExpenseById() {
             return this.expenses.filter(expense => expense.id === this.expenseId)
@@ -115,27 +100,10 @@ export default {
         }
     },
     methods: {
-
-        // removeComma() {
-        //     const amountAsString = String(this.getExpenseById[0].amount);
-        //     this.getExpenseById[0].amount = amountAsString.replace(/,/g, '');
-        // },
-        // onInputChange() {
-        //     // 수정 중일 땐, 무조건 컴마도 안되도록 하게해야겠다.
-
-        //     // ListView.vue에도 같은 함수 있음
-        //     // 비동기로 다음 렌더링 사이클로 함수 예약
-        //     this.$nextTick(() => {
-        //         const isNumber = !isNaN(this.formattedAmount);
-        //         // 값이 바로 적용되도록 $nextTick 내에서 값을 변경
-        //         this.$nextTick(() => {
-        //             if (!isNumber) {
-        //                 alert("숫자가 아닌 문자가 입력되었습니다. 숫자로 입력해주시기 바랍니다.");
-        //                 this.formattedAmount = this.formattedAmount.replace(/[^0-9]/g, '');
-        //             }
-        //         });
-        //     });
-        // },
+        test() {
+            console.log("test")
+            console.log(this.getExpenseById)
+        },
         handlerLiMoreDivForPageChange() {
             // Page가 바뀔 때, LiMoreDiv가 열려있는 경우, 없애도록하는 기능
             if (this.isLiMoreDivOpened) { this.isLiMoreDivOpened = false; }
