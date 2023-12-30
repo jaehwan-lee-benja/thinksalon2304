@@ -1,6 +1,9 @@
 <template>
-    <div :class="liAlignStyle">
-        <button :class="{
+    <div :class="{
+        'liAlignStyle': this.isNotTotal === true,
+        '': this.isNotTotal === false,
+    }">
+        <button v-if="isNotTotal" :class="{
             'toggleBtn_active': this.toggleActiveHandler === true,
             'toggleBtn_inactive': this.toggleActiveHandler === false
         }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(getExpenseById[0])">
@@ -13,12 +16,12 @@
         }">
             <input :class="categoryStyle" v-model="getExpenseById[0].category">
             <span> : </span>
-            <input :class="amountStyle" ref="amountInput" v-model="formattedAmount" @input="onInputChange">
+            <input :class="amountStyle" ref="amountInput" v-model="formattedAmount">
         </div>
 
         <button :class="moreBtn" @click="handlerLiMoreDiv"> … </button>
         <div :class="liMoreDiv" v-if="isLiMoreDivOpened">
-            <button @click="removeExpense(getExpenseById[0])">삭제</button>
+            <button v-if="isNotTotal" @click="removeExpense(getExpenseById[0])">삭제</button>
             <span> 하위 합계 : </span>
             <input :class="amountStyle" :value="sumExpenses(getExpenseById[0].id)" readonly>
             <span> 메모 : </span>
@@ -64,9 +67,6 @@ export default {
             deep: true
         },
     },
-    mounted() {
-        this.test()
-    },
     data() {
         return {
             isLiMoreDivOpened: false,
@@ -74,6 +74,13 @@ export default {
         }
     },
     computed: {
+        isNotTotal() {
+            if (this.getExpenseById[0].level > 1) {
+                return true
+            } else {
+                return false
+            }
+        },
         formattedAmount: {
             get() {
                 // 화면에 표시될 때는 컴마를 포함하여 반환
@@ -89,7 +96,11 @@ export default {
             },
         },
         getExpenseById() {
-            return this.expenses.filter(expense => expense.id === this.expenseId)
+            if (this.expenses.length > 0) {
+                return this.expenses.filter(expense => expense.id === this.expenseId)
+            } else {
+                return [{ category: "로딩중..", amount: 0, id: "" }]
+            }
         },
         updateClickedExpenseId() {
             if (this.clickedExpenseId === this.getExpenseById[0].id) {
@@ -100,22 +111,17 @@ export default {
         }
     },
     methods: {
-        test() {
-            console.log("test")
-            console.log(this.getExpenseById)
-        },
         handlerLiMoreDivForPageChange() {
             // Page가 바뀔 때, LiMoreDiv가 열려있는 경우, 없애도록하는 기능
             if (this.isLiMoreDivOpened) { this.isLiMoreDivOpened = false; }
         },
         handlerLiMoreDiv() {
-            // ListView.vue에도 같은 함수 있음
             this.isLiMoreDivOpened = !this.isLiMoreDivOpened;
         },
         sumExpenses(parentsIdHere) {
             const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
                 .reduce((acc, item) => acc + Number(item.amount), 0);
-            return sum
+            return sum.toLocaleString();
         },
         removeExpense(expenseHere) {
             this.$emit('remove-expense', expenseHere);

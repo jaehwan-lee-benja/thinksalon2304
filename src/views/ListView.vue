@@ -1,33 +1,19 @@
 <template>
+
     <div>
         <button :class="normalBtn" @click="openOrCloseLi">
             {{ this.isAnyOpenedLi ? "모두 닫기" : "모두 펴기" }}
         </button>
     </div>
 
-
-    <div :class="{
-        'listViewLiDiv_clicked': this.updateClickedExpenseId === true,
-        'listViewLiDiv': this.updateClickedExpenseId === false,
-    }">
-        <input :class="categoryStyle" v-model="getExpenseById[0].category">
-        <span> : </span>
-        <input :class="amountStyle" v-model="getExpenseById[0].amount" @input="onInputChange">
-    </div>
-    <button :class="moreBtn" @click="handlerLiMoreDiv"> … </button>
-    <div :class="liMoreDiv" v-if="isLiMoreDivOpened">
-        <span> *하위 합계 : </span>
-        <input :class="amountStyle" :value="sumExpensesForTotal(getExpenseById[0].id)" readonly>
-    </div>
-
-    <!-- <ListModel v-bind:expenses="expenses" :expenseId="getExpenseById[0].id" @remove-expense="removeExpense"
-        @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[getExpenseById[0].id]"
-        :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" /> -->
+    <ListModel v-bind:expenses="expenses" :expenseId="this.totalExpenseId" @remove-expense="removeExpense"
+        @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[this.totalExpenseId]"
+        :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" />
 
     <ol :class="olBgStyle">
 
         <li :class="listViewLiStyle"
-            v-for="expense2 in sortChildrenByIdAndLevel(getExpenseById[0].id, getExpenseById[0].level)"
+            v-for="expense2 in sortChildrenByIdAndLevel(this.totalExpenseId, 1)"
             :key="expense2.index">
 
             <ListModel v-bind:expenses="expenses" :expenseId="expense2.id" @remove-expense="removeExpense"
@@ -77,7 +63,8 @@
 
         </li>
 
-        <NewListModel v-bind:expenses="expenses" :expenseId="getExpenseById[0].id" @create-new-expense="createNewExpense" />
+        <NewListModel v-bind:expenses="expenses" :expenseId="this.totalExpenseId"
+            @create-new-expense="createNewExpense" />
     </ol>
 </template>
   
@@ -115,81 +102,15 @@ export default {
         },
     },
     mixins: [CssData],
-    data() {
-        return {
-            isLiMoreDivOpened: false,
-        }
-    },
-    computed: {
-        getExpenseById() {
-            if (this.expenses.length > 0) {
-                return this.expenses.filter(expense => expense.id === this.totalExpenseId)
-            } else {
-                return [{ category: "로딩중..", amount: 0, id: "" }]
-            }
-        },
-        updateClickedExpenseId() {
-            if (this.clickedExpenseId === this.getExpenseById[0].id) {
-                return true
-            } else {
-                return false
-            }
-        }
-    },
-    watch: {
-        selectedPageId: {
-            handler() {
-                this.handlerLiMoreDivForPageChange()
-            },
-            deep: true
-        },
-        // clickedExpenseId: {
-        //     handler() {
-        //         this.updateClickedExpenseId()
-        //     },
-        //     deep: true
-        // }
-    },
     methods: {
         openOrCloseLi() {
             this.$emit('open-or-close-li')
-        },
-        handlerLiMoreDivForPageChange() {
-            // Page가 바뀔 때, LiMoreDiv가 열려있는 경우, 없애도록하는 기능
-            if (this.isLiMoreDivOpened) { this.isLiMoreDivOpened = false; }
-        },
-        onInputChange() {
-            // ListModel.vue에도 같은 함수 있음
-            // 비동기로 다음 렌더링 사이클로 함수 예약
-            this.$nextTick(() => {
-                const isNumber = !isNaN(this.getExpenseById[0].amount);
-                // 값이 바로 적용되도록 $nextTick 내에서 값을 변경
-                this.$nextTick(() => {
-                    if (!isNumber) {
-                        alert("숫자가 아닌 문자가 입력되었습니다. 숫자로 입력해주시기 바랍니다.");
-                        this.getExpenseById[0].amount = this.getExpenseById[0].amount.replace(/[^0-9]/g, '');
-                    }
-                });
-            });
-        },
-        handlerLiMoreDiv() {
-            // ListModel.vue에도 같은 함수 있음
-            this.isLiMoreDivOpened = !this.isLiMoreDivOpened;
-        },
-        sumExpensesForTotal(parentsIdHere) {
-            const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
-                .reduce((acc, item) => acc + Number(item.amount), 0);
-            return sum
         },
         removeExpense(expenseHere) {
             const confirmValue = confirm("삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
             if (confirmValue) {
                 this.$emit('remove-expense', expenseHere)
             }
-        },
-        getTotalExpense() {
-            console.log("getTotalExpense =", this.expenses.filter(e => e.level === 1))
-            return this.expenses.filter(e => e.level === 1);
         },
         sortChildrenByIdAndLevel(parentIdHere, parentsLevelHere) {
             return this.expenses.filter(e => e.parents_id === parentIdHere && e.level === parentsLevelHere + 1);
