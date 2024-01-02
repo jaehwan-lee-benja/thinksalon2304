@@ -52,7 +52,7 @@ export default {
                     this.removeTooltip();
                     // 추가: 툴팁 생성 지연
                     this.tooltipTimeout = setTimeout(() => {
-                        const amount = this.nodes[node].size;
+                        const amount = this.nodes[node].size.toLocaleString();
                         const name = this.nodes[node].name;
                         this.tooltipElement = document.createElement('div');
                         this.tooltipElement.textContent = `${name} : ${amount}`;

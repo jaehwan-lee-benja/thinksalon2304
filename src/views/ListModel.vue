@@ -19,9 +19,9 @@
             <input :class="amountStyle" ref="amountInput" v-model="formattedAmount">
         </div>
 
+        <button :class="moreBtn" v-if="isNotTotal" @click="removeExpense(getExpenseById[0])">x</button>
         <button :class="moreBtn" @click="handlerLiMoreDiv"> … </button>
         <div :class="liMoreDiv" v-if="isLiMoreDivOpened">
-            <button v-if="isNotTotal" @click="removeExpense(getExpenseById[0])">삭제</button>
             <span> 하위 합계 : </span>
             <input :class="amountStyle" :value="sumExpenses(getExpenseById[0].id)" readonly>
             <span> 메모 : </span>
