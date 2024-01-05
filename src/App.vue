@@ -1,35 +1,35 @@
 <template>
-  <div :class="menuMainGrid">
-    <div :class="menuGrid">
-      <div :class="pageListDiv">
+  <div class="menuMainGrid">
+    <div class="menuGrid">
+      <div class="pageListDiv">
 
-        <select :class="pageSelect" v-model="pageName" @change="selectPageBySelectBox()">
+        <select class="pageSelect" v-model="pageName" @change="selectPageBySelectBox()">
           <option v-for="page in sortExpensePages" :key="page.id" :value="page.page_name">
             {{ page.page_name }}
           </option>
         </select>
 
-        <button :class="pageSettingBtn" @click="openPageDiv">페이지 설정하기</button>
+        <button class="pageSettingBtn" @click="openPageDiv">페이지 설정하기</button>
 
 
       </div>
-      <div :class="loginDiv">
+      <div class="loginDiv">
         <div v-if="loginMode">
-          <button :class="loginBtn" @click="loginGoogle">구글 로그인</button>
+          <button class="loginBtn" @click="loginGoogle">구글 로그인</button>
           <p> *버튼을 눌러 로그인할 수 있습니다.</p>
         </div>
         <div v-else>
           <p> 로그인 계정: {{ email }}</p>
-          <button :class="logoutBtn" @click="signout">로그아웃</button>
+          <button class="logoutBtn" @click="signout">로그아웃</button>
         </div>
       </div>
     </div>
-    <div :class="mainDiv">
-      <div :class="pageNameDiv">
+    <div class="mainDiv">
+      <div class="pageNameDiv">
         <h2>{{ this.pageName }}</h2>
       </div>
-      <div :class="mainBtnDiv">
-        <div :class="saveEditedDiv">
+      <div class="mainBtnDiv">
+        <div class="saveEditedDiv">
           <button :class="{
             'saveEditedBtn_active': isEdited === true,
             'saveEditedBtn_inactive': isEdited === false
@@ -40,12 +40,12 @@
           }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
         </div>
       </div>
-      <div :class="viewGrid">
-        <div :class="flowViewDiv">
+      <div class="viewGrid">
+        <div class="flowViewDiv">
           <FlowView v-bind:expenses="expenses" @point-clicked-li="pointClickedLi"
             @cancel-point-clicked-li="cancelPointClickedLi" />
         </div>
-        <div :class="listViewDiv">
+        <div class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :totalExpenseId="totalExpenseId"
             :clickedExpenseId="clickedExpenseId" :selectedPageId="selectedPageId" :isAnyOpenedLi="isAnyOpenedLi"
             @create-new-expense="createNewExpense" @remove-expense="removeExpense"
@@ -53,12 +53,12 @@
             @open-or-close-li="openOrCloseLi" />
         </div>
       </div>
-      <div v-if="isPageDivOpened" :class="modal">
+      <div v-if="isPageDivOpened" class="modal">
         <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
           @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @edit-page="editPage"
           @remove-page="removePage" @cancel-editing-page="cancelEditingPage" />
       </div>
-      <div v-if="isPageDivOpened" :class="modalOverlay" @click="closePageDiv"></div>
+      <div v-if="isPageDivOpened" class="modalOverlay" @click="closePageDiv"></div>
     </div>
   </div>
 </template>

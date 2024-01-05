@@ -14,18 +14,18 @@
             'listViewLiDiv_clicked': this.updateClickedExpenseId === true,
             'listViewLiDiv': this.updateClickedExpenseId === false,
         }">
-            <input :class="categoryStyle" v-model="getExpenseById[0].category">
+            <input class="categoryStyle" v-model="getExpenseById[0].category">
             <span> : </span>
-            <input :class="amountStyle" ref="amountInput" v-model="formattedAmount">
+            <input class="amountStyle" ref="amountInput" v-model="formattedAmount">
         </div>
 
-        <button :class="moreBtn" v-if="isNotTotal" @click="removeExpense(getExpenseById[0])">x</button>
-        <button :class="moreBtn" @click="handlerLiMoreDiv"> … </button>
-        <div :class="liMoreDiv" v-if="isLiMoreDivOpened">
+        <button class="moreBtn" v-if="isNotTotal" @click="removeExpense(getExpenseById[0])">x</button>
+        <button class="moreBtn" @click="handlerLiMoreDiv"> … </button>
+        <div class="liMoreDiv" v-if="isLiMoreDivOpened">
             <span> 하위 합계 : </span>
-            <input :class="amountStyle" :value="sumExpenses(getExpenseById[0].id)" readonly>
+            <input class="amountStyle" :value="sumExpenses(getExpenseById[0].id)" readonly>
             <span> 메모 : </span>
-            <input :class="memo" v-model="getExpenseById[0].memo">
+            <input class="memo" v-model="getExpenseById[0].memo">
         </div>
 
     </div>

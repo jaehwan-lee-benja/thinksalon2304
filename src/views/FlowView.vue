@@ -1,9 +1,9 @@
 <template>
-    <div :class="flowViewBtnDiv">
-        <button @click="formatExpenses" :class="flowViewBtn">새로고침</button>
+    <div class="flowViewBtnDiv">
+        <button @click="formatExpenses" class="flowViewBtn">새로고침</button>
     </div>
-    <!-- <div :class="graphDiv"> -->
-    <div :class="graphDiv" ref="graphContainer">
+    <!-- <div class="graphDiv"> -->
+    <div class="graphDiv" ref="graphContainer">
         <VNetworkGraph ref="vng" class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs"
             :event-handlers="eventHandlers" />
         <!-- <div v-for="node in Object.keys(nodes)" :key="'overlay-' + node" class="node-overlay" :style="{

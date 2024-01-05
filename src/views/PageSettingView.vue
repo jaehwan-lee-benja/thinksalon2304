@@ -1,7 +1,7 @@
 <template>
-    <div :class="pageListStyle">
+    <div class="pageListStyle">
         <h2>페이지 설정하기</h2>
-        <div :class="createNewPageDiv">
+        <div class="createNewPageDiv">
             <h4>새 페이지 만들기</h4>
             <span>새 페이지명: </span>
             <input v-model="this.newPageName" placeholder="새 페이지명 적기">
@@ -11,9 +11,9 @@
 
         <div>
             <h4>기존 페이지 편집하기</h4>
-            <ol :class="pageSettingOlStyle">
+            <ol class="pageSettingOlStyle">
                 <li v-for="page in this.expensePages" :key="page.id">
-                    <input :class="pageNameStyle" v-model="page.page_name">
+                    <input class="pageNameStyle" v-model="page.page_name">
                     <button @click="removePage(page)">삭제</button>
                 </li>
             </ol>

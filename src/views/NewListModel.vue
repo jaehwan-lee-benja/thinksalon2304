@@ -1,16 +1,16 @@
 <template>
-    <div :class="newExpenseDiv">
-        <button :class="newExpenseBtn" @click="handlerNewListDiv">
+    <div class="newExpenseDiv">
+        <button class="newExpenseBtn" @click="handlerNewListDiv">
             {{ newExpenseBtnOpened ? "-" : "+" }}
         </button>
-        <div :class="newListDiv" v-if="isNewListDivOpened">
+        <div class="newListDiv" v-if="isNewListDivOpened">
             <form @submit.prevent="createNewExpense(getExpenseById[0].id, getExpenseById[0].level)">
-                <div :class="newExpenseLiDiv">
-                    <input :class="categoryStyle" v-model="this.newCategory" placeholder="새 리스트 적기">
+                <div class="newExpenseLiDiv">
+                    <input class="categoryStyle" v-model="this.newCategory" placeholder="새 리스트 적기">
                     <span> : </span>
-                    <input :class="amountStyle" v-model="this.newAmount" placeholder="0">
+                    <input class="amountStyle" v-model="this.newAmount" placeholder="0">
                 </div>
-                <button :class="newExpenseDoneBtn">입력</button>
+                <button class="newExpenseDoneBtn">입력</button>
             </form>
         </div>
     </div>
