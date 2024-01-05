@@ -32,7 +32,6 @@
 </template>
 
 <script>
-import CssData from './CssData.vue'
 
 export default {
     name: 'ListModel',
@@ -58,7 +57,6 @@ export default {
             default: '',
         },
     },
-    mixins: [CssData],
     watch: {
         selectedPageId: {
             handler() {

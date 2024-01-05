@@ -69,7 +69,6 @@ import LoginSessionModel from './views/LoginSessionModel.vue'
 import ListView from './views/ListView.vue'
 import FlowView from './views/FlowView.vue'
 import PageSettingView from './views/PageSettingView.vue'
-import CssData from './views/CssData.vue'
 
 export default {
   data() {
@@ -89,7 +88,7 @@ export default {
 
     }
   },
-  mixins: [LoginSessionModel, CssData],
+  mixins: [LoginSessionModel],
   components: {
     ListView,
     FlowView,

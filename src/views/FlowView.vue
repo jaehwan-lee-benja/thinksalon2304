@@ -16,7 +16,6 @@
 </template>
 
 <script>
-import CssData from './CssData.vue'
 import { VNetworkGraph } from "v-network-graph"
 // import { EventHandlers } from "v-network-graph" // [질문] 이것은 빼는게 좋을까?
 import "v-network-graph/lib/style.css"
@@ -30,7 +29,6 @@ export default {
             default: () => { }
         },
     },
-    mixins: [CssData],
     data() {
         return {
             nodes: {},

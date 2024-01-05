@@ -69,7 +69,6 @@
 </template>
   
 <script>
-import CssData from './CssData.vue'
 import ListModel from './ListModel.vue'
 import NewListModel from './NewListModel.vue'
 
@@ -101,7 +100,6 @@ export default {
             default: false,
         },
     },
-    mixins: [CssData],
     methods: {
         openOrCloseLi() {
             this.$emit('open-or-close-li')
