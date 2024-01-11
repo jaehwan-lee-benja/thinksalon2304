@@ -2,6 +2,12 @@
     <div class="flowViewBtnDiv">
         <button @click="formatExpenses" class="flowViewBtn">새로고침</button>
     </div>
+    <div class="isolatedExpenseDiv">
+        <div class="isolatedExpense" v-if="showClickedLiDiv" ref="isolatedContainer">
+            <IsolatedModel v-bind:expenses="expenses" :expenseId="this.clickedExpenseId" @remove-expense="removeExpense"
+                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" />
+        </div>
+    </div>
     <!-- <div class="graphDiv"> -->
     <div class="graphDiv" ref="graphContainer">
         <VNetworkGraph ref="vng" class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs"
@@ -13,10 +19,7 @@
             {{ nodes[node].size }}
         </div> -->
     </div>
-    <div class="isolatedLiDiv" v-if="showClickedLiDiv">
-        <ListModel v-bind:expenses="expenses" :expenseId="this.clickedExpenseId" @remove-expense="removeExpense"
-            :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :isIsolated="true"/>
-    </div>
+    
 </template>
 
 <script>
@@ -24,7 +27,7 @@ import { VNetworkGraph } from "v-network-graph"
 // import { EventHandlers } from "v-network-graph" // [질문] 이것은 빼는게 좋을까?
 import "v-network-graph/lib/style.css"
 import dagre from "dagre/dist/dagre.min.js"
-import ListModel from './ListModel.vue'
+import IsolatedModel from './IsolatedModel.vue'
 
 export default {
     name: 'FlowView',
@@ -125,10 +128,9 @@ export default {
                 const expensesLength = this.expenses.length;
                 if (expensesLength > 0) {
                     this.$nextTick(() => {
-
+                        console.log("check!")
                         this.formatExpenses()
                     });
-
                 }
             },
             deep: true
@@ -145,13 +147,21 @@ export default {
         document.removeEventListener("click", this.handleDocumentClick);
     },
     methods: {
-
+        removeExpense(expenseHere) {
+            const confirmValue = confirm("삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
+            if (confirmValue) {
+                this.$emit('remove-expense', expenseHere)
+            }
+        },
         handleDocumentClick(event) {
             // 클릭이 그래프 컨테이너 외부에서 발생했는지 확인합니다
             const graphContainer = this.$refs.graphContainer;
+            const isolatedContainer = this.$refs.isolatedContainer;
             if (graphContainer || !graphContainer.contains(event.target)) {
                 // 클릭이 그래프 컨테이너 외부에서 발생한 경우, 노드 클릭 효과를 취소합니다
-                this.$emit('cancel-point-clicked-li');
+                if (isolatedContainer != null && !isolatedContainer.contains(event.target)) {
+                    this.$emit('cancel-point-clicked-li');
+                }
             }
         },
         showTooltip(node, event) {
@@ -255,7 +265,7 @@ export default {
     },
     components: {
         VNetworkGraph,
-        ListModel
+        IsolatedModel
     },
 
 }

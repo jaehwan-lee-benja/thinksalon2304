@@ -1,24 +1,19 @@
 <template>
-    <div :class="{
-        'liAlignStyle': this.isNotTotal === true,
-        'TotalLiAlignStyle': this.isNotTotal === false,
-    }">
+    <div class='liAlignStyle'>
 
-        <div v-if="!this.isIsolated" class="listToggleDiv">
-            <button v-if="!isNotTotal" :class="{
-                'totalToggleBtn_active': this.toggleActiveHandler === true,
-                'totalToggleBtn_inactive': this.toggleActiveHandler === false,
-            }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(getExpenseById[0])">
-                {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }}
-            </button>
+        <button v-if="!isNotTotal" :class="{
+            'totalToggleBtn_active': this.toggleActiveHandler === true,
+            'totalToggleBtn_inactive': this.toggleActiveHandler === false,
+        }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(getExpenseById[0])">
+            {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }}
+        </button>
 
-            <button v-if="isNotTotal" :class="{
-                'toggleBtn_active': this.toggleActiveHandler === true,
-                'toggleBtn_inactive': this.toggleActiveHandler === false,
-            }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(getExpenseById[0])">
-                {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }}
-            </button>
-        </div>
+        <button v-if="isNotTotal" :class="{
+            'toggleBtn_active': this.toggleActiveHandler === true,
+            'toggleBtn_inactive': this.toggleActiveHandler === false,
+        }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(getExpenseById[0])">
+            {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }}
+        </button>
 
         <div :class="{
             'listViewLiDiv_clicked': this.updateClickedExpenseId === true,
@@ -65,10 +60,6 @@ export default {
         clickedExpenseId: {
             type: String,
             default: '',
-        },
-        isIsolated: {
-            type: Boolean,
-            default: false
         },
     },
     watch: {

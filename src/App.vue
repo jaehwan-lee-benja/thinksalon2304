@@ -44,7 +44,7 @@
       <div class="viewGrid">
         <div class="flowViewDiv">
           <FlowView v-bind:expenses="expenses" :clickedExpenseId="clickedExpenseId" @point-clicked-li="pointClickedLi"
-            @cancel-point-clicked-li="cancelPointClickedLi" />
+            @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense"/>
         </div>
         <div class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :totalExpenseId="totalExpenseId"

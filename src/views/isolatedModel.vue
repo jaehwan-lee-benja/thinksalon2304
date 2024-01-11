@@ -1,37 +1,14 @@
 <template>
-    <div :class="{
-        'liAlignStyle': this.isNotTotal === true,
-        'TotalLiAlignStyle': this.isNotTotal === false,
-    }">
+    <div class='isolatedAlignStyle'>
 
-        <div v-if="!this.isIsolated" class="listToggleDiv">
-            <button v-if="!isNotTotal" :class="{
-                'totalToggleBtn_active': this.toggleActiveHandler === true,
-                'totalToggleBtn_inactive': this.toggleActiveHandler === false,
-            }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(getExpenseById[0])">
-                {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }}
-            </button>
-
-            <button v-if="isNotTotal" :class="{
-                'toggleBtn_active': this.toggleActiveHandler === true,
-                'toggleBtn_inactive': this.toggleActiveHandler === false,
-            }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(getExpenseById[0])">
-                {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }}
-            </button>
-        </div>
-
-        <div :class="{
-            'listViewLiDiv_clicked': this.updateClickedExpenseId === true,
-            'listViewLiDiv': this.updateClickedExpenseId === false,
-        }">
+        <div class='listViewLiDiv'>
             <input class="categoryStyle" v-model="getExpenseById[0].category">
             <span> : </span>
             <input class="amountStyle" ref="amountInput" v-model="formattedAmount">
         </div>
 
         <button class="moreBtn" v-if="isNotTotal" @click="removeExpense(getExpenseById[0])">x</button>
-        <button class="moreBtn" @click="handlerLiMoreDiv"> … </button>
-        <div class="liMoreDiv" v-if="isLiMoreDivOpened">
+        <div class="isolatedMoreDiv">
             <span> 하위 합계 : </span>
             <input class="amountStyle" :value="sumExpenses(getExpenseById[0].id)" readonly>
             <span> 메모 : </span>
@@ -65,11 +42,7 @@ export default {
         clickedExpenseId: {
             type: String,
             default: '',
-        },
-        isIsolated: {
-            type: Boolean,
-            default: false
-        },
+        }
     },
     watch: {
         selectedPageId: {
@@ -109,19 +82,16 @@ export default {
         },
         getExpenseById() {
             if (this.expenses.length > 0) {
-                return this.expenses.filter(expense => expense.id === this.expenseId)
+                const theExpenseById = this.expenses.filter(expense => expense.id === this.expenseId)
+                if(theExpenseById.length > 0) {
+                    return theExpenseById
+                } else {
+                    return [{ category: "로딩중..", amount: 0, id: "" }]
+                }
             } else {
                 return [{ category: "로딩중..", amount: 0, id: "" }]
             }
         },
-        updateClickedExpenseId() {
-            if (this.clickedExpenseId === this.getExpenseById[0].id) {
-                return true
-            } else {
-                return false
-            }
-        },
-
     },
     methods: {
         handlerLiMoreDivForPageChange() {
@@ -137,6 +107,7 @@ export default {
             return sum.toLocaleString();
         },
         removeExpense(expenseHere) {
+            console.log(expenseHere)
             this.$emit('remove-expense', expenseHere);
             this.handlerLiMoreDivForPageChange();
         },

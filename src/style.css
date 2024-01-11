@@ -237,7 +237,6 @@ input:read-only {
   width: 100%;
   height: 80%;
   box-shadow: 10px 14px 40px 3px rgba(0,0,0,0.1), 0 5px 5px rgba(0,0,0,0.22);
-  /* position: relative; */
 }
 
 .flowViewBtnDiv {
@@ -383,9 +382,36 @@ input:read-only {
   display: inline;
 }
 
-.isolatedLiDiv {
-  background-color: #9BA8AB;
+/* .flowViewBtnDiv {
+  position: relative;
+}
+
+.flowViewBtn {
+  position: absolute;
+  margin: 20px;
+  background-color: #f4f4f4;
+  border: 1px solid #4a5c6a;
+  color: #4a5c6a;
+  z-index: 1;
+} */
+
+.isolatedExpenseDiv {
+  position: relative;
+}
+
+.isolatedExpense {
+  position: absolute;
+  background-color:rgb(204, 208, 207, 0.9);
   padding: 10px;
+  margin: 20px;
+  left: 70px;
+  border-radius: 10px;
+  box-shadow: 0 14px 28px rgba(0,0,0,0.1);
+  z-index: 1;
+}
+
+.isolatedMoreDiv {
+  padding: 5px;
 }
 
 .totalToggleBtn_active {
@@ -456,12 +482,11 @@ input:read-only {
   display: inline;
 }
 
-.liAlignStyle{
+.isolatedAlignStyle{
   position: relative;
-  left: -37px;
 }
 
-.TotalLiAlignStyle{
+.liAlignStyle{
   position: relative;
   left: -37px;
 }
