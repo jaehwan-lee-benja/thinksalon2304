@@ -13,6 +13,10 @@
             {{ nodes[node].size }}
         </div> -->
     </div>
+    <div class="isolatedLiDiv" v-if="showClickedLiDiv">
+        <ListModel v-bind:expenses="expenses" :expenseId="this.clickedExpenseId" @remove-expense="removeExpense"
+            :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :isIsolated="true"/>
+    </div>
 </template>
 
 <script>
@@ -20,6 +24,7 @@ import { VNetworkGraph } from "v-network-graph"
 // import { EventHandlers } from "v-network-graph" // [질문] 이것은 빼는게 좋을까?
 import "v-network-graph/lib/style.css"
 import dagre from "dagre/dist/dagre.min.js"
+import ListModel from './ListModel.vue'
 
 export default {
     name: 'FlowView',
@@ -28,6 +33,19 @@ export default {
             type: Object,
             default: () => { }
         },
+        clickedExpenseId: {
+            type: String,
+            default: '',
+        },
+    },
+    computed: {
+        showClickedLiDiv() {
+            if (this.clickedExpenseId) {
+                return true
+            } else {
+                return false
+            }
+        }
     },
     data() {
         return {
@@ -237,6 +255,7 @@ export default {
     },
     components: {
         VNetworkGraph,
+        ListModel
     },
 
 }

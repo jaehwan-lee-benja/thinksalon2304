@@ -3,14 +3,15 @@
     <div class="menuGrid">
       <div class="pageListDiv">
 
+        <span>페이지 이동하기</span>
         <select class="pageSelect" v-model="pageName" @change="selectPageBySelectBox()">
           <option v-for="page in sortExpensePages" :key="page.id" :value="page.page_name">
             {{ page.page_name }}
           </option>
         </select>
 
-        <button class="pageSettingBtn" @click="openPageDiv">페이지 설정하기</button>
-
+        <button class="menuBtn" @click="openPageDiv">페이지 설정하기</button>
+        <button class="menuBtn" @click="openContact">문의하기</button>
 
       </div>
       <div class="loginDiv">
@@ -42,7 +43,7 @@
       </div>
       <div class="viewGrid">
         <div class="flowViewDiv">
-          <FlowView v-bind:expenses="expenses" @point-clicked-li="pointClickedLi"
+          <FlowView v-bind:expenses="expenses" :clickedExpenseId="clickedExpenseId" @point-clicked-li="pointClickedLi"
             @cancel-point-clicked-li="cancelPointClickedLi" />
         </div>
         <div class="listViewDiv">
@@ -164,6 +165,9 @@ export default {
     },
   },
   methods: {
+    openContact() {
+      window.open("http://pf.kakao.com/_QxewxfT", "_blank");
+    },
     updatedPageName() {
       return this.expenses.filter(e => e.id === this.selectedPageId)[0].name
     },
@@ -200,6 +204,7 @@ export default {
       }
     },
     pointClickedLi(idHere) {
+      console.log("idHere = ", idHere)
       this.clickedExpenseId = idHere
       this.updateParentsToggle(idHere)
     },
@@ -335,8 +340,8 @@ export default {
       const expense = this.expenses.filter(e => e.id === idHere)[0]
       const ParentsToUpdate = this.findParentsExpense(expense, []);
       ParentsToUpdate.forEach(e => {
-          e.show_sub_list = true;
-          this.upsertExpense(e)
+        e.show_sub_list = true;
+        this.upsertExpense(e)
       })
 
     },

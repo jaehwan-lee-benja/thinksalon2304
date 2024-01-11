@@ -121,11 +121,11 @@ input:read-only {
   left: -43px;
 }
 
-.pageSettingBtn {
+.menuBtn {
   width: 100%;
   height: 40px;
   padding: 10px 0px;
-  margin: 10px auto;
+  margin: 5px auto;
 }
 
 .menuMainGrid {
@@ -377,6 +377,15 @@ input:read-only {
 .cancelPageEditedBtn_inactive:hover{
   box-shadow: none;
   cursor: default;
+}
+
+.listToggleDiv {
+  display: inline;
+}
+
+.isolatedLiDiv {
+  background-color: #9BA8AB;
+  padding: 10px;
 }
 
 .totalToggleBtn_active {
