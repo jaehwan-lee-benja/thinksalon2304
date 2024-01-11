@@ -173,7 +173,7 @@ export default {
     openOrCloseLi() {
       if (this.isAnyOpenedLi) {
         this.expenses.forEach(e => {
-          if (e.level > 1) { e.show_sub_list = false; }
+          e.show_sub_list = false;
           this.upsertExpense(e);
         })
       } else {
@@ -188,10 +188,10 @@ export default {
 
         parentsAndChildArr.forEach(e4 => {
           const parentsExpense = e4.parents[0]
-          if (e4.children.length > 0 && parentsExpense.level > 1) {
+          if (e4.children.length > 0) {
             parentsExpense.show_sub_list = true;
             this.upsertExpense(parentsExpense);
-          } else if (parentsExpense.level > 1) {
+          } else {
             parentsExpense.show_sub_list = false;
             this.upsertExpense(parentsExpense);
           }

@@ -379,6 +379,30 @@ input:read-only {
   cursor: default;
 }
 
+.totalToggleBtn_active {
+  color: rgb(0, 33, 45);
+  background-color: transparent;
+  border: 0px solid transparent;
+  margin: 0.5%;
+
+  position: relative;
+  left: 4px;
+  top: -2px;
+
+}
+
+.totalToggleBtn_inactive {
+  color: rgb(0, 33, 45, 0.3);
+  background-color: transparent;
+  border: 1px solid transparent;
+  margin: 0.5%;
+ 
+  position: relative;
+  left: 4px;
+  top: -2px;
+  
+}
+
 .toggleBtn_active {
   color: rgb(0, 33, 45);
   background-color: transparent;
@@ -428,19 +452,27 @@ input:read-only {
   left: -37px;
 }
 
+.TotalLiAlignStyle{
+  position: relative;
+  left: -37px;
+}
+
 .listViewLiStyle {
   line-height: 250%;
 }
 
+.listViewTotalLiStyle {
+  line-height: 250%;
+  list-style:none;
+}
+
 .olBgStyle {
-  background-color:rgb(204, 208, 207, 0.5);/*까만색(0,0,0) 20% 불투명도*/
+  background-color:rgb(204, 208, 207, 0.5);
   border-left: 5px solid rgb(140, 140, 140, 0.5);
-  margin: 10px;
+  margin: 10px 10px 10px 5px;
   padding: 20px 10px 20px 50px;
   border-radius: 5px;
   position: relative;
-  /* z-index: 1; */
-  /* pointer-events: none; hover 시에만 이벤트를 허용하도록 설정 */
 }
 
 .pageListStyle {
@@ -453,11 +485,11 @@ input:read-only {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 999; /* 모달을 다른 요소 위에 표시합니다 */
   background-color:rgb(204, 208, 207);
   border-radius: 20px;
   padding: 20px;
   color: black;
+  z-index: 999; /* 모달을 다른 요소 위에 표시합니다 */
 }
 
 .modalOverlay {
@@ -466,7 +498,7 @@ input:read-only {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7); /* 검정색 음영, 0.7은 투명도를 나타냅니다 */
+  background: rgba(0, 0, 0, 0.7);
   z-index: 998; /* 모달보다 아래에 위치해야 합니다 */
 }
 
