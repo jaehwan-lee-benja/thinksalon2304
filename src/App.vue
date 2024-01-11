@@ -335,10 +335,8 @@ export default {
       const expense = this.expenses.filter(e => e.id === idHere)[0]
       const ParentsToUpdate = this.findParentsExpense(expense, []);
       ParentsToUpdate.forEach(e => {
-        if (e.level > 1) {
           e.show_sub_list = true;
           this.upsertExpense(e)
-        }
       })
 
     },
