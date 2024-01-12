@@ -8,23 +8,17 @@
                 :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" />
         </div>
     </div>
-    <!-- <div class="graphDiv"> -->
     <div class="graphDiv" ref="graphContainer">
         <VNetworkGraph ref="vng" class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs"
             :event-handlers="eventHandlers" />
-        <!-- <div v-for="node in Object.keys(nodes)" :key="'overlay-' + node" class="node-overlay" :style="{
-            left: `${layouts.nodes[node].x}px`,
-            top: `${layouts.nodes[node].y}px`,
-        }"> // [질문] template에 넣는게 좋을까?
-            {{ nodes[node].size }}
-        </div> -->
+        <div v-if="tooltip" class="tooltip" :style="{ top: tooltip.top + 'px', left: tooltip.left + 'px' }">
+            {{ tooltip.content }}
+        </div>
     </div>
-    
 </template>
 
 <script>
 import { VNetworkGraph } from "v-network-graph"
-// import { EventHandlers } from "v-network-graph" // [질문] 이것은 빼는게 좋을까?
 import "v-network-graph/lib/style.css"
 import dagre from "dagre/dist/dagre.min.js"
 import IsolatedModel from './IsolatedModel.vue'
@@ -43,21 +37,18 @@ export default {
     },
     computed: {
         showClickedLiDiv() {
-            if (this.clickedExpenseId) {
-                return true
-            } else {
-                return false
-            }
+            return !!this.clickedExpenseId;
         }
     },
     data() {
         return {
+            tooltip: null,
+
             nodes: {},
             edges: {},
             layouts: {
                 nodes: {},
             },
-            tooltipElement: null,
             tooltipTimeout: null, // 추가: 툴팁 지연을 위한 타이머 변수
             eventHandlers: {
                 "node:click": ({ node }) => {
@@ -67,21 +58,7 @@ export default {
                     // 예시: 콘솔에 금액을 출력
                 },
                 "node:pointerover": ({ node, event }) => {
-                    // 추가: 기존 툴팁 제거
-                    this.removeTooltip();
-                    // 추가: 툴팁 생성 지연
-                    this.tooltipTimeout = setTimeout(() => {
-                        const amount = this.nodes[node].size.toLocaleString();
-                        const name = this.nodes[node].name;
-                        this.tooltipElement = document.createElement('div');
-                        this.tooltipElement.textContent = `${name} : ${amount}`;
-                        this.tooltipElement.className = 'tooltip';
-                        this.tooltipElement.style.position = 'absolute';
-                        this.setTooltipPosition(event.clientX, event.clientY);
-
-                        // 그래프 컨테이너에 추가
-                        this.$refs.graphContainer.appendChild(this.tooltipElement);
-                    }, 200); // 500ms 지연
+                    this.setTooltipFromEvent(node, event);
                 },
                 "node:pointerout": () => {
                     // 추가: 기존 툴팁 제거
@@ -128,7 +105,6 @@ export default {
                 const expensesLength = this.expenses.length;
                 if (expensesLength > 0) {
                     this.$nextTick(() => {
-                        console.log("check!")
                         this.formatExpenses()
                     });
                 }
@@ -137,14 +113,8 @@ export default {
         }
     },
     mounted() {
-        document.addEventListener("click", this.handleDocumentClick);
-    },
-    beforeUnmount() {
-        // 추가: 컴포넌트가 파괴되기 전에 기존 툴팁 제거 및 타이머 해제
-        this.removeTooltip();
-        this.tooltipTimeout = null;
-        // 컴포넌트가 파괴되기 전에 이벤트 리스너를 제거합니다
-        document.removeEventListener("click", this.handleDocumentClick);
+        document.addEventListener("click", this.handleDocumentClick); // [질문] 이것을 어떻게 바꿀 수 있을까?
+        // this.$el.addEventListener("click", this.handleDocumentClick);
     },
     methods: {
         removeExpense(expenseHere) {
@@ -164,37 +134,44 @@ export default {
                 }
             }
         },
-        showTooltip(node, event) {
-            console.log("showTooltip") //[질문] 이것이 콘솔에 찍히지는 않는다. 그럼 작동하지 않는 것일텐데..
-            // 추가: 마우스 이벤트 디바운싱
-            if (this.tooltipTimeout) {
-                clearTimeout(this.tooltipTimeout);
-            }
+
+        setTooltipFromEvent(node, event) {
+            this.removeTooltip();
 
             this.tooltipTimeout = setTimeout(() => {
-                const amount = this.nodes[node].size;
-                this.createTooltip(amount, event.clientX, event.clientY);
-            }, 100); // 적절한 딜레이 값을 설정합니다.
+                const amount = this.nodes[node].size.toLocaleString();
+                const name = this.nodes[node].name;
+
+                // 상대적인 위치 계산을 통해 툴팁을 설정
+                const relativePosition = this.calculateRelativePosition(event, this.$refs.graphContainer);
+                this.setTooltip({
+                    content: `${name} : ${amount}`,
+                    ...relativePosition
+                });
+            }, 200);
         },
-        setTooltipPosition(x, y) {
-            // 추가: 툴팁 위치 조정
-            if (this.tooltipElement) {
-                this.tooltipElement.style.top = `${y}px`;
-                this.tooltipElement.style.left = `${x}px`;
-            }
+
+        calculateRelativePosition(event, container) {
+            // container에서의 상대적인 위치 계산
+            const containerRect = container.getBoundingClientRect();
+            const top = event.clientY - containerRect.top;
+            const left = event.clientX - containerRect.left;
+
+            return { top, left };
+        },
+
+        setTooltip({ content, top, left }) {
+            this.tooltip = { content, top, left };
         },
 
         removeTooltip() {
-            // 추가: 툴팁 제거
-            if (this.tooltipElement) {
-                this.tooltipElement.remove();
-                this.tooltipElement = null;
-            }
+            this.tooltip = null;
             if (this.tooltipTimeout) {
                 clearTimeout(this.tooltipTimeout);
                 this.tooltipTimeout = null;
             }
         },
+
         formatLayout() {
             const nodeSize = 30
             const direction = "TB" // "TB" | "LR"
@@ -240,17 +217,17 @@ export default {
         formatExpenses() {
 
             const nodesResult = {}
-            this.expenses.forEach((e) => {
-                nodesResult[e.id] = { 'id': e.id, 'name': e.category, 'size': e.amount }
-            })
-            this.nodes = nodesResult
-
             const edgeResult = {}
+
             this.expenses.forEach((e) => {
+                nodesResult[e.id] = { 'id': e.id, 'name': e.category, 'size': e.amount };
+
                 if (e.parents_id != null) {
-                    edgeResult[e.id] = { 'id': e.id, 'source': e.parents_id, 'target': e.id, 'size': e.amount }
+                    edgeResult[e.id] = { 'id': e.id, 'source': e.parents_id, 'target': e.id, 'size': e.amount };
                 }
-            })
+            });
+
+            this.nodes = nodesResult
             this.edges = edgeResult
 
             this.formatLayout()
@@ -272,7 +249,6 @@ export default {
 </script>
 
 <style>
-/* [질문]scoped를 없애도 될까? */
 @import '../style.css';
 
 .tooltip {
