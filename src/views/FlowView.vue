@@ -8,10 +8,11 @@
                 :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" />
         </div>
     </div>
-    <div class="graphDiv" ref="graphContainer">
+    <div class="graphDiv" ref="graphContainer" style="position: relative;">
         <VNetworkGraph ref="vng" class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs"
             :event-handlers="eventHandlers" />
-        <div v-if="tooltip" class="tooltip" :style="{ top: tooltip.top + 'px', left: tooltip.left + 'px' }">
+        <div v-if="tooltip" class="tooltip"
+            :style="{ position: 'absolute', top: tooltip.top + 'px', left: tooltip.left + 'px' }">
             {{ tooltip.content }}
         </div>
     </div>
@@ -62,7 +63,7 @@ export default {
                 },
                 "node:pointerout": () => {
                     // 추가: 기존 툴팁 제거
-                    this.removeTooltip();
+                    // this.removeTooltip();
                 },
             },
             configs: {

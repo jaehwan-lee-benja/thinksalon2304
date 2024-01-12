@@ -382,19 +382,6 @@ input:read-only {
   display: inline;
 }
 
-/* .flowViewBtnDiv {
-  position: relative;
-}
-
-.flowViewBtn {
-  position: absolute;
-  margin: 20px;
-  background-color: #f4f4f4;
-  border: 1px solid #4a5c6a;
-  color: #4a5c6a;
-  z-index: 1;
-} */
-
 .isolatedExpenseDiv {
   position: relative;
 }
@@ -478,7 +465,6 @@ input:read-only {
   border-radius: 4px;
   background-color: white;
   margin: 5px 0px 5px 10px;
-  /* max-width: 300px; */
   display: inline;
 }
 

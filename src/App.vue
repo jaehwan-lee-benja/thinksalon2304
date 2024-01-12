@@ -204,7 +204,6 @@ export default {
       }
     },
     pointClickedLi(idHere) {
-      console.log("idHere = ", idHere)
       this.clickedExpenseId = idHere
       this.updateParentsToggle(idHere)
     },

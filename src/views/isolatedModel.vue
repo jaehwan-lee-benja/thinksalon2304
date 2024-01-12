@@ -107,7 +107,6 @@ export default {
             return sum.toLocaleString();
         },
         removeExpense(expenseHere) {
-            console.log(expenseHere)
             this.$emit('remove-expense', expenseHere);
             this.handlerLiMoreDivForPageChange();
         },
