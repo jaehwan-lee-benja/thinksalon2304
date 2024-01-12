@@ -50,20 +50,17 @@ export default {
             layouts: {
                 nodes: {},
             },
-            tooltipTimeout: null, // 추가: 툴팁 지연을 위한 타이머 변수
+            tooltipTimeout: null, // 툴팁 지연을 위한 타이머 변수
             eventHandlers: {
                 "node:click": ({ node }) => {
-                    // 여기서 노드 위에 표시할 정보를 설정하세요
                     const id = this.nodes[node].id;
                     this.$emit('point-clicked-li', id);
-                    // 예시: 콘솔에 금액을 출력
                 },
                 "node:pointerover": ({ node, event }) => {
                     this.setTooltipFromEvent(node, event);
                 },
                 "node:pointerout": () => {
-                    // 추가: 기존 툴팁 제거
-                    // this.removeTooltip();
+                    this.removeTooltip();
                 },
             },
             configs: {
