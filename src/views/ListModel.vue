@@ -26,17 +26,14 @@
 
         <button class="moreBtn" v-if="isNotTotal" @click="removeExpense(getExpenseById[0])">x</button>
         <button class="moreBtn" @click="handlerLiMoreDiv"> … </button>
-        <div class="liMoreDiv" v-if="isLiMoreDivOpened">
-            <span> 하위 합계 : </span>
-            <input class="amountStyle" :value="sumExpenses(getExpenseById[0].id)" readonly>
-            <span> 메모 : </span>
-            <input class="memo" v-model="getExpenseById[0].memo">
-        </div>
+
+        <ExpenseModel v-if="isLiMoreDivOpened" v-bind:expenseById="getExpenseById[0]" />
 
     </div>
 </template>
 
 <script>
+import ExpenseModel from './ExpenseModel.vue'
 
 export default {
     name: 'ListModel',
@@ -84,20 +81,6 @@ export default {
                 return false
             }
         },
-        formattedAmount: {
-            get() {
-                // 화면에 표시될 때는 컴마를 포함하여 반환
-                return this.getExpenseById[0].amount.toLocaleString();
-            },
-            set(value) {
-                // 사용자가 수정할 때는 숫자만 포함하여 저장
-                const numericValue = parseFloat(value.replace(/,/g, ''));
-                // 값이 유효한 숫자인 경우에만 저장
-                if (!isNaN(numericValue)) {
-                    this.getExpenseById[0].amount = numericValue;
-                }
-            },
-        },
         getExpenseById() {
             if (this.expenses.length > 0) {
                 return this.expenses.filter(expense => expense.id === this.expenseId)
@@ -134,7 +117,10 @@ export default {
         toggleSubList(expenseHere) {
             this.$emit('toggle-sub-list', expenseHere);
         }
-    }
+    },
+    components: {
+        ExpenseModel
+    },
 }
 </script>
 
