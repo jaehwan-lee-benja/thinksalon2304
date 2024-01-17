@@ -15,25 +15,23 @@
             {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }}
         </button>
 
-        <div :class="{
+        <ExpenseModel :class="{
             'listViewLiDiv_clicked': this.updateClickedExpenseId === true,
             'listViewLiDiv': this.updateClickedExpenseId === false,
-        }">
-            <input class="categoryStyle" v-model="getExpenseById[0].category">
-            <span> : </span>
-            <input class="amountStyle" ref="amountInput" v-model="formattedAmount">
-        </div>
+        }" v-bind:expenseById="getExpenseById[0]" />
 
-        <button class="moreBtn" v-if="isNotTotal" @click="removeExpense(getExpenseById[0])">x</button>
-        <button class="moreBtn" @click="handlerLiMoreDiv"> … </button>
+        <button class="expenseDetailBtn" v-if="isNotTotal" @click="removeExpense(getExpenseById[0])">x</button>
+        <button class="expenseDetailBtn" @click="handlerLiDetailDiv"> … </button>
 
-        <ExpenseModel v-if="isLiMoreDivOpened" v-bind:expenseById="getExpenseById[0]" />
+        <ExpenseDetailModel class="liDetailDiv" v-if="isLiDetailDivOpened" v-bind:expenseById="getExpenseById[0]"
+            :sumExpenses="sumExpenses(getExpenseById[0].id)" />
 
     </div>
 </template>
 
 <script>
 import ExpenseModel from './ExpenseModel.vue'
+import ExpenseDetailModel from './ExpenseDetailModel.vue'
 
 export default {
     name: 'ListModel',
@@ -62,14 +60,14 @@ export default {
     watch: {
         selectedPageId: {
             handler() {
-                this.handlerLiMoreDivForPageChange()
+                this.handlerLiDetailDivForPageChange()
             },
             deep: true
         },
     },
     data() {
         return {
-            isLiMoreDivOpened: false,
+            isLiDetailDivOpened: false,
             memoSaveBtnHandler: false
         }
     },
@@ -98,12 +96,12 @@ export default {
 
     },
     methods: {
-        handlerLiMoreDivForPageChange() {
-            // Page가 바뀔 때, LiMoreDiv가 열려있는 경우, 없애도록하는 기능
-            if (this.isLiMoreDivOpened) { this.isLiMoreDivOpened = false; }
+        handlerLiDetailDivForPageChange() {
+            // Page가 바뀔 때, LiDetailDiv가 열려있는 경우, 없애도록하는 기능
+            if (this.isLiDetailDivOpened) { this.isLiDetailDivOpened = false; }
         },
-        handlerLiMoreDiv() {
-            this.isLiMoreDivOpened = !this.isLiMoreDivOpened;
+        handlerLiDetailDiv() {
+            this.isLiDetailDivOpened = !this.isLiDetailDivOpened;
         },
         sumExpenses(parentsIdHere) {
             const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
@@ -112,14 +110,15 @@ export default {
         },
         removeExpense(expenseHere) {
             this.$emit('remove-expense', expenseHere);
-            this.handlerLiMoreDivForPageChange();
+            this.handlerLiDetailDivForPageChange();
         },
         toggleSubList(expenseHere) {
             this.$emit('toggle-sub-list', expenseHere);
         }
     },
     components: {
-        ExpenseModel
+        ExpenseModel,
+        ExpenseDetailModel
     },
 }
 </script>
