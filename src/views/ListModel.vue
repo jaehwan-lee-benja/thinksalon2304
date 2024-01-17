@@ -15,16 +15,12 @@
             {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }}
         </button>
 
-        <ExpenseModel :class="{
-            'listViewLiDiv_clicked': this.updateClickedExpenseId === true,
-            'listViewLiDiv': this.updateClickedExpenseId === false,
-        }" v-bind:expenseById="getExpenseById[0]" />
+        <ExpenseModel v-bind:expenseById="getExpenseById[0]" :clickedExpenseId="clickedExpenseId" @remove-expense="removeExpense" :isList="true"/>
 
-        <button class="expenseDetailBtn" v-if="isNotTotal" @click="removeExpense(getExpenseById[0])">x</button>
         <button class="expenseDetailBtn" @click="handlerLiDetailDiv"> … </button>
 
         <ExpenseDetailModel class="liDetailDiv" v-if="isLiDetailDivOpened" v-bind:expenseById="getExpenseById[0]"
-            :sumExpenses="sumExpenses(getExpenseById[0].id)" />
+            :expenses="expenses" />
 
     </div>
 </template>
@@ -86,14 +82,6 @@ export default {
                 return [{ category: "로딩중..", amount: 0, id: "" }]
             }
         },
-        updateClickedExpenseId() {
-            if (this.clickedExpenseId === this.getExpenseById[0].id) {
-                return true
-            } else {
-                return false
-            }
-        },
-
     },
     methods: {
         handlerLiDetailDivForPageChange() {
@@ -102,11 +90,6 @@ export default {
         },
         handlerLiDetailDiv() {
             this.isLiDetailDivOpened = !this.isLiDetailDivOpened;
-        },
-        sumExpenses(parentsIdHere) {
-            const sum = this.expenses.filter(e => e.parents_id === parentsIdHere)
-                .reduce((acc, item) => acc + Number(item.amount), 0);
-            return sum.toLocaleString();
         },
         removeExpense(expenseHere) {
             this.$emit('remove-expense', expenseHere);

@@ -1,9 +1,13 @@
 <template>
-    <div class='listViewLiDiv'>
+    <div :class="{
+        'listViewLiDiv_clicked': this.updateClickedExpenseId === true,
+        'listViewLiDiv': this.updateClickedExpenseId === false
+    }">
         <input class="categoryStyle" v-model="theExpense.category">
         <span> : </span>
         <input class="amountStyle" ref="amountInput" v-model="formattedAmount">
     </div>
+    <button class="expenseDetailBtn" v-if="isNotTotal" @click="removeExpense(theExpense)">x</button>
 </template>
 
 <script>
@@ -14,7 +18,15 @@ export default {
         expenseById: {
             type: Object,
             default: () => { }
-        }
+        },
+        clickedExpenseId: {
+            type: String,
+            default: '',
+        },
+        isList: {
+            type: Boolean,
+            default: false,
+        },
     },
     computed: {
         formattedAmount: {
@@ -33,7 +45,27 @@ export default {
         },
         theExpense() {
             return this.expenseById
-        }
+        },
+        isNotTotal() {
+            if (this.expenseById.level > 1) {
+                return true
+            } else {
+                return false
+            }
+        },
+        updateClickedExpenseId() {
+            if (this.clickedExpenseId === this.expenseById.id && this.isList === true) {
+                return true
+            } else {
+                return false
+            }
+        },
+
+    },
+    methods: {
+        removeExpense(expenseHere) {
+            this.$emit('remove-expense', expenseHere);
+        },
     }
 }
 </script>
