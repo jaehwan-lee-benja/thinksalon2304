@@ -1,28 +1,27 @@
 <template>
-    <div class='liAlignStyle'>
-        <table>
-            <tr>
-                <th>
-                    <button :class="{
-                        'toggleBtn_active': this.toggleActiveHandler === true,
-                        'toggleBtn_inactive': this.toggleActiveHandler === false,
-                    }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(getExpenseById[0])">
-                        {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }}
-                    </button>
-                </th>
-                <th>
-                    {{ getExpenseById[0].order }}
-                </th>
-                <th>
-                    <ExpenseModel v-bind:expenseById="getExpenseById[0]" :clickedExpenseId="clickedExpenseId"
-                        @remove-expense="removeExpense" :isList="true" />
-                    <button class="expenseDetailBtn" @click="handlerLiDetailDiv"> … </button>
-                    <ExpenseDetailModel class="liDetailDiv" v-if="isLiDetailDivOpened"
-                        v-bind:expenseById="getExpenseById[0]" :expenses="expenses" />
-                </th>
-            </tr>
-        </table>
-    </div>
+    <table>
+        <tr>
+            <th>
+                <button :class="{
+                    'toggleBtn_active': this.toggleActiveHandler === true,
+                    'toggleBtn_inactive': this.toggleActiveHandler === false,
+                }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(getExpenseById[0])">
+                    {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }}
+                </button>
+            </th>
+            <th v-if="isNotTotal">
+                {{ getExpenseById[0].order }}
+            </th>
+
+            <th>
+                <ExpenseModel v-bind:expenseById="getExpenseById[0]" :clickedExpenseId="clickedExpenseId"
+                    @remove-expense="removeExpense" :isList="true" />
+                <button class="expenseDetailBtn" @click="handlerLiDetailDiv"> … </button>
+                <ExpenseDetailModel class="liDetailDiv" v-if="isLiDetailDivOpened" v-bind:expenseById="getExpenseById[0]"
+                    :expenses="expenses" />
+            </th>
+        </tr>
+    </table>
 </template>
 
 <script>
@@ -73,6 +72,13 @@ export default {
                 return this.expenses.filter(expense => expense.id === this.expenseId)
             } else {
                 return [{ category: "로딩중..", amount: 0, id: "" }]
+            }
+        },
+        isNotTotal() {
+            if (this.getExpenseById[0].level > 1) {
+                return true
+            } else {
+                return false
             }
         },
     },

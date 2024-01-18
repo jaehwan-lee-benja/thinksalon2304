@@ -1,10 +1,8 @@
 <template>
     <div class='isolatedAlignStyle'>
-
         <ExpenseModel v-bind:expenseById="getExpenseById[0]" :clickedExpenseId="clickedExpenseId"
             @remove-expense="removeExpense" />
         <ExpenseDetailModel class="isolatedDetailDiv" v-bind:expenseById="getExpenseById[0]" :expenses="expenses" />
-
     </div>
 </template>
 
@@ -13,7 +11,7 @@ import ExpenseModel from './ExpenseModel.vue'
 import ExpenseDetailModel from './ExpenseDetailModel.vue'
 
 export default {
-    name: 'ListModel',
+    name: 'IsolatedModel',
     props: {
         expenseId: {
             type: String,

@@ -8,7 +8,7 @@
 
     <ol class="olBgStyle">
 
-        <li class="listViewTotalLiStyle">
+        <li class="listViewLiStyle">
 
             <ListModel v-bind:expenses="expenses" :expenseId="this.totalExpenseId" @remove-expense="removeExpense"
                 @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[this.totalExpenseId]"

@@ -20,6 +20,25 @@ div {
   box-sizing: border-box;
 }
 
+table {
+  table-layout: fixed;
+}
+
+table, td, th {
+  border-collapse : collapse;
+  border : 0px solid black;
+  text-align: center;
+}
+
+table th {
+  font-weight: normal;
+  min-width: 20px;
+}
+
+.thForNew {
+  min-width: 50px;
+}
+
 h2 {
   color: #11212D;
   margin: 0;
@@ -89,36 +108,17 @@ input:read-only {
 }
 
 .newExpenseBtn {
-  margin: 5px 0px 5px 10px;
   height: 30px;
   background-color: transparent;
   border: 1px solid #9BA8AB;
   color: #9BA8AB;
   display: inline;
   padding: 5px;
-
-  position: relative;
-  left: -47px;
 }
 
 .newExpenseDoneBtn {
-  margin: 5px 0px 5px 10px;
-  position: relative;
-  left: -43px;
+  margin: 0px 0px 0px 5px;
   height: 30px;
-
-}
-
-.newExpenseLiDiv {
-  height: 30px;
-  margin: 5px 0px 5px 10px;
-  padding: 5px;
-  border: 0px solid white;
-  border-radius: 2px;
-  background-color: white;
-  display: inline;
-  position: relative;
-  left: -43px;
 }
 
 .menuBtn {
@@ -402,17 +402,27 @@ input:read-only {
 }
 
 .toggleBtn_active {
-  color: rgb(0, 33, 45);
+  color: #4a5c6a;
   background-color: transparent;
   border: 0px solid transparent;
   margin: 0.5%;
+  position: relative;
+  top: -2px;
 }
 
 .toggleBtn_inactive {
-  color: rgb(0, 33, 45, 0.3);
+  color: rgba(74, 92, 106, 0.3);
   background-color: transparent;
   border: 1px solid transparent;
   margin: 0.5%;
+  position: relative;
+  top: -2px;
+}
+
+.toggleBtn_inactive:hover{
+  box-shadow: none;
+  cursor: not-allowed;
+  transition: none;
 }
 
 .listViewLiDiv {
@@ -438,26 +448,16 @@ input:read-only {
   position: relative;
 }
 
-.liAlignStyle{
-  position: relative;
-  left: -37px;
-}
-
 .listViewLiStyle {
   line-height: 250%;
   list-style: none;
-}
-
-.listViewTotalLiStyle {
-  line-height: 250%;
-  list-style:none;
 }
 
 .olBgStyle {
   background-color:rgb(204, 208, 207, 0.5);
   border-left: 5px solid rgb(140, 140, 140, 0.5);
   margin: 10px 10px 10px 5px;
-  padding: 20px 10px 20px 50px;
+  padding: 20px 10px 20px 10px;
   border-radius: 5px;
   position: relative;
 }

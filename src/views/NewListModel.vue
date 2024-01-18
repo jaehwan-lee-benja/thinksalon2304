@@ -1,18 +1,25 @@
 <template>
-    <div class="newExpenseDiv">
-        <button class="newExpenseBtn" @click="handlerNewListDiv">
-            {{ newExpenseBtnOpened ? "-" : "+" }}
-        </button>
-        <div class="newListDiv" v-if="isNewListDivOpened">
-            <form @submit.prevent="createNewExpense(getExpenseById[0].id, getExpenseById[0].level)">
-                <div class="newExpenseLiDiv">
-                    <input class="categoryStyle" v-model="this.newCategory" placeholder="새 리스트 적기">
-                    <span> : </span>
-                    <input class="amountStyle" v-model="this.newAmount" placeholder="0">
-                </div>
-                <button class="newExpenseDoneBtn">입력</button>
-            </form>
-        </div>
+    <div class="newExpenseDiv" >
+        <table>
+            <tr>
+                <th class="thForNew">
+                    <button class="newExpenseBtn" @click="handlerNewListDiv">
+                        {{ newExpenseBtnOpened ? "-" : "+" }}
+                    </button>
+                </th>
+                <th>
+                    <form v-if="isNewListDivOpened"
+                        @submit.prevent="createNewExpense(getExpenseById[0].id, getExpenseById[0].level)">
+                        <div class="listViewLiDiv">
+                            <input class="categoryStyle" v-model="this.newCategory" placeholder="새 리스트 적기">
+                            <span> : </span>
+                            <input class="amountStyle" v-model="this.newAmount" placeholder="0">
+                        </div>
+                        <button class="newExpenseDoneBtn">입력</button>
+                    </form>
+                </th>
+            </tr>
+        </table>
     </div>
 </template>
 
@@ -47,7 +54,7 @@ export default {
         handlerNewListDiv() {
             this.isNewListDivOpened = !this.isNewListDivOpened;
             this.newExpenseBtnOpened = !this.newExpenseBtnOpened;
-            if(!this.newExpenseBtnOpened) {
+            if (!this.newExpenseBtnOpened) {
                 this.newCategory = ''
                 this.newAmount = 0
             }
