@@ -401,40 +401,11 @@ input:read-only {
   padding: 5px;
 }
 
-.totalToggleBtn_active {
-  color: rgb(0, 33, 45);
-  background-color: transparent;
-  border: 0px solid transparent;
-  margin: 0.5%;
-
-  position: relative;
-  left: 4px;
-  top: -2px;
-
-}
-
-.totalToggleBtn_inactive {
-  color: rgb(0, 33, 45, 0.3);
-  background-color: transparent;
-  border: 1px solid transparent;
-  margin: 0.5%;
- 
-  position: relative;
-  left: 4px;
-  top: -2px;
-  
-}
-
 .toggleBtn_active {
   color: rgb(0, 33, 45);
   background-color: transparent;
   border: 0px solid transparent;
   margin: 0.5%;
-
-  position: relative;
-  left: -12px;
-  top: -2px;
-
 }
 
 .toggleBtn_inactive {
@@ -442,11 +413,6 @@ input:read-only {
   background-color: transparent;
   border: 1px solid transparent;
   margin: 0.5%;
- 
-  position: relative;
-  left: -12px;
-  top: -2px;
-  
 }
 
 .listViewLiDiv {
@@ -479,6 +445,7 @@ input:read-only {
 
 .listViewLiStyle {
   line-height: 250%;
+  list-style: none;
 }
 
 .listViewTotalLiStyle {
