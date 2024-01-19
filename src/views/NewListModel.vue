@@ -10,7 +10,7 @@
                         {{ newExpenseBtnOpened ? "-" : "+" }}
                     </button>
                 </th>
-                <th v-if="!isThereChild"> <span>new</span> </th>
+                <th v-if="!isThereChild" class="thForNew"> <span>new</span> </th>
                 <th v-if="isNewListDivOpened">
                     <form @submit.prevent="createNewExpense(this.theExpense.id, this.theExpense.level)">
                         <div class="listViewLiDiv">
