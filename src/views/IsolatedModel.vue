@@ -42,15 +42,6 @@ export default {
             memoSaveBtnHandler: false
         }
     },
-    computed: {
-        isNotTotal() {
-            if (this.theExpense.level > 1) {
-                return true
-            } else {
-                return false
-            }
-        }
-    },
     methods: {
         removeExpense(expenseHere) {
             this.$emit('remove-expense', expenseHere);

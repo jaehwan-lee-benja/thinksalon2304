@@ -10,12 +10,5 @@ export default {
     theExpense() {
       return this.getExpenseById[0]
     },
-    isNotTotal() {
-      if (this.theExpense.level > 1) {
-        return true
-      } else {
-        return false
-      }
-    },
   },
 };

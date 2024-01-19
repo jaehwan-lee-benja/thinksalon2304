@@ -3,7 +3,7 @@
         <span> 하위 합계 : </span>
         <input class="amountStyle" :value="sumExpenses()" readonly>
         <span> 메모 : </span>
-        <input class="memo" v-model="theExpense.memo">
+        <input class="memo" v-model="theExpenseById.memo">
     </div>
 </template>
 
@@ -22,7 +22,7 @@ export default {
         },
     },
     computed: {
-        theExpense() {
+        theExpenseById() {
             return this.expenseById
         },
     },
