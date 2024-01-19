@@ -5,19 +5,19 @@
                 <button :class="{
                     'toggleBtn_active': this.toggleActiveHandler === true,
                     'toggleBtn_inactive': this.toggleActiveHandler === false,
-                }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(getExpenseById[0])">
-                    {{ getExpenseById[0].show_sub_list ? "&#9660;" : "&#9654;" }}
+                }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(this.theExpense)">
+                    {{ this.theExpense.show_sub_list ? "&#9660;" : "&#9654;" }}
                 </button>
             </th>
             <th v-if="isNotTotal">
-                {{ getExpenseById[0].order }}
+                {{ this.theExpense.order }}
             </th>
 
             <th>
-                <ExpenseModel v-bind:expenseById="getExpenseById[0]" :clickedExpenseId="clickedExpenseId"
+                <ExpenseModel v-bind:expenseById="this.theExpense" :clickedExpenseId="clickedExpenseId"
                     @remove-expense="removeExpense" :isList="true" />
                 <button class="expenseDetailBtn" @click="handlerLiDetailDiv"> … </button>
-                <ExpenseDetailModel class="liDetailDiv" v-if="isLiDetailDivOpened" v-bind:expenseById="getExpenseById[0]"
+                <ExpenseDetailModel class="liDetailDiv" v-if="isLiDetailDivOpened" v-bind:expenseById="this.theExpense"
                     :expenses="expenses" />
             </th>
         </tr>
@@ -27,9 +27,11 @@
 <script>
 import ExpenseModel from './ExpenseModel.vue'
 import ExpenseDetailModel from './ExpenseDetailModel.vue'
+import expenseMixin from './mixins/expenseMixin.js'
 
 export default {
     name: 'ListModel',
+    mixins: [expenseMixin],
     props: {
         expenseId: {
             type: String,
@@ -67,15 +69,8 @@ export default {
         }
     },
     computed: {
-        getExpenseById() {
-            if (this.expenses.length > 0) {
-                return this.expenses.filter(expense => expense.id === this.expenseId)
-            } else {
-                return [{ category: "로딩중..", amount: 0, id: "" }]
-            }
-        },
         isNotTotal() {
-            if (this.getExpenseById[0].level > 1) {
+            if (this.theExpense.level > 1) {
                 return true
             } else {
                 return false

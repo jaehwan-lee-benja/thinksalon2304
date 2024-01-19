@@ -1,17 +1,19 @@
 <template>
     <div class='isolatedAlignStyle'>
-        <ExpenseModel v-bind:expenseById="getExpenseById[0]" :clickedExpenseId="clickedExpenseId"
+        <ExpenseModel v-bind:expenseById="this.theExpense" :clickedExpenseId="clickedExpenseId"
             @remove-expense="removeExpense" />
-        <ExpenseDetailModel class="isolatedDetailDiv" v-bind:expenseById="getExpenseById[0]" :expenses="expenses" />
+        <ExpenseDetailModel class="isolatedDetailDiv" v-bind:expenseById="this.theExpense" :expenses="expenses" />
     </div>
 </template>
 
 <script>
 import ExpenseModel from './ExpenseModel.vue'
 import ExpenseDetailModel from './ExpenseDetailModel.vue'
+import expenseMixin from './mixins/expenseMixin.js'
 
 export default {
     name: 'IsolatedModel',
+    mixins: [expenseMixin],
     props: {
         expenseId: {
             type: String,
@@ -42,24 +44,12 @@ export default {
     },
     computed: {
         isNotTotal() {
-            if (this.getExpenseById[0].level > 1) {
+            if (this.theExpense.level > 1) {
                 return true
             } else {
                 return false
             }
-        },
-        getExpenseById() {
-            if (this.expenses.length > 0) {
-                const theExpenseById = this.expenses.filter(expense => expense.id === this.expenseId)
-                if (theExpenseById.length > 0) {
-                    return theExpenseById
-                } else {
-                    return [{ category: "로딩중..", amount: 0, id: "" }]
-                }
-            } else {
-                return [{ category: "로딩중..", amount: 0, id: "" }]
-            }
-        },
+        }
     },
     methods: {
         removeExpense(expenseHere) {

@@ -9,7 +9,7 @@
                 </th>
                 <th>
                     <form v-if="isNewListDivOpened"
-                        @submit.prevent="createNewExpense(getExpenseById[0].id, getExpenseById[0].level)">
+                        @submit.prevent="createNewExpense(this.theExpense.id, this.theExpense.level)">
                         <div class="listViewLiDiv">
                             <input class="categoryStyle" v-model="this.newCategory" placeholder="새 리스트 적기">
                             <span> : </span>
@@ -24,9 +24,11 @@
 </template>
 
 <script>
+import expenseMixin from './mixins/expenseMixin.js'
 
 export default {
     name: 'NewListModel',
+    mixins: [expenseMixin],
     props: {
         expenseId: {
             type: String,
@@ -43,11 +45,6 @@ export default {
             newAmount: 0,
             isNewListDivOpened: false,
             newExpenseBtnOpened: false,
-        }
-    },
-    computed: {
-        getExpenseById() {
-            return this.expenses.filter(expense => expense.id === this.expenseId)
         }
     },
     methods: {
