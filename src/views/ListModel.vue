@@ -16,7 +16,7 @@
             <th>
                 <ExpenseModel v-bind:expenseById="this.theExpense" :clickedExpenseId="clickedExpenseId"
                     @remove-expense="removeExpense" :isList="true" />
-                <button class="expenseDetailBtn" @click="handlerLiDetailDiv"> … </button>
+                <button class="expenseDetailBtn" @click="handlerLiDetailDiv"> {{ !this.isLiDetailDivOpened ? "…" : "닫기"}}  </button>
                 <ExpenseDetailModel class="liDetailDiv" v-if="isLiDetailDivOpened" v-bind:expenseById="this.theExpense"
                     :expenses="expenses" />
             </th>
