@@ -53,23 +53,23 @@
 
                                         </li>
                                         <NewListModel v-bind:expenses="expenses" :expenseId="expense4.id"
-                                            @create-new-expense="createNewExpense" />
+                                            @create-new-expense="createNewExpense" :isThereChild="this.isThereChildMonitor[expense4.id]"/>
                                     </ol>
 
                                 </li>
                                 <NewListModel v-bind:expenses="expenses" :expenseId="expense3.id"
-                                    @create-new-expense="createNewExpense" />
+                                    @create-new-expense="createNewExpense" :isThereChild="this.isThereChildMonitor[expense3.id]"/>
                             </ol>
 
                         </li>
                         <NewListModel v-bind:expenses="expenses" :expenseId="expense2.id"
-                            @create-new-expense="createNewExpense" />
+                            @create-new-expense="createNewExpense" :isThereChild="this.isThereChildMonitor[expense2.id]"/>
                     </ol>
 
                 </li>
 
                 <NewListModel v-bind:expenses="expenses" :expenseId="this.totalExpenseId"
-                    @create-new-expense="createNewExpense" />
+                    @create-new-expense="createNewExpense" :isThereChild="this.isThereChildMonitor[this.totalExpenseId]"/>
             </ol>
 
         </li>
@@ -93,6 +93,10 @@ export default {
             default: '',
         },
         toggleActiveHandler: {
+            type: Object,
+            default: () => { }
+        },
+        isThereChildMonitor: {
             type: Object,
             default: () => { }
         },

@@ -3,7 +3,8 @@
   padding: 0;
 }
 
-html, body {
+html,
+body {
   height: 100%;
   width: 100%;
   margin: 0;
@@ -12,7 +13,7 @@ html, body {
 }
 
 body {
-  background-color:#F8F7F7;
+  background-color: #F8F7F7;
   min-height: 100vh;
 }
 
@@ -24,9 +25,11 @@ table {
   table-layout: fixed;
 }
 
-table, td, th {
-  border-collapse : collapse;
-  border : 0px solid black;
+table,
+td,
+th {
+  border-collapse: collapse;
+  border: 0px solid black;
   text-align: center;
 }
 
@@ -46,6 +49,7 @@ h2 {
 
 span {
   font-size: 13px;
+  color: #11212D;
 }
 
 button {
@@ -58,7 +62,7 @@ button {
   border-radius: 4px;
 }
 
-button:hover{
+button:hover {
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.05), 0 6px 6px rgba(0, 0, 0, 0.1);
   cursor: pointer;
   transition: box-shadow 0.1s linear;
@@ -103,17 +107,46 @@ input:read-only {
   margin: 0 0 0 5px;
 }
 
+.expenseDetailBtn:hover {
+  background-color: #4a5c6a;
+  border: 1px solid #4a5c6a;
+  color: white;
+  margin: 0 0 0 5px;
+}
+
+
 .newExpenseDiv {
   display: flex;
 }
 
-.newExpenseBtn {
+.newExpenseBtn_plus {
   height: 30px;
   background-color: transparent;
   border: 1px solid #9BA8AB;
   color: #9BA8AB;
   display: inline;
   padding: 5px;
+}
+
+.newExpenseBtn_minus {
+  height: 30px;
+  background-color: transparent;
+  border: 1px solid #9BA8AB;
+  color: #9BA8AB;
+  display: inline;
+  padding: 5px;
+}
+
+.newExpenseBtn_plus:hover {
+  background: rgb(0, 78, 252, 0.5);
+  border: 0px;
+  color: white;
+}
+
+.newExpenseBtn_minus:hover {
+  background: rgb(168, 40, 40, 0.5);
+  border: 0px;
+  color: white;
 }
 
 .newExpenseDoneBtn {
@@ -171,7 +204,7 @@ input:read-only {
 .mainBtnDiv {
   height: 7%;
   padding-left: 20px;
-  box-shadow: 0 14px 28px rgba(0,0,0,0.05), 0 5px 5px rgba(0,0,0,0.03);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.05), 0 5px 5px rgba(0, 0, 0, 0.03);
 }
 
 .saveEditedDiv {
@@ -199,7 +232,8 @@ input:read-only {
   height: 10px;
 }
 
-::-webkit-scrollbar-track, ::-webkit-scrollbar-button {
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-button {
   display: none;
   background: transparent;
 }
@@ -233,10 +267,10 @@ input:read-only {
 .flowViewDiv {
   padding: 10px;
   border-radius: 10px;
-  background-color:#f4f4f4;
+  background-color: #f4f4f4;
   width: 100%;
   height: 80%;
-  box-shadow: 10px 14px 40px 3px rgba(0,0,0,0.1), 0 5px 5px rgba(0,0,0,0.22);
+  box-shadow: 10px 14px 40px 3px rgba(0, 0, 0, 0.1), 0 5px 5px rgba(0, 0, 0, 0.22);
 }
 
 .flowViewBtnDiv {
@@ -273,7 +307,7 @@ input:read-only {
   padding: 10px;
   margin-left: 4px;
   margin-right: 10px;
-  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 5px 5px rgba(0,0,0,0.22);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.25), 0 5px 5px rgba(0, 0, 0, 0.22);
 }
 
 .categoryStyle {
@@ -281,7 +315,7 @@ input:read-only {
 }
 
 .amountStyle {
-  text-align : right;
+  text-align: right;
   width: 70px;
   margin-right: 10px;
 }
@@ -304,7 +338,7 @@ input:read-only {
   border: 1px solid #e2e2e2;
 }
 
-.saveEditedBtn_inactive:hover{
+.saveEditedBtn_inactive:hover {
   box-shadow: none;
   cursor: default;
 }
@@ -327,7 +361,7 @@ input:read-only {
   border: 1px solid #e2e2e2;
 }
 
-.cancelEditedBtn_inactive:hover{
+.cancelEditedBtn_inactive:hover {
   box-shadow: none;
   cursor: default;
 }
@@ -350,7 +384,7 @@ input:read-only {
   border: 1px solid #e2e2e2;
 }
 
-.pageEditedBtn_inactive:hover{
+.pageEditedBtn_inactive:hover {
   box-shadow: none;
   cursor: default;
 }
@@ -373,7 +407,7 @@ input:read-only {
   border: 1px solid #e2e2e2;
 }
 
-.cancelPageEditedBtn_inactive:hover{
+.cancelPageEditedBtn_inactive:hover {
   box-shadow: none;
   cursor: default;
 }
@@ -388,12 +422,12 @@ input:read-only {
 
 .isolatedExpense {
   position: absolute;
-  background-color:rgb(204, 208, 207, 0.9);
+  background-color: rgb(204, 208, 207, 0.9);
   padding: 10px;
   margin: 20px;
   left: 70px;
   border-radius: 10px;
-  box-shadow: 0 14px 28px rgba(0,0,0,0.1);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1);
   z-index: 1;
 }
 
@@ -419,7 +453,7 @@ input:read-only {
   top: -2px;
 }
 
-.toggleBtn_inactive:hover{
+.toggleBtn_inactive:hover {
   box-shadow: none;
   cursor: not-allowed;
   transition: none;
@@ -444,7 +478,7 @@ input:read-only {
   display: inline;
 }
 
-.isolatedAlignStyle{
+.isolatedAlignStyle {
   position: relative;
 }
 
@@ -454,7 +488,7 @@ input:read-only {
 }
 
 .olBgStyle {
-  background-color:rgb(204, 208, 207, 0.5);
+  background-color: rgb(204, 208, 207, 0.5);
   border-left: 5px solid rgb(140, 140, 140, 0.5);
   margin: 10px 10px 10px 5px;
   padding: 20px 10px 20px 30px;
@@ -472,11 +506,12 @@ input:read-only {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color:rgb(204, 208, 207);
+  background-color: rgb(204, 208, 207);
   border-radius: 20px;
   padding: 20px;
   color: black;
-  z-index: 999; /* 모달을 다른 요소 위에 표시합니다 */
+  z-index: 999;
+  /* 모달을 다른 요소 위에 표시합니다 */
 }
 
 .modalOverlay {
@@ -486,7 +521,8 @@ input:read-only {
   width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.7);
-  z-index: 998; /* 모달보다 아래에 위치해야 합니다 */
+  z-index: 998;
+  /* 모달보다 아래에 위치해야 합니다 */
 }
 
 .pageNameStyle {

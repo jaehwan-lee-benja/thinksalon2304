@@ -23,10 +23,6 @@ export default {
             type: Object,
             default: () => { }
         },
-        toggleActiveHandler: {
-            type: Boolean,
-            default: true
-        },
         selectedPageId: {
             type: String,
             default: '',
@@ -45,9 +41,6 @@ export default {
     methods: {
         removeExpense(expenseHere) {
             this.$emit('remove-expense', expenseHere);
-        },
-        toggleSubList(expenseHere) {
-            this.$emit('toggle-sub-list', expenseHere);
         }
     },
     components: {

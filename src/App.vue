@@ -3,7 +3,7 @@
     <div class="menuGrid">
       <div class="pageListDiv">
 
-        <span>페이지 이동하기</span>
+        <h3>페이지 이동하기</h3>
         <select class="pageSelect" v-model="pageName" @change="selectPageBySelectBox()">
           <option v-for="page in sortExpensePages" :key="page.id" :value="page.page_name">
             {{ page.page_name }}
@@ -47,7 +47,7 @@
             @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense"/>
         </div>
         <div class="listViewDiv">
-          <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :totalExpenseId="totalExpenseId"
+          <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :isThereChildMonitor="isThereChildMonitor" :totalExpenseId="totalExpenseId"
             :clickedExpenseId="clickedExpenseId" :selectedPageId="selectedPageId" :isAnyOpenedLi="isAnyOpenedLi"
             @create-new-expense="createNewExpense" @remove-expense="removeExpense"
             @cancel-editing-expense="cancelEditingExpense" @toggle-sub-list="toggleSubList" @memo-save="memoSave"
@@ -84,6 +84,7 @@ export default {
       fetchedExpensePages: [],
       isPageDivOpened: false,
       toggleActiveHandler: {},
+      isThereChildMonitor: {},
 
       clickedExpenseId: '',
 
@@ -357,10 +358,12 @@ export default {
 
     toggleSubList(expenseHere) {
       this.controlToggleActiveHandler(expenseHere);
+      this.controlIsThereChildMonitor(expenseHere);
       if (expenseHere.level < 5) {
         expenseHere.show_sub_list = !expenseHere.show_sub_list;
         this.upsertExpense(expenseHere)
       }
+
     },
     controlToggleActiveHandler(expenseHere) {
       if (expenseHere.level == 5) {
@@ -369,9 +372,18 @@ export default {
         this.toggleActiveHandler[expenseHere.id] = true;
       }
     },
+    controlIsThereChildMonitor(expenseHere) {
+      const children = this.expenses.filter((e) => e.parents_id === expenseHere.id);
+      if(children.length > 0) {
+        this.isThereChildMonitor[expenseHere.id] = true;
+      } else {
+        this.isThereChildMonitor[expenseHere.id] = false;
+      }
+    },
     cancelEditingExpense() {
       this.expenses = "";
       this.expenses = JSON.parse(JSON.stringify(this.fetchedExpenses));
+      this.expenses.forEach(e => this.controlIsThereChildMonitor(e.id))
     },
     removeExpense(expenseHere) {
 
@@ -479,6 +491,7 @@ export default {
 
       this.totalExpenses.push(o);
       this.expenses.push(o);
+      this.isThereChildMonitor[parentsIdHere] = true;
 
     },
     setOrder(parentsIdHere) {

@@ -1,15 +1,18 @@
 <template>
-    <div class="newExpenseDiv" >
+    <div class="newExpenseDiv">
         <table>
             <tr>
-                <th class="thForNew">
-                    <button class="newExpenseBtn" @click="handlerNewListDiv">
+                <th v-if="isThereChild" class="thForNew">
+                    <button :class="{
+                        'newExpenseBtn_minus': newExpenseBtnOpened === true,
+                        'newExpenseBtn_plus': newExpenseBtnOpened === false
+                    }" @click="handlerNewListDiv">
                         {{ newExpenseBtnOpened ? "-" : "+" }}
                     </button>
                 </th>
-                <th>
-                    <form v-if="isNewListDivOpened"
-                        @submit.prevent="createNewExpense(this.theExpense.id, this.theExpense.level)">
+                <th v-if="!isThereChild"> <span>new</span> </th>
+                <th v-if="isNewListDivOpened">
+                    <form @submit.prevent="createNewExpense(this.theExpense.id, this.theExpense.level)">
                         <div class="listViewLiDiv">
                             <input class="categoryStyle" v-model="this.newCategory" placeholder="새 리스트 적기">
                             <span> : </span>
@@ -37,7 +40,19 @@ export default {
         expenses: {
             type: Object,
             default: () => { }
-        }
+        },
+        isThereChild: {
+            type: Boolean,
+            default: true
+        },
+    },
+    watch: {
+        isThereChild: {
+            handler() {
+                this.controlDivIfNoChild()
+            },
+            deep: true
+        },
     },
     data() {
         return {
@@ -47,7 +62,20 @@ export default {
             newExpenseBtnOpened: false,
         }
     },
+    mounted() {
+        this.controlDivIfNoChild()
+    },
     methods: {
+        controlDivIfNoChild() {
+            console.log(this.isThereChild)
+            if (!this.isThereChild) {
+                this.isNewListDivOpened = true;
+                this.newExpenseBtnOpened = true;
+            } else {
+                this.isNewListDivOpened = false;
+                this.newExpenseBtnOpened = false;
+            }
+        },
         handlerNewListDiv() {
             this.isNewListDivOpened = !this.isNewListDivOpened;
             this.newExpenseBtnOpened = !this.newExpenseBtnOpened;
