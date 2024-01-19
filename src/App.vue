@@ -373,6 +373,7 @@ export default {
       }
     },
     controlIsThereChildMonitor(expenseHere) {
+      // 새 리스트 만들기 하는 경우, child가 없으면 new가 뜨도록 하는 방식
       const children = this.expenses.filter((e) => e.parents_id === expenseHere.id);
       if(children.length > 0) {
         this.isThereChildMonitor[expenseHere.id] = true;
@@ -383,10 +384,10 @@ export default {
     cancelEditingExpense() {
       this.expenses = "";
       this.expenses = JSON.parse(JSON.stringify(this.fetchedExpenses));
-      this.expenses.forEach(e => this.controlIsThereChildMonitor(e.id))
+      this.expenses.forEach(e => this.controlIsThereChildMonitor(e.id)); // 새리스트 만들기 관련
     },
     removeExpense(expenseHere) {
-
+      console.log("expenseHere = ", expenseHere);
       const parentsId = expenseHere.parents_id;
       const orderRemoved = expenseHere.order;
 

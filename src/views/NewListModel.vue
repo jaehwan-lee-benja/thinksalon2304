@@ -67,7 +67,6 @@ export default {
     },
     methods: {
         controlDivIfNoChild() {
-            console.log(this.isThereChild)
             if (!this.isThereChild) {
                 this.isNewListDivOpened = true;
                 this.newExpenseBtnOpened = true;
