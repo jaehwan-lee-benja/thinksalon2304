@@ -28,8 +28,8 @@ export default {
     },
     methods: {
         sumExpenses() {
-            const sum = this.expenses.filter(e => e.parents_id === this.expenseById.parents_id)
-                .reduce((acc, item) => acc + Number(item.amount), 0);
+            const sumArr = this.expenses.filter(e => e.parents_id === this.expenseById.id)
+            const sum = sumArr.reduce((acc, item) => acc + Number(item.amount), 0);
             return sum.toLocaleString();
         }
     }
