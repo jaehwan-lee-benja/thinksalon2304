@@ -16,7 +16,7 @@
                         <div class="listViewLiDiv">
                             <input class="categoryStyle" v-model="this.newCategory" placeholder="새 리스트 적기">
                             <span> : </span>
-                            <input class="amountStyle" v-model="this.newAmount" placeholder="0">
+                            <input class="amountStyle" v-model="newAmount" placeholder="0">
                         </div>
                         <button class="newExpenseDoneBtn">입력</button>
                     </form>
@@ -64,6 +64,19 @@ export default {
     },
     mounted() {
         this.controlDivIfNoChild()
+    },
+    computed: {
+        // newAmount: {
+        //     get(value) {
+        //         return value.toLocaleString();
+        //     },
+        //     set(value) {
+        //         // 사용자가 수정할 때는 숫자만 포함하여 저장
+        //         console.log("value = ", value)
+        //         const numericValue = parseFloat(value.replace(/,/g, ''));
+        //         console.log("numericValue = ", numericValue);
+        //     }
+        // }
     },
     methods: {
         controlDivIfNoChild() {
