@@ -16,7 +16,7 @@
                         <div class="listViewLiDiv">
                             <input class="categoryStyle" v-model="this.newCategory" placeholder="새 리스트 적기">
                             <span> : </span>
-                            <input class="amountStyle" v-model="newAmount" placeholder="0">
+                            <input class="amountStyle" v-model="newAmount" placeholder="0" @input="formatAmount">
                         </div>
                         <button class="newExpenseDoneBtn">입력</button>
                     </form>
@@ -65,20 +65,10 @@ export default {
     mounted() {
         this.controlDivIfNoChild()
     },
-    computed: {
-        // newAmount: {
-        //     get(value) {
-        //         return value.toLocaleString();
-        //     },
-        //     set(value) {
-        //         // 사용자가 수정할 때는 숫자만 포함하여 저장
-        //         console.log("value = ", value)
-        //         const numericValue = parseFloat(value.replace(/,/g, ''));
-        //         console.log("numericValue = ", numericValue);
-        //     }
-        // }
-    },
     methods: {
+        formatAmount() {
+            this.newAmount = String(this.newAmount).replace(/[^0-9]/g, '').replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        },
         controlDivIfNoChild() {
             if (!this.isThereChild) {
                 this.isNewListDivOpened = true;
@@ -97,9 +87,15 @@ export default {
             }
         },
         createNewExpense(parentsIdHere, parentsLevelHere) {
-            this.$emit('create-new-expense', parentsIdHere, parentsLevelHere, this.newCategory, this.newAmount);
-            this.newCategory = ''
-            this.newAmount = 0
+            const numericValue = parseFloat(this.newAmount.replace(/,/g, ''));
+            if (isNaN(numericValue)) {
+                alert("숫자가 아닌 문자가 입력되었습니다. 숫자만 입력해주십시오");
+                return; // 이후의 코드 실행을 중지하고 함수를 종료
+            } else {
+                this.$emit('create-new-expense', parentsIdHere, parentsLevelHere, this.newCategory, numericValue);
+                this.newCategory = '';
+                this.newAmount = 0;
+            }
         },
     }
 }
