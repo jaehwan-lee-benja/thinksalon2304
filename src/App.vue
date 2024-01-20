@@ -387,7 +387,6 @@ export default {
       this.expenses.forEach(e => this.controlIsThereChildMonitor(e.id)); // 새리스트 만들기 관련
     },
     removeExpense(expenseHere) {
-      console.log("expenseHere = ", expenseHere);
       const parentsId = expenseHere.parents_id;
       const orderRemoved = expenseHere.order;
 
