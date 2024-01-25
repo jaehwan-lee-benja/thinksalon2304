@@ -10,7 +10,8 @@
           </option>
         </select>
 
-        <button class="menuBtn" @click="openPageDiv">페이지 설정하기</button>
+        <button class="menuBtn" @click="openPageSettingDiv">페이지 설정하기</button>
+        <button class="menuBtn" @click="openAccountDiv">계좌 설정하기</button>
         <button class="menuBtn" @click="openContact">문의하기</button>
 
       </div>
@@ -54,12 +55,18 @@
             @open-or-close-li="openOrCloseLi" />
         </div>
       </div>
-      <div v-if="isPageDivOpened" class="modal">
+      <div v-if="isPageSettingOpened" class="modal">
         <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
           @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @edit-page="editPage"
           @remove-page="removePage" @cancel-editing-page="cancelEditingPage" />
       </div>
-      <div v-if="isPageDivOpened" class="modalOverlay" @click="closePageDiv"></div>
+      <div v-if="isPageSettingOpened" class="modalOverlay" @click="closePageSettingDiv"></div>
+      <div v-if="isAccountSettingOpened" class="modal">
+        <AccountSettingView v-bind:expenses="expenses" :isAccountEdited="isAccountEdited"
+          @create-new-account="createNewAccount" @edit-account="editAccount"
+          @remove-account="removeAccount" @cancel-editing-account="cancelEditingAccount" />
+      </div>
+      <div v-if="isAccountSettingOpened" class="modalOverlay" @click="closeAccountSettingDiv"></div>
     </div>
   </div>
 </template>
@@ -70,6 +77,7 @@ import LoginSessionModel from './views/LoginSessionModel.vue'
 import ListView from './views/ListView.vue'
 import FlowView from './views/FlowView.vue'
 import PageSettingView from './views/PageSettingView.vue'
+import AccountSettingView from './views/AccountSettingView.vue'
 
 export default {
   data() {
@@ -80,12 +88,16 @@ export default {
       fetchedExpenses: [],
       selectedPageId: '',
 
+      accounts: [],
+      fetchedAccounts: [],
+      isAccountSettingOpened: false,
+
       expensePages: [],
       fetchedExpensePages: [],
-      isPageDivOpened: false,
+      isPageSettingOpened: false,
+
       toggleActiveHandler: {},
       isThereChildMonitor: {},
-
       clickedExpenseId: '',
 
     }
@@ -95,6 +107,7 @@ export default {
     ListView,
     FlowView,
     PageSettingView,
+    AccountSettingView,
   },
   mounted() {
     this.fetchData()
@@ -166,6 +179,9 @@ export default {
     },
   },
   methods: {
+    openAccountDiv() {
+      this.isAccountSettingOpened = true;
+    },
     openContact() {
       window.open("http://pf.kakao.com/_QxewxfT", "_blank");
     },
@@ -211,6 +227,10 @@ export default {
     async cancelEditingPage() {
       this.expensePages = "";
       this.expensePages = JSON.parse(JSON.stringify(this.fetchedExpensePages));
+    },
+    async cancelEditingAccount() {
+      this.accounts = "";
+      this.accounts = JSON.parse(JSON.stringify(this.fetchedAccounts));
     },
     isThereSamePageNameForEditPage(arrHere) {
       const setCollection = new Set(arrHere.map(JSON.stringify));
@@ -528,13 +548,32 @@ export default {
       }
 
     },
-    openPageDiv() {
-      this.isPageDivOpened = true;
+    openPageSettingDiv() {
+      this.isPageSettingOpened = true;
     },
-    closePageDiv() {
+    closeAccountSettingDiv() {
+      if (!this.isAccountEdited) {
+        // 편집 내용이 없는 경우, 모달창 바깥을 눌러서 종료하는 경우
+        this.isAccountSettingOpened = false;
+        this.cancelEditingAccount();
+      } else {
+        // 편집한 내용이 있는 경우,
+        const text = "페이지에 편집된 내용이 있습니다. \n [확인]을 누르면, 편집된 내용은 저장되지 않고 진행됩니다. \n *편집 내용을 저장하고 싶은 경우, [취소]>[편집 저장하기] 후 종료"
+        const confirmValue = confirm(text)
+
+        if (confirmValue) {
+          // 편집을 취소하며, 모달창을 종료하는 경우
+          this.isAccountSettingOpened = false;
+          this.cancelEditingAccount();
+        } else {
+          // 편집을 계속하기
+        }
+      }
+    },
+    closePageSettingDiv() {
       if (!this.isPageEdited) {
         // 편집 내용이 없는 경우, 모달창 바깥을 눌러서 종료하는 경우
-        this.isPageDivOpened = false;
+        this.isPageSettingOpened = false;
         this.cancelEditingPage();
       } else {
         // 편집한 내용이 있는 경우,
@@ -543,7 +582,7 @@ export default {
 
         if (confirmValue) {
           // 편집을 취소하며, 모달창을 종료하는 경우
-          this.isPageDivOpened = false;
+          this.isPageSettingOpened = false;
           this.cancelEditingPage();
         } else {
           // 편집을 계속하기

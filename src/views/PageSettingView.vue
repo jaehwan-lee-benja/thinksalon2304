@@ -32,7 +32,7 @@
 <script>
 
 export default {
-    name: 'PageListView',
+    name: 'PageSettingView',
     props: {
         expenses: {
             type: Object,
