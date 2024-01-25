@@ -62,7 +62,7 @@
       </div>
       <div v-if="isPageSettingOpened" class="modalOverlay" @click="closePageSettingDiv"></div>
       <div v-if="isAccountSettingOpened" class="modal">
-        <AccountSettingView v-bind:expenses="expenses" :isAccountEdited="isAccountEdited"
+        <AccountSettingView v-bind:expenses="expenses" :accounts="accounts" :isAccountEdited="isAccountEdited"
           @create-new-account="createNewAccount" @edit-account="editAccount"
           @remove-account="removeAccount" @cancel-editing-account="cancelEditingAccount" />
       </div>
@@ -327,6 +327,36 @@ export default {
       }
 
     },
+    async createNewAccount(newAccountHere) {
+      console.log("newAccountHere = ", newAccountHere);
+      const isThereSameAccountName = this.accounts.filter((e) => e.name == newAccountHere.name)
+      const o = newAccountHere
+      if (isThereSameAccountName.length == 0) {
+          o.id = this.getUuidv4(),
+          o.order = this.setOrderForPage()
+          console.log("o = ", o);
+        await this.upsertAccount(newAccountHere);
+        await this.fetchDataForAccount()
+        alert('신규 계좌가 추가되었습니다.')
+      } else if (newAccountHere.name == '') {
+        alert('계좌 별명이 비어있습니다. 작성해주시기 바랍니다.')
+      } else {
+        alert('같은 계좌 별명이 있습니다. 다른 별명으로 다시 작성해주시기 바랍니다.')
+      }
+
+    },
+    async upsertAccount(oHere) {
+      try {
+        const { error } = await supabase
+          .from('account')
+          .upsert(oHere)
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
     async upsertPage(oHere) {
       try {
         const { error } = await supabase
@@ -526,6 +556,7 @@ export default {
     async fetchData() {
 
       await this.fetchDataForPage()
+      await this.fetchDataForAccount()
 
       const a = await supabase
         .from('expense')
@@ -634,6 +665,16 @@ export default {
       this.expenses.forEach(e => {
         if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
       })
+    },
+
+    async fetchDataForAccount() {
+      const a = await supabase
+        .from('account')
+        .select()
+      const { data } = a;
+      this.accounts = data;
+      console.log("data = ", data)
+      this.fetchedAccounts = JSON.parse(JSON.stringify(this.accounts));
     },
 
     async fetchDataForPage() {
