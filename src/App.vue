@@ -333,9 +333,9 @@ export default {
       const o = newAccountHere
       if (isThereSameAccountName.length == 0) {
           o.id = this.getUuidv4(),
-          o.order = this.setOrderForPage()
+          o.order = 2
           console.log("o = ", o);
-        await this.upsertAccount(newAccountHere);
+        await this.upsertAccount(o);
         await this.fetchDataForAccount()
         alert('신규 계좌가 추가되었습니다.')
       } else if (newAccountHere.name == '') {
@@ -346,6 +346,7 @@ export default {
 
     },
     async upsertAccount(oHere) {
+      console.log("oHere = ", oHere)
       try {
         const { error } = await supabase
           .from('account')
