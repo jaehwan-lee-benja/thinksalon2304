@@ -5,7 +5,7 @@
     <div class="isolatedExpenseDiv">
         <div class="isolatedExpense" v-if="showClickedLiDiv" ref="isolatedContainer">
             <IsolatedModel v-bind:expenses="expenses" :expenseId="this.clickedExpenseId" @remove-expense="removeExpense"
-                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" />
+                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :accounts="accounts"/>
         </div>
     </div>
     <div class="graphDiv" ref="graphContainer" style="position: relative;">
@@ -35,6 +35,10 @@ export default {
             type: String,
             default: '',
         },
+        accounts: {
+            type: Object,
+            default: () => { }
+        }
     },
     computed: {
         showClickedLiDiv() {

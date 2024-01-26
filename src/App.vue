@@ -45,7 +45,7 @@
       <div class="viewGrid">
         <div class="flowViewDiv">
           <FlowView v-bind:expenses="expenses" :clickedExpenseId="clickedExpenseId" @point-clicked-li="pointClickedLi"
-            @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense" />
+            @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense" :accounts="accounts"/>
         </div>
         <div class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler"
@@ -53,7 +53,7 @@
             :clickedExpenseId="clickedExpenseId" :selectedPageId="selectedPageId" :isAnyOpenedLi="isAnyOpenedLi"
             @create-new-expense="createNewExpense" @remove-expense="removeExpense"
             @cancel-editing-expense="cancelEditingExpense" @toggle-sub-list="toggleSubList" @memo-save="memoSave"
-            @open-or-close-li="openOrCloseLi" />
+            @open-or-close-li="openOrCloseLi" :accounts="accounts" @select-account="selectAccount"/>
         </div>
       </div>
       <div v-if="isPageSettingOpened" class="modal">
@@ -193,6 +193,7 @@ export default {
         category: e.category,
         amount: Number(e.amount),
         memo: e.memo,
+        account_id: e.account_id
       })
       );
 
@@ -200,6 +201,7 @@ export default {
         category: e.category,
         amount: Number(e.amount),
         memo: e.memo,
+        account_id: e.account_id
       })
       );
 
@@ -212,6 +214,13 @@ export default {
     },
   },
   methods: {
+    selectAccount(expenseIdHere, accountIdHere) {
+      this.expenses.forEach(e => {
+        if(e.id == expenseIdHere) {
+          e.account_id = accountIdHere;
+        }
+      })
+    },
     openAccountDiv() {
       this.isAccountSettingOpened = true;
     },

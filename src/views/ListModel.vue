@@ -16,9 +16,10 @@
             <td class="thOnList">
                 <ExpenseModel v-bind:expenseById="this.theExpense" :clickedExpenseId="clickedExpenseId"
                     @remove-expense="removeExpense" :isList="true" />
-                <button class="expenseDetailBtn" @click="handlerLiDetailDiv"> {{ !this.isLiDetailDivOpened ? "…" : "닫기"}}  </button>
+                <button class="expenseDetailBtn" @click="handlerLiDetailDiv"> {{ !this.isLiDetailDivOpened ? "…" : "닫기" }}
+                </button>
                 <ExpenseDetailModel class="liDetailDiv" v-if="isLiDetailDivOpened" v-bind:expenseById="this.theExpense"
-                    :expenses="expenses" />
+                    :expenses="expenses" :accounts="accounts" @select-account="selectAccount" />
             </td>
         </tr>
     </table>
@@ -53,6 +54,10 @@ export default {
             type: String,
             default: '',
         },
+        accounts: {
+            type: Object,
+            default: () => { }
+        }
     },
     watch: {
         selectedPageId: {
@@ -91,6 +96,9 @@ export default {
         },
         toggleSubList(expenseHere) {
             this.$emit('toggle-sub-list', expenseHere);
+        },
+        selectAccount(expenseIdHere, accountIdHere) {
+            this.$emit('select-account', expenseIdHere, accountIdHere)
         }
     },
     components: {

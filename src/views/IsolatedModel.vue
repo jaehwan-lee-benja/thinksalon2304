@@ -2,7 +2,7 @@
     <div class='isolatedAlignStyle'>
         <ExpenseModel v-bind:expenseById="this.theExpense" :clickedExpenseId="clickedExpenseId"
             @remove-expense="removeExpense" />
-        <ExpenseDetailModel class="isolatedDetailDiv" v-bind:expenseById="this.theExpense" :expenses="expenses" />
+        <ExpenseDetailModel class="isolatedDetailDiv" v-bind:expenseById="this.theExpense" :expenses="expenses" :accounts="accounts"/>
     </div>
 </template>
 
@@ -30,6 +30,10 @@ export default {
         clickedExpenseId: {
             type: String,
             default: '',
+        },
+        accounts: {
+            type: Object,
+            default: () => { }
         }
     },
     data() {

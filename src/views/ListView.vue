@@ -1,5 +1,4 @@
 <template>
-
     <div>
         <button class="normalBtn" @click="openOrCloseLi">
             {{ this.isAnyOpenedLi ? "모두 닫기" : "모두 펴기" }}
@@ -12,7 +11,8 @@
 
             <ListModel v-bind:expenses="expenses" :expenseId="this.totalExpenseId" @remove-expense="removeExpense"
                 @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[this.totalExpenseId]"
-                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" />
+                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :accounts="accounts"
+                @select-account="selectAccount" />
 
             <ol class="olBgStyle" v-if="getTotalExpense.show_sub_list">
                 <li class="listViewLiStyle" v-for="expense2 in sortChildrenByIdAndLevel(this.totalExpenseId, 1)"
@@ -20,7 +20,8 @@
 
                     <ListModel v-bind:expenses="expenses" :expenseId="expense2.id" @remove-expense="removeExpense"
                         @toggle-sub-list="toggleSubList" :toggleActiveHandler="this.toggleActiveHandler[expense2.id]"
-                        :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" />
+                        :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :accounts="accounts"
+                        @select-account="selectAccount" />
 
                     <ol class="olBgStyle" v-if="expense2.show_sub_list">
                         <li class="listViewLiStyle"
@@ -29,7 +30,8 @@
                             <ListModel v-bind:expenses="expenses" :expenseId="expense3.id" @remove-expense="removeExpense"
                                 @toggle-sub-list="toggleSubList"
                                 :toggleActiveHandler="this.toggleActiveHandler[expense3.id]"
-                                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" />
+                                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :accounts="accounts"
+                                @select-account="selectAccount" />
 
                             <ol class="olBgStyle" v-if="expense3.show_sub_list">
                                 <li class="listViewLiStyle"
@@ -39,7 +41,8 @@
                                     <ListModel v-bind:expenses="expenses" :expenseId="expense4.id"
                                         @remove-expense="removeExpense" @toggle-sub-list="toggleSubList"
                                         :toggleActiveHandler="this.toggleActiveHandler[expense4.id]"
-                                        :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" />
+                                        :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId"
+                                        :accounts="accounts" @select-account="selectAccount" />
 
                                     <ol class="olBgStyle" v-if="expense4.show_sub_list">
                                         <li class="listViewLiStyle"
@@ -49,27 +52,30 @@
                                             <ListModel v-bind:expenses="expenses" :expenseId="expense5.id"
                                                 @remove-expense="removeExpense" @toggle-sub-list="toggleSubList"
                                                 :toggleActiveHandler="this.toggleActiveHandler[expense5.id]"
-                                                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" />
+                                                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId"
+                                                :accounts="accounts" @select-account="selectAccount" />
 
                                         </li>
                                         <NewListModel v-bind:expenses="expenses" :expenseId="expense4.id"
-                                            @create-new-expense="createNewExpense" :isThereChild="this.isThereChildMonitor[expense4.id]"/>
+                                            @create-new-expense="createNewExpense"
+                                            :isThereChild="this.isThereChildMonitor[expense4.id]" />
                                     </ol>
 
                                 </li>
                                 <NewListModel v-bind:expenses="expenses" :expenseId="expense3.id"
-                                    @create-new-expense="createNewExpense" :isThereChild="this.isThereChildMonitor[expense3.id]"/>
+                                    @create-new-expense="createNewExpense"
+                                    :isThereChild="this.isThereChildMonitor[expense3.id]" />
                             </ol>
 
                         </li>
                         <NewListModel v-bind:expenses="expenses" :expenseId="expense2.id"
-                            @create-new-expense="createNewExpense" :isThereChild="this.isThereChildMonitor[expense2.id]"/>
+                            @create-new-expense="createNewExpense" :isThereChild="this.isThereChildMonitor[expense2.id]" />
                     </ol>
 
                 </li>
 
                 <NewListModel v-bind:expenses="expenses" :expenseId="this.totalExpenseId"
-                    @create-new-expense="createNewExpense" :isThereChild="this.isThereChildMonitor[this.totalExpenseId]"/>
+                    @create-new-expense="createNewExpense" :isThereChild="this.isThereChildMonitor[this.totalExpenseId]" />
             </ol>
 
         </li>
@@ -112,6 +118,10 @@ export default {
             type: Boolean,
             default: false,
         },
+        accounts: {
+            type: Object,
+            default: () => { }
+        }
     },
     computed: {
         getTotalExpense() {
@@ -146,6 +156,9 @@ export default {
             if (confirmValue) {
                 this.$emit('cancel-editing-expense')
             }
+        },
+        selectAccount(expenseIdHere, accountIdHere) {
+            this.$emit('select-account', expenseIdHere, accountIdHere)
         }
     },
     components: {

@@ -291,6 +291,16 @@ input:read-only {
   cursor: pointer;
 }
 
+.accountSelect {
+  background-color: white;
+  border-radius: 4px;
+  border: 0px;
+  width: 120px;
+  margin: 10px 2px;
+  padding: 3px;
+  cursor: pointer;
+}
+
 .listViewDiv {
   white-space: nowrap;
   width: 600px;
@@ -565,6 +575,7 @@ input:read-only {
 
 .pageNameStyle {
   margin: 5px 5px;
+  width: 200px;
 }
 
 .pageSettingOlStyle {

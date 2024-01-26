@@ -4,7 +4,7 @@
         <div class="createNewPageDiv">
             <h4>새 페이지 만들기</h4>
             <span>새 페이지명: </span>
-            <input v-model="this.newPageName" placeholder="새 페이지명 적기">
+            <input class="pageNameStyle" v-model="this.newPageName" placeholder="새 페이지명 적기">
             <button @click="createNewPage">만들기</button>
 
         </div>
