@@ -43,7 +43,6 @@ export default {
         },
         // selectedAccountName() {
         //     const accountName = this.accounts.filter(e => e.id === this.expenseById.account_id)
-        //     console.log("accountName = ", accountName)
         //     return ''
         // }
     },
@@ -55,8 +54,6 @@ export default {
         },
         selectAccount() {
             const selectedAccount = this.accounts.find(account => account.name === this.selectedAccountName);
-            console.log("this.expenseById.id = ", this.expenseById.id)
-            console.log("selectedAccount.id = ", selectedAccount.id)
             if (selectedAccount) {
                 this.$emit('select-account', this.expenseById.id, selectedAccount.id)
             }

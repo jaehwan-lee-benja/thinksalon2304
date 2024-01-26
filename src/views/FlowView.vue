@@ -66,6 +66,10 @@ export default {
                 "node:pointerout": () => {
                     this.removeTooltip();
                 },
+                "node:pointerup": ({ node, event }) => {
+                    const sample = [node, event]
+                    return sample
+                },
             },
             configs: {
                 view: {
@@ -76,7 +80,7 @@ export default {
                     },
                     autoPanAndZoomOnLoad: "fit-content",
                     autoPanOnResize: false,
-                    onBeforeInitialDisplay: () => this.formatLayout(),
+                    // onBeforeInitialDisplay: () => this.formatLayout(),
                 },
                 node: {
                     normal: {
@@ -229,8 +233,12 @@ export default {
                 }
             });
 
+            // const nodeLayouts = {}
+            // nodeLayouts['986d3931-9c08-43d3-a03f-9c5d6ace6e4c'] = {'x':600,'y':600}
+
             this.nodes = nodesResult
             this.edges = edgeResult
+            // this.layouts.nodes = nodeLayouts
 
             this.formatLayout()
 
