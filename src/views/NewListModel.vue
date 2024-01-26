@@ -2,16 +2,16 @@
     <div class="newExpenseDiv">
         <table>
             <tr>
-                <th v-if="isThereChild" class="thForNew">
+                <td v-if="isThereChild" class="tdForNew">
                     <button :class="{
                         'newExpenseBtn_minus': newExpenseBtnOpened === true,
                         'newExpenseBtn_plus': newExpenseBtnOpened === false
                     }" @click="handlerNewListDiv">
                         {{ newExpenseBtnOpened ? "-" : "+" }}
                     </button>
-                </th>
-                <th v-if="!isThereChild" class="thForNew"> <span>new</span> </th>
-                <th v-if="isNewListDivOpened">
+                </td>
+                <td v-if="!isThereChild" class="tdForNew"> <span>new</span> </td>
+                <td v-if="isNewListDivOpened" class="thOnList">
                     <form @submit.prevent="createNewExpense(this.theExpense.id, this.theExpense.level)">
                         <div class="listViewLiDiv">
                             <input class="categoryStyle" v-model="this.newCategory" placeholder="새 리스트 적기">
@@ -20,7 +20,7 @@
                         </div>
                         <button class="newExpenseDoneBtn">입력</button>
                     </form>
-                </th>
+                </td>
             </tr>
         </table>
     </div>

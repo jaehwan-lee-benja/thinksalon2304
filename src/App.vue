@@ -45,10 +45,11 @@
       <div class="viewGrid">
         <div class="flowViewDiv">
           <FlowView v-bind:expenses="expenses" :clickedExpenseId="clickedExpenseId" @point-clicked-li="pointClickedLi"
-            @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense"/>
+            @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense" />
         </div>
         <div class="listViewDiv">
-          <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler" :isThereChildMonitor="isThereChildMonitor" :totalExpenseId="totalExpenseId"
+          <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler"
+            :isThereChildMonitor="isThereChildMonitor" :totalExpenseId="totalExpenseId"
             :clickedExpenseId="clickedExpenseId" :selectedPageId="selectedPageId" :isAnyOpenedLi="isAnyOpenedLi"
             @create-new-expense="createNewExpense" @remove-expense="removeExpense"
             @cancel-editing-expense="cancelEditingExpense" @toggle-sub-list="toggleSubList" @memo-save="memoSave"
@@ -63,8 +64,8 @@
       <div v-if="isPageSettingOpened" class="modalOverlay" @click="closePageSettingDiv"></div>
       <div v-if="isAccountSettingOpened" class="modal">
         <AccountSettingView v-bind:expenses="expenses" :accounts="accounts" :isAccountEdited="isAccountEdited"
-          @create-new-account="createNewAccount" @edit-account="editAccount"
-          @remove-account="removeAccount" @cancel-editing-account="cancelEditingAccount" />
+          @create-new-account="createNewAccount" @edit-account="editAccount" @remove-account="removeAccount"
+          @cancel-editing-account="cancelEditingAccount" />
       </div>
       <div v-if="isAccountSettingOpened" class="modalOverlay" @click="closeAccountSettingDiv"></div>
     </div>
@@ -131,6 +132,38 @@ export default {
       } else {
         return "1"
       }
+    },
+    isAccountEdited() {
+
+      const fetched = this.fetchedAccounts.map(e => ({
+        name: e.name,
+        bank: e.bank,
+        number: e.number,
+        role: e.role,
+        type: e.type,
+        transfer_fee: e.transfer_fee,
+        memo: e.memo,
+      })
+      ).sort((a, b) => a.order - b.order);
+
+      const edited = this.accounts.map(e => ({
+        name: e.name,
+        bank: e.bank,
+        number: e.number,
+        role: e.role,
+        type: e.type,
+        transfer_fee: e.transfer_fee,
+        memo: e.memo,
+      })
+      ).sort((a, b) => a.order - b.order);
+
+      const fetchedData = JSON.stringify(fetched);
+      const editedData = JSON.stringify(edited);
+
+      const result = (fetchedData || "") != (editedData || "")
+
+      return result
+
     },
     isPageEdited() {
 
@@ -232,10 +265,41 @@ export default {
       this.accounts = "";
       this.accounts = JSON.parse(JSON.stringify(this.fetchedAccounts));
     },
-    isThereSamePageNameForEditPage(arrHere) {
+    isThereSameName(arrHere) {
       const setCollection = new Set(arrHere.map(JSON.stringify));
       const isDuplicate = setCollection.size < arrHere.length;
       return isDuplicate;
+    },
+    async editAccount() {
+
+      const confirmValue = confirm("편집된 내용을 저장하시겠습니까?")
+
+      if (confirmValue) {
+
+        // 페이지 이름 수정시, 이름이 중복되는 경우 거르기
+        const nameArr = this.accounts.map(e => ({ "name": e.name }))
+        const isDuplicate = this.isThereSameName(nameArr)
+
+        if (!isDuplicate) {
+          const idArray = this.accounts.map(e => e.id);
+          const fetchedIdArray = this.fetchedAccounts.map(e => e.id);
+
+          // fetchedArray 중 기존 Array에 없는 id를 필터링해서 모으기
+          const willBeDeletedIdArray = fetchedIdArray.filter(eachId => !idArray.includes(eachId));
+
+          willBeDeletedIdArray.forEach(eachId => this.deleteAccount(eachId));
+
+          this.accounts.forEach(e => this.upsertAccount(e))
+
+          this.fetchedAccounts = JSON.parse(JSON.stringify(this.accounts));
+
+          alert('저장되었습니다.')
+
+        } else {
+          alert('같은 별명이 있습니다. 다른 별명으로 다시 작성해주시기 바랍니다.')
+        }
+      }
+
     },
     async editPage() {
 
@@ -244,8 +308,8 @@ export default {
       if (confirmValue) {
 
         // 페이지 이름 수정시, 이름이 중복되는 경우 거르기
-        const pageNameArr = this.expensePages.map(e => ({ "name": e.page_name }))
-        const isDuplicate = this.isThereSamePageNameForEditPage(pageNameArr)
+        const nameArr = this.expensePages.map(e => ({ "name": e.page_name }))
+        const isDuplicate = this.isThereSameName(nameArr)
 
         if (!isDuplicate) {
           const idArray = this.expensePages.map(e => e.id);
@@ -282,21 +346,48 @@ export default {
       this.expensePages.forEach(e => {
         const order = e.order;
         if (order > orderRemoved) {
-          const expensePageOrderChanged = this.expensePages[this.expensePages.indexOf(e)]
-          expensePageOrderChanged.order = order - 1;
+          const orderChanged = this.expensePages[this.expensePages.indexOf(e)]
+          orderChanged.order = order - 1;
         }
       });
 
       this.expensePages = this.expensePages.filter((t) => t !== pageHere)
 
     },
-    async deletePage(pageIdHere) {
-      this.removeExpenseByPageDelete(pageIdHere);
+    removeAccount(accountHere) {
+      const orderRemoved = accountHere.order;
+
+      this.accounts.forEach(e => {
+        const order = e.order;
+        if (order > orderRemoved) {
+          const orderChanged = this.accounts[this.accounts.indexOf(e)]
+          orderChanged.order = order - 1;
+        }
+      });
+
+      this.accounts = this.accounts.filter((t) => t !== accountHere).sort((a, b) => a.order - b.order);
+
+    },
+    async deletePage(idHere) {
+      this.removeExpenseByPageDelete(idHere);
       try {
         const { error } = await supabase
           .from('expense_page')
           .delete()
-          .eq('id', pageIdHere)
+          .eq('id', idHere)
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async deleteAccount(idHere) {
+      try {
+        const { error } = await supabase
+          .from('account')
+          .delete()
+          .eq('id', idHere)
         if (error) {
           throw error;
         }
@@ -328,13 +419,11 @@ export default {
 
     },
     async createNewAccount(newAccountHere) {
-      console.log("newAccountHere = ", newAccountHere);
       const isThereSameAccountName = this.accounts.filter((e) => e.name == newAccountHere.name)
       const o = newAccountHere
       if (isThereSameAccountName.length == 0) {
-          o.id = this.getUuidv4(),
-          o.order = 2
-          console.log("o = ", o);
+        o.id = this.getUuidv4(),
+          o.order = this.setOrderForAccount()
         await this.upsertAccount(o);
         await this.fetchDataForAccount()
         alert('신규 계좌가 추가되었습니다.')
@@ -346,7 +435,6 @@ export default {
 
     },
     async upsertAccount(oHere) {
-      console.log("oHere = ", oHere)
       try {
         const { error } = await supabase
           .from('account')
@@ -426,7 +514,7 @@ export default {
     controlIsThereChildMonitor(expenseHere) {
       // 새 리스트 만들기 하는 경우, child가 없으면 new가 뜨도록 하는 방식
       const children = this.expenses.filter((e) => e.parents_id === expenseHere.id);
-      if(children.length > 0) {
+      if (children.length > 0) {
         this.isThereChildMonitor[expenseHere.id] = true;
       } else {
         this.isThereChildMonitor[expenseHere.id] = false;
@@ -554,6 +642,10 @@ export default {
       const expensePagesLength = Object.keys(this.expensePages).length;
       return expensePagesLength;
     },
+    setOrderForAccount() {
+      const accountsLength = Object.keys(this.accounts).length;
+      return accountsLength;
+    },
     async fetchData() {
 
       await this.fetchDataForPage()
@@ -673,8 +765,7 @@ export default {
         .from('account')
         .select()
       const { data } = a;
-      this.accounts = data;
-      console.log("data = ", data)
+      this.accounts = data.sort((a, b) => a.order - b.order);
       this.fetchedAccounts = JSON.parse(JSON.stringify(this.accounts));
     },
 

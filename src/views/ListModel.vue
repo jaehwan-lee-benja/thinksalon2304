@@ -1,25 +1,25 @@
 <template>
     <table>
         <tr>
-            <th>
+            <td class="thOnList">
                 <button :class="{
                     'toggleBtn_active': this.toggleActiveHandler === true,
                     'toggleBtn_inactive': this.toggleActiveHandler === false,
                 }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(this.theExpense)">
                     {{ this.theExpense.show_sub_list ? "&#9660;" : "&#9654;" }}
                 </button>
-            </th>
-            <th v-if="isNotTotal">
+            </td>
+            <td v-if="isNotTotal" class="thOnList">
                 {{ this.theExpense.order }}
-            </th>
+            </td>
 
-            <th>
+            <td class="thOnList">
                 <ExpenseModel v-bind:expenseById="this.theExpense" :clickedExpenseId="clickedExpenseId"
                     @remove-expense="removeExpense" :isList="true" />
                 <button class="expenseDetailBtn" @click="handlerLiDetailDiv"> {{ !this.isLiDetailDivOpened ? "…" : "닫기"}}  </button>
                 <ExpenseDetailModel class="liDetailDiv" v-if="isLiDetailDivOpened" v-bind:expenseById="this.theExpense"
                     :expenses="expenses" />
-            </th>
+            </td>
         </tr>
     </table>
 </template>

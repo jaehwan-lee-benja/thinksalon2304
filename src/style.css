@@ -23,6 +23,7 @@ div {
 
 table {
   table-layout: fixed;
+  margin: 10px;
 }
 
 table,
@@ -33,12 +34,44 @@ th {
   text-align: center;
 }
 
-table th {
+.tdOnAccount {
+  padding: 10px 2px;
+  width: 100%;
+}
+
+.inputOnAccount {
+  width: 56px;
+  padding: 6px 4px;
+  margin: 0;
+  text-align: right;
+}
+
+.inputOnAccount2 {
+  width: 100px;
+  padding: 6px 4px;
+  margin: 0;
+  text-align: right;
+}
+
+.tdOnAccountBtn {
+  width: 60px;
+}
+
+.btnOnAccountBtn {
+  width: 60px;
+}
+
+.btnOnAccountBtn:hover {
+  background-color: #004EFC;
+  border: 0px;
+}
+
+.thOnList {
   font-weight: normal;
   min-width: 20px;
 }
 
-.thForNew {
+.tdForNew {
   min-width: 50px;
 }
 
@@ -73,6 +106,7 @@ input {
   margin: 4px 0px;
   border: 0px solid white;
   border-radius: 4px;
+  width: 100%;
 }
 
 input:read-only {
@@ -320,6 +354,10 @@ input:read-only {
   margin-right: 10px;
 }
 
+.memo {
+  width: 100px;
+}
+
 .saveEditedBtn_active {
   width: 49%;
   height: 40px;
@@ -508,7 +546,7 @@ input:read-only {
   transform: translate(-50%, -50%);
   background-color: rgb(204, 208, 207);
   border-radius: 20px;
-  padding: 20px;
+  padding: 40px;
   color: black;
   z-index: 999;
   /* 모달을 다른 요소 위에 표시합니다 */

@@ -5,23 +5,26 @@
             <h4>새 계좌 추가하기</h4>
             <table>
                 <tr>
-                    <td>계좌 별명</td>
-                    <td>은행</td>
-                    <td>계좌 번호</td>
-                    <td>역할</td>
-                    <td>타입</td>
-                    <td>수수료 여부</td>
-                    <td>메모</td>
+                    <td class="tdOnAccount"><span>계좌 별명</span></td>
+                    <td class="tdOnAccount"><span>은행</span></td>
+                    <td class="tdOnAccount"><span>계좌 번호</span></td>
+                    <td class="tdOnAccount"><span>역할</span></td>
+                    <td class="tdOnAccount"><span>타입</span></td>
+                    <td class="tdOnAccount"><span>수수료</span></td>
+                    <td class="tdOnAccount"><span>메모</span></td>
                 </tr>
                 <tr>
-                    <td><input v-model="this.newName" placeholder="계좌 별명 적기"></td>
-                    <td><input v-model="this.newBank" placeholder="은행 적기"></td>
-                    <td><input v-model="this.newNumber" placeholder="계좌 번호 적기"></td>
-                    <td><input v-model="this.newRole" placeholder="역할 적기"></td>
-                    <td><input v-model="this.newType" placeholder="타입 적기"></td>
-                    <td><input v-model="this.newTransferFee" placeholder="수수료 여부 적기"></td>
-                    <td><input v-model="this.newMemo" placeholder="메모 적기"></td>
-                    <td><button @click="createNewAccount">만들기</button></td>
+                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newName" placeholder="계좌 별명 적기">
+                    </td>
+                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newBank" placeholder="은행 적기"></td>
+                    <td class="tdOnAccount"><input class="inputOnAccount2" v-model="this.newNumber" placeholder="계좌 번호 적기">
+                    </td>
+                    <td class="tdOnAccount"><input class="inputOnAccount2" v-model="this.newRole" placeholder="역할 적기"></td>
+                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newType" placeholder="타입 적기"></td>
+                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newTransferFee"
+                            placeholder="수수료 여부 적기"></td>
+                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newMemo" placeholder="메모 적기"></td>
+                    <td class="tdOnAccountBtn"><button class="btnOnAccountBtn" @click="createNewAccount">추가</button></td>
                 </tr>
             </table>
 
@@ -32,23 +35,24 @@
             <h4>기존 계좌 편집하기</h4>
             <table>
                 <tr>
-                    <td>계좌 별명</td>
-                    <td>은행</td>
-                    <td>계좌 번호</td>
-                    <td>역할</td>
-                    <td>타입</td>
-                    <td>수수료 여부</td>
-                    <td>메모</td>
+                    <td class="tdOnAccount"><span>계좌 별명</span></td>
+                    <td class="tdOnAccount"><span>은행</span></td>
+                    <td class="tdOnAccount"><span>계좌 번호</span></td>
+                    <td class="tdOnAccount"><span>역할</span></td>
+                    <td class="tdOnAccount"><span>타입</span></td>
+                    <td class="tdOnAccount"><span>수수료</span></td>
+                    <td class="tdOnAccount"><span>메모</span></td>
                 </tr>
                 <tr v-for="account in accounts" :key="account.id">
-                    <td><input v-model="account.name"></td>
-                    <td><input v-model="account.bank"></td>
-                    <td><input v-model="account.number"></td>
-                    <td><input v-model="account.role"></td>
-                    <td><input v-model="account.type"></td>
-                    <td><input v-model="account.transfer_fee"></td>
-                    <td><input v-model="account.memo"></td>
-                    <td><button @click="removeAccount(account)">삭제</button></td>
+                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.name"></td>
+                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.bank"></td>
+                    <td class="tdOnAccount"><input class="inputOnAccount2" v-model="account.number"></td>
+                    <td class="tdOnAccount"><input class="inputOnAccount2" v-model="account.role"></td>
+                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.type"></td>
+                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.transfer_fee"></td>
+                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.memo"></td>
+                    <td class="tdOnAccountBtn"><button class="btnOnAccountBtn" @click="removeAccount(account)">삭제</button>
+                    </td>
                 </tr>
 
             </table>
@@ -92,9 +96,6 @@ export default {
             newTransferFee: '',
             newMemo: '',
         }
-    },
-    mounted() {
-        console.log("this.accounts = ", this.accounts)
     },
     methods: {
         createNewAccount() {
@@ -140,7 +141,5 @@ export default {
 }
 </script>
 
-<style scoped>
-@import '../style.css';
-</style>
+<style scoped>@import '../style.css';</style>
 
