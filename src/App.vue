@@ -215,8 +215,10 @@ export default {
   },
   methods: {
     selectAccount(expenseIdHere, accountIdHere) {
+      console.log("check!-2")
       this.expenses.forEach(e => {
         if(e.id == expenseIdHere) {
+          console.log("check!-3")
           e.account_id = accountIdHere;
         }
       })
