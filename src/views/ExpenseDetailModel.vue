@@ -62,8 +62,6 @@ export default {
     },
     computed: {
         theExpenseById() {
-            console.log("this.expenseById =", this.expenseById);
-            console.log("this.expenseById.account_id =", this.expenseById.account_id);
             return this.expenseById
         }
     },
@@ -81,9 +79,7 @@ export default {
             return sum.toLocaleString();
         },
         selectAccount() {
-            console.log("check!-1")
             const selectedAccount = this.accounts.find(account => account.name === this.theExpenseById.account_id);
-            console.log("selectedAccount = ", selectedAccount);
             if (selectedAccount) {
                 this.$emit('select-account', this.expenseById.id, selectedAccount.id)
             }

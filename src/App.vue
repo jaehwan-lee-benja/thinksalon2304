@@ -45,7 +45,8 @@
       <div class="viewGrid">
         <div class="flowViewDiv">
           <FlowView v-bind:expenses="expenses" :clickedExpenseId="clickedExpenseId" @point-clicked-li="pointClickedLi"
-            @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense" :accounts="accounts"/>
+            @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense" :accounts="accounts"
+            @select-account="selectAccount" />
         </div>
         <div class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler"
@@ -53,7 +54,7 @@
             :clickedExpenseId="clickedExpenseId" :selectedPageId="selectedPageId" :isAnyOpenedLi="isAnyOpenedLi"
             @create-new-expense="createNewExpense" @remove-expense="removeExpense"
             @cancel-editing-expense="cancelEditingExpense" @toggle-sub-list="toggleSubList" @memo-save="memoSave"
-            @open-or-close-li="openOrCloseLi" :accounts="accounts" @select-account="selectAccount"/>
+            @open-or-close-li="openOrCloseLi" :accounts="accounts" @select-account="selectAccount" />
         </div>
       </div>
       <div v-if="isPageSettingOpened" class="modal">
@@ -215,10 +216,8 @@ export default {
   },
   methods: {
     selectAccount(expenseIdHere, accountIdHere) {
-      console.log("check!-2")
       this.expenses.forEach(e => {
-        if(e.id == expenseIdHere) {
-          console.log("check!-3")
+        if (e.id == expenseIdHere) {
           e.account_id = accountIdHere;
         }
       })

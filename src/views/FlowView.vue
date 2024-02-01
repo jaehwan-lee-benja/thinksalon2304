@@ -5,7 +5,7 @@
     <div class="isolatedExpenseDiv">
         <div class="isolatedExpense" v-if="showClickedLiDiv" ref="isolatedContainer">
             <IsolatedModel v-bind:expenses="expenses" :expenseId="this.clickedExpenseId" @remove-expense="removeExpense"
-                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :accounts="accounts"/>
+                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :accounts="accounts" @select-account="selectAccount"/>
         </div>
     </div>
     <div class="graphDiv" ref="graphContainer" style="position: relative;">
@@ -123,6 +123,9 @@ export default {
         // this.$el.addEventListener("click", this.handleDocumentClick);
     },
     methods: {
+        selectAccount(expenseIdHere, accountIdHere) {
+            this.$emit('select-account', expenseIdHere, accountIdHere)
+        },
         removeExpense(expenseHere) {
             const confirmValue = confirm("삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
             if (confirmValue) {

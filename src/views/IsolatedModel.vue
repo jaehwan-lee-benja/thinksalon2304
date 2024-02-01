@@ -2,7 +2,8 @@
     <div class='isolatedAlignStyle'>
         <ExpenseModel v-bind:expenseById="this.theExpense" :clickedExpenseId="clickedExpenseId"
             @remove-expense="removeExpense" />
-        <ExpenseDetailModel class="isolatedDetailDiv" v-bind:expenseById="this.theExpense" :expenses="expenses" :accounts="accounts"/>
+        <ExpenseDetailModel class="isolatedDetailDiv" v-bind:expenseById="this.theExpense" :expenses="expenses"
+            :accounts="accounts" @select-account="selectAccount" />
     </div>
 </template>
 
@@ -43,6 +44,9 @@ export default {
         }
     },
     methods: {
+        selectAccount(expenseIdHere, accountIdHere) {
+            this.$emit('select-account', expenseIdHere, accountIdHere)
+        },
         removeExpense(expenseHere) {
             this.$emit('remove-expense', expenseHere);
         }
