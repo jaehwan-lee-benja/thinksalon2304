@@ -1,6 +1,6 @@
 <template>
     <div class="flowViewBtnDiv">
-        <button @click="formatExpenses" class="flowViewBtn">새로고침</button>
+        <button @click="formatExpenses" class="flowViewBtn">배치 초기화</button>
     </div>
     <div class="isolatedExpenseDiv">
         <div class="isolatedExpense" v-if="showClickedLiDiv" ref="isolatedContainer">
@@ -71,7 +71,7 @@ export default {
                     this.removeTooltip();
                 },
                 "node:pointerup": ({ node, event }) => {
-                    this.updateNodeLayout(node, event);
+                    this.updateNodeLayout(node, event.x, event.y);
                 },
             },
             configs: {
@@ -83,7 +83,6 @@ export default {
                     },
                     autoPanAndZoomOnLoad: "fit-content",
                     autoPanOnResize: false,
-                    // onBeforeInitialDisplay: () => this.formatLayout(),
                     doubleClickZoomEnabled: false,
                 },
                 node: {
@@ -126,8 +125,8 @@ export default {
         // this.$el.addEventListener("click", this.handleDocumentClick);
     },
     methods: {
-        updateNodeLayout(nodeHere, eventHere) {
-            console.log(nodeHere, eventHere.x, eventHere.y)
+        updateNodeLayout(expenseIdHere, xHere, yHere) {
+            this.$emit('update-node-layout', expenseIdHere, xHere, yHere)
         },
         selectAccount(expenseIdHere, accountIdHere) {
             this.$emit('select-account', expenseIdHere, accountIdHere)
@@ -221,11 +220,23 @@ export default {
 
             dagre.layout(g)
 
+            // 서버에 있는 xy로 배치 코드
+            // g.nodes().forEach((nodeId) => {
+            //     // update node position
+            //     const x = this.expenses.filter(e => e.id === nodeId)[0].x
+            //     const y = this.expenses.filter(e => e.id === nodeId)[0].y
+            //     console.log("x,y =", x, y)
+            //     this.layouts.nodes[nodeId] = { x, y }
+            // })
+
+            // 초기화 코드
             g.nodes().forEach((nodeId) => {
                 // update node position
                 const x = g.node(nodeId).x
                 const y = g.node(nodeId).y
                 this.layouts.nodes[nodeId] = { x, y }
+                // 라이브러리에 있는 알고리즘에 의한 xy로 서버에 배치
+                this.updateNodeLayout(nodeId, x, y)
                 this.fetchedLayouts.nodes[nodeId] = { x, y }
             })
 
