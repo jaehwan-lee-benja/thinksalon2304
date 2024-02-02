@@ -5,7 +5,8 @@
     <div class="isolatedExpenseDiv">
         <div class="isolatedExpense" v-if="showClickedLiDiv" ref="isolatedContainer">
             <IsolatedModel v-bind:expenses="expenses" :expenseId="this.clickedExpenseId" @remove-expense="removeExpense"
-                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :accounts="accounts" @select-account="selectAccount"/>
+                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :accounts="accounts"
+                @select-account="selectAccount" />
         </div>
     </div>
     <div class="graphDiv" ref="graphContainer" style="position: relative;">
@@ -54,6 +55,9 @@ export default {
             layouts: {
                 nodes: {},
             },
+            fetchedLayouts: {
+                nodes: {},
+            },
             tooltipTimeout: null, // 툴팁 지연을 위한 타이머 변수
             eventHandlers: {
                 "node:click": ({ node }) => {
@@ -67,8 +71,7 @@ export default {
                     this.removeTooltip();
                 },
                 "node:pointerup": ({ node, event }) => {
-                    const sample = [node, event]
-                    return sample
+                    this.updateNodeLayout(node, event);
                 },
             },
             configs: {
@@ -81,12 +84,12 @@ export default {
                     autoPanAndZoomOnLoad: "fit-content",
                     autoPanOnResize: false,
                     // onBeforeInitialDisplay: () => this.formatLayout(),
+                    doubleClickZoomEnabled: false,
                 },
                 node: {
                     normal: {
                         type: "circle",
                         color: "#4a5c6a",
-                        // radius: node => node.size / 60000
                         radius: node => Math.pow(node.size / 1000, 1 / 2),
                     },
                     hover: {
@@ -123,6 +126,9 @@ export default {
         // this.$el.addEventListener("click", this.handleDocumentClick);
     },
     methods: {
+        updateNodeLayout(nodeHere, eventHere) {
+            console.log(nodeHere, eventHere.x, eventHere.y)
+        },
         selectAccount(expenseIdHere, accountIdHere) {
             this.$emit('select-account', expenseIdHere, accountIdHere)
         },
@@ -220,8 +226,10 @@ export default {
                 const x = g.node(nodeId).x
                 const y = g.node(nodeId).y
                 this.layouts.nodes[nodeId] = { x, y }
+                this.fetchedLayouts.nodes[nodeId] = { x, y }
             })
 
+            console.log("this.fetchedLayouts = ", this.fetchedLayouts);
         },
         formatExpenses() {
 
@@ -236,11 +244,11 @@ export default {
                 }
             });
 
-            // const nodeLayouts = {}
-            // nodeLayouts['986d3931-9c08-43d3-a03f-9c5d6ace6e4c'] = {'x':600,'y':600}
-
             this.nodes = nodesResult
             this.edges = edgeResult
+
+            // const nodeLayouts = {}
+            // nodeLayouts['986d3931-9c08-43d3-a03f-9c5d6ace6e4c'] = {'x':200,'y':600}
             // this.layouts.nodes = nodeLayouts
 
             this.formatLayout()

@@ -509,16 +509,12 @@ export default {
       this.controlToggleActiveHandler(expenseHere);
       this.controlIsThereChildMonitor(expenseHere);
       if (expenseHere.level < 5) {
-        console.log("expenseHere.show_sub_list - (1) = ", expenseHere.show_sub_list);
         expenseHere.show_sub_list = !expenseHere.show_sub_list;
-        console.log("expenseHere.show_sub_list - (2) = ", expenseHere.show_sub_list);
 
         // show_sub_list에 대해 서버에 올라가는 값과 로컬에 저장해둔 fetched값을 맞추는 작업
         this.fetchedExpenses.forEach(e => {
           if(e.id == expenseHere.id) {
-            console.log("e.show_sub_list - (1) = ", e.show_sub_list)
             e.show_sub_list = expenseHere.show_sub_list
-            console.log("e.show_sub_list - (2) = ", e.show_sub_list)
           }
         })
 
