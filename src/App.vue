@@ -46,7 +46,7 @@
         <div class="flowViewDiv">
           <FlowView v-bind:expenses="expenses" :clickedExpenseId="clickedExpenseId" @point-clicked-li="pointClickedLi"
             @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense" :accounts="accounts"
-            @select-account="selectAccount" @update-node-layout="updateNodeLayout" />
+            @select-account="selectAccount" />
         </div>
         <div class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler"
@@ -215,26 +215,6 @@ export default {
     },
   },
   methods: {
-    updateNodeLayout(expenseIdHere, xHere, yHere) {
-      console.log(expenseIdHere, xHere, yHere)
-      
-      const theExpense = this.expenses.filter(e => e.id === expenseIdHere)[0]
-
-      console.log("theExpense = ", theExpense);
-
-      theExpense.x = xHere
-      theExpense.y = yHere
-
-      this.fetchedExpenses.forEach(e => {
-        if(e.id == expenseIdHere) {
-          e.x = xHere
-          e.y = yHere
-        }
-      })
-
-      this.upsertExpense(theExpense)
-
-    },
     selectAccount(expenseIdHere, accountIdHere) {
       this.expenses.forEach(e => {
         if (e.id == expenseIdHere) {

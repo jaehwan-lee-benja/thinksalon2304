@@ -24,6 +24,7 @@ import { VNetworkGraph } from "v-network-graph"
 import "v-network-graph/lib/style.css"
 import dagre from "dagre/dist/dagre.min.js"
 import IsolatedModel from './IsolatedModel.vue'
+import { supabase } from '../lib/supabaseClient.js'
 
 export default {
     name: 'FlowView',
@@ -48,14 +49,13 @@ export default {
     },
     data() {
         return {
+            nodeFromServer: [],
+
             tooltip: null,
 
             nodes: {},
             edges: {},
             layouts: {
-                nodes: {},
-            },
-            fetchedLayouts: {
                 nodes: {},
             },
             tooltipTimeout: null, // 툴팁 지연을 위한 타이머 변수
@@ -71,7 +71,8 @@ export default {
                     this.removeTooltip();
                 },
                 "node:pointerup": ({ node, event }) => {
-                    this.updateNodeLayout(node, event.x, event.y);
+                    console.log("pointerup", event.x, event.y)
+                    this.getNodeLayout(node, event.x, event.y);
                 },
             },
             configs: {
@@ -107,26 +108,75 @@ export default {
             }
         }
     },
-    watch: {
-        expenses: {
-            handler() {
-                const expensesLength = this.expenses.length;
-                if (expensesLength > 0) {
-                    this.$nextTick(() => {
-                        this.formatExpenses()
-                    });
-                }
-            },
-            deep: true
-        }
-    },
+    // watch: {
+    //     expenses: {
+    //         handler() {
+    //             const expensesLength = this.expenses.length;
+    //             if (expensesLength > 0) {
+    //                 this.$nextTick(() => {
+    //                     this.formatExpenses()
+    //                 });
+    //             }
+    //         },
+    //         deep: true
+    //     }
+    // },
     mounted() {
         document.addEventListener("click", this.handleDocumentClick); // [질문] 이것을 어떻게 바꿀 수 있을까?
         // this.$el.addEventListener("click", this.handleDocumentClick);
+        this.fetchDataForNode();
     },
     methods: {
-        updateNodeLayout(expenseIdHere, xHere, yHere) {
-            this.$emit('update-node-layout', expenseIdHere, xHere, yHere)
+        getUuidv4() {
+            return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+            );
+        },
+        async fetchDataForNode() {
+            const a = await supabase
+                .from('node')
+                .select()
+            const { data } = a;
+            this.nodeFromServer = data
+        },
+        getNodeLayout(expenseIdHere, xHere, yHere) {
+
+            const nodeLayout = { expense_id: expenseIdHere, x: xHere, y: yHere }
+
+            const expensesLength = this.expenses.length;
+            if (expensesLength > 0) {
+
+                // 기존의 node인지 체크하기
+                const expenseIdArr = []
+                this.nodeFromServer.forEach(e => {
+                    expenseIdArr.push(e.expense_id)
+                })
+
+                const isNew = expenseIdArr.indexOf(expenseIdHere) < 0
+
+                if (!isNew) {
+                    nodeLayout.id = this.nodeFromServer.filter(e => e.expense_id === expenseIdHere)[0].id
+                } else {
+                    nodeLayout.id = this.getUuidv4();
+                }
+
+                this.upsertNodeLayout(nodeLayout)
+            }
+
+        },
+        async upsertNodeLayout(nodeLayoutHere) {
+            try {
+                const { error } = await supabase
+                    .from('node')
+                    .upsert(nodeLayoutHere)
+                    .eq('id', nodeLayoutHere.id)
+                if (error) {
+                    throw error;
+                }
+            } catch (error) {
+                console.error(error);
+            }
+            this.fetchDataForNode();
         },
         selectAccount(expenseIdHere, accountIdHere) {
             this.$emit('select-account', expenseIdHere, accountIdHere)
@@ -220,27 +270,15 @@ export default {
 
             dagre.layout(g)
 
-            // 서버에 있는 xy로 배치 코드
-            // g.nodes().forEach((nodeId) => {
-            //     // update node position
-            //     const x = this.expenses.filter(e => e.id === nodeId)[0].x
-            //     const y = this.expenses.filter(e => e.id === nodeId)[0].y
-            //     console.log("x,y =", x, y)
-            //     this.layouts.nodes[nodeId] = { x, y }
-            // })
-
-            // 초기화 코드
             g.nodes().forEach((nodeId) => {
                 // update node position
                 const x = g.node(nodeId).x
                 const y = g.node(nodeId).y
                 this.layouts.nodes[nodeId] = { x, y }
                 // 라이브러리에 있는 알고리즘에 의한 xy로 서버에 배치
-                this.updateNodeLayout(nodeId, x, y)
-                this.fetchedLayouts.nodes[nodeId] = { x, y }
+                this.getNodeLayout(nodeId, x, y)
             })
 
-            console.log("this.fetchedLayouts = ", this.fetchedLayouts);
         },
         formatExpenses() {
 
@@ -262,7 +300,17 @@ export default {
             // nodeLayouts['986d3931-9c08-43d3-a03f-9c5d6ace6e4c'] = {'x':200,'y':600}
             // this.layouts.nodes = nodeLayouts
 
-            this.formatLayout()
+            const nodeLayouts = {}
+            this.expenses.forEach((e) => {
+                nodeLayouts[e.id] = {
+                    'x': this.nodeFromServer.filter((n) => n.expense_id == e.id)[0].x,
+                    'y': this.nodeFromServer.filter((n) => n.expense_id == e.id)[0].y
+                }
+                console.log(e.id, nodeLayouts[e.id].x, nodeLayouts[e.id].y)
+            })
+            this.layouts.nodes = nodeLayouts
+
+            // this.formatLayout()
 
             const vngref = this.$refs.vng
 
