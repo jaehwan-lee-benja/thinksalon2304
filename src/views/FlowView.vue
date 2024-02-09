@@ -23,7 +23,7 @@
 <script>
 import { VNetworkGraph } from "v-network-graph"
 import "v-network-graph/lib/style.css"
-import * as vNG from "v-network-graph"
+// import * as vNG from "v-network-graph"
 import dagre from "dagre/dist/dagre.min.js"
 import IsolatedModel from './IsolatedModel.vue'
 import { supabase } from '../lib/supabaseClient.js'
@@ -79,7 +79,7 @@ export default {
 
                     ///
 
-                    const graphContainerRect = this.$refs.graphContainer.getBoundingClientRect();
+                    // const graphContainerRect = this.$refs.graphContainer.getBoundingClientRect();
 
                     // 클릭된 노드의 좌표를 가져옵니다
                     const clickedNodeX = event.clientX;
@@ -88,10 +88,8 @@ export default {
                     console.log("clicked =", clickedNodeX, clickedNodeY);
 
                     // 그래프 컨테이너의 위치를 기준으로 클릭된 노드의 상대적인 좌표를 계산합니다
-                    const relativeX = clickedNodeX - graphContainerRect.left;
-                    const relativeY = clickedNodeY - graphContainerRect.top;
-
-                    console.log("grahRef =", graphContainerRect.left, graphContainerRect.top);
+                    const relativeX = clickedNodeX - 276;
+                    const relativeY = clickedNodeY - 345;
 
                     console.log("relative =", relativeX, relativeY);
 
@@ -113,15 +111,15 @@ export default {
             },
             configs: {
                 view: {
-                    fitContentMargin: 20,
+                    // fitContentMargin: 20,
                     grid: {
                         visible: true,
                         interval: 20
                     },
-                    // autoPanAndZoomOnLoad: "fit-content",
-                    autoPanOnResize: false,
+                    // autoPanAndZoomOnLoad: "center-zero",
+                    // autoPanOnResize: true,
                     doubleClickZoomEnabled: false,
-                    layoutHandler: new vNG.GridLayout({ grid: 20 })
+                    // layoutHandler: new vNG.GridLayout({ grid: 20 })
                 },
                 node: {
                     normal: {
@@ -376,7 +374,7 @@ export default {
                     'y': this.nodeFromServer.filter((n) => n.expense_id == e.id)[0].y
                 }
             })
-            nodeLayouts["8e92738d-b636-424d-a711-dbd398641c82"] = { 'category': '기준', 'x': 0, 'y': 0 }
+            // nodeLayouts["8e92738d-b636-424d-a711-dbd398641c82"] = { 'category': '기준', 'x': 0, 'y': 0 }
             this.layouts.nodes = nodeLayouts
             console.log("** = ", this.layouts.nodes)
 
