@@ -1,6 +1,7 @@
 <template>
     <div class="flowViewBtnDiv">
-        <button @click="formatExpenses" class="flowViewBtn">배치 초기화</button>
+        <button @click="showGraph" class="flowViewBtn">그래프 보기</button>
+        <button @click="formatExpenses" class="flowViewBtn2">배치 초기화</button>
     </div>
     <div class="isolatedExpenseDiv">
         <div class="isolatedExpense" v-if="showClickedLiDiv" ref="isolatedContainer">
@@ -22,6 +23,7 @@
 <script>
 import { VNetworkGraph } from "v-network-graph"
 import "v-network-graph/lib/style.css"
+import * as vNG from "v-network-graph"
 import dagre from "dagre/dist/dagre.min.js"
 import IsolatedModel from './IsolatedModel.vue'
 import { supabase } from '../lib/supabaseClient.js'
@@ -71,20 +73,47 @@ export default {
                     this.removeTooltip();
                 },
                 "node:pointerup": ({ node, event }) => {
-                    console.log("pointerup", event.x, event.y)
-                    this.getNodeLayout(node, event.x, event.y);
+                    // console.log("event =", event)
+                    // console.log("pointerup =", node, event.x, event.y)
+                    // this.getNodeLayout(node, event.x, event.y);
+
+                    ///
+
+                    const graphContainerRect = this.$refs.graphContainer.getBoundingClientRect();
+
+                    // 클릭된 노드의 좌표를 가져옵니다
+                    const clickedNodeX = event.clientX;
+                    const clickedNodeY = event.clientY;
+
+                    // 그래프 컨테이너의 위치를 기준으로 클릭된 노드의 상대적인 좌표를 계산합니다
+                    const relativeX = clickedNodeX - graphContainerRect.left;
+                    const relativeY = clickedNodeY - graphContainerRect.top;
+
+                    // 서버에 전송할 데이터를 구성합니다
+                    this.getNodeLayout(node, relativeX, relativeY);
+
+                    ///
+
+                    // const vng = this.$refs.vng; // VNetworkGraph 컴포넌트 참조 가져오기
+                    // if (vng) {
+                    //     const graphCoords = vng.graphCoordsFromEvent(event); // 이벤트를 기반으로 그래프 내 좌표 가져오기
+                    //     const { x, y } = graphCoords;
+                    //     this.getNodeLayout(node, x, y); // 그래프 내 좌표를 사용하여 노드 레이아웃 업데이트
+                    // }
+
                 },
             },
             configs: {
                 view: {
                     fitContentMargin: 20,
                     grid: {
-                        visible: false,
+                        visible: true,
                         interval: 20
                     },
-                    autoPanAndZoomOnLoad: "fit-content",
+                    // autoPanAndZoomOnLoad: "fit-content",
                     autoPanOnResize: false,
                     doubleClickZoomEnabled: false,
+                    layoutHandler: new vNG.GridLayout({ grid: 20 })
                 },
                 node: {
                     normal: {
@@ -282,6 +311,7 @@ export default {
         },
         formatExpenses() {
 
+
             const nodesResult = {}
             const edgeResult = {}
 
@@ -297,20 +327,48 @@ export default {
             this.edges = edgeResult
 
             // const nodeLayouts = {}
-            // nodeLayouts['986d3931-9c08-43d3-a03f-9c5d6ace6e4c'] = {'x':200,'y':600}
+            // nodeLayouts['986d3931-9c08-43d3-a03f-9c5d6ace6e4c'] = {'x':500,'y':300}
+            // this.layouts.nodes = nodeLayouts
+
+
+            this.formatLayout()
+
+            const vngref = this.$refs.vng
+
+            vngref?.transitionWhile(() => vngref.fitToContents(), { duration: 0 })
+
+
+        },
+        showGraph() {
+
+
+            const nodesResult = {}
+            const edgeResult = {}
+
+            this.expenses.forEach((e) => {
+                nodesResult[e.id] = { 'id': e.id, 'name': e.category, 'size': e.amount };
+
+                if (e.parents_id != null) {
+                    edgeResult[e.id] = { 'id': e.id, 'source': e.parents_id, 'target': e.id, 'size': e.amount };
+                }
+            });
+
+            this.nodes = nodesResult
+            this.edges = edgeResult
+
+            // const nodeLayouts = {}
+            // nodeLayouts['986d3931-9c08-43d3-a03f-9c5d6ace6e4c'] = {'x':500,'y':300}
             // this.layouts.nodes = nodeLayouts
 
             const nodeLayouts = {}
             this.expenses.forEach((e) => {
                 nodeLayouts[e.id] = {
+                    'category': e.category,
                     'x': this.nodeFromServer.filter((n) => n.expense_id == e.id)[0].x,
                     'y': this.nodeFromServer.filter((n) => n.expense_id == e.id)[0].y
                 }
-                console.log(e.id, nodeLayouts[e.id].x, nodeLayouts[e.id].y)
             })
             this.layouts.nodes = nodeLayouts
-
-            // this.formatLayout()
 
             const vngref = this.$refs.vng
 
