@@ -85,12 +85,20 @@ export default {
                     const clickedNodeX = event.clientX;
                     const clickedNodeY = event.clientY;
 
+                    console.log("clicked =", clickedNodeX, clickedNodeY);
+
                     // 그래프 컨테이너의 위치를 기준으로 클릭된 노드의 상대적인 좌표를 계산합니다
                     const relativeX = clickedNodeX - graphContainerRect.left;
                     const relativeY = clickedNodeY - graphContainerRect.top;
 
+                    console.log("grahRef =", graphContainerRect.left, graphContainerRect.top);
+
+                    console.log("relative =", relativeX, relativeY);
+
                     // 서버에 전송할 데이터를 구성합니다
                     this.getNodeLayout(node, relativeX, relativeY);
+
+                    console.log("pointerup =", node, relativeX, relativeY)
 
                     ///
 
@@ -368,7 +376,9 @@ export default {
                     'y': this.nodeFromServer.filter((n) => n.expense_id == e.id)[0].y
                 }
             })
+            nodeLayouts["8e92738d-b636-424d-a711-dbd398641c82"] = { 'category': '기준', 'x': 0, 'y': 0 }
             this.layouts.nodes = nodeLayouts
+            console.log("** = ", this.layouts.nodes)
 
             const vngref = this.$refs.vng
 
