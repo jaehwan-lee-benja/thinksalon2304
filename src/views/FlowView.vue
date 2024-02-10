@@ -52,6 +52,8 @@ export default {
     data() {
         return {
             nodeFromServer: [],
+            dragStart: {},
+            dragEnd: {},
 
             tooltip: null,
 
@@ -72,73 +74,24 @@ export default {
                 "node:pointerout": () => {
                     this.removeTooltip();
                 },
-                "node:pointerup": ({ node, event }) => {
-
-                    console.log("event = ", event);
-                    // console.log("event =", event)
-                    // console.log("pointerup =", node, event.x, event.y)
-                    // this.getNodeLayout(node, event.x, event.y);
-
-                    ///
-
-                    const graphContainerRect = this.$refs.graphContainer.getBoundingClientRect();
-                    
-                    console.log("ref = ", graphContainerRect)
-
-                    const vngPan = this.$refs.vng.getPan();
-                    console.log("vng = ", this.$refs.vng)
-                    console.log("vngPan = ", vngPan)
-
-                    // 클릭된 노드의 좌표를 가져옵니다
-                    const clickedNodeX = event.x;
-                    const clickedNodeY = event.y;
-
-                    console.log(clickedNodeX, clickedNodeY, " | clicked");
-
-                    // 그래프 컨테이너의 위치를 기준으로 클릭된 노드의 상대적인 좌표를 계산합니다.
-                    const relativeX = clickedNodeX - vngPan.x;
-                    const relativeY = clickedNodeY - vngPan.y;
-
-                    // // 그래프 컨테이너의 위치를 기준으로 클릭된 노드의 상대적인 좌표를 계산합니다
-                    // const relativeX = clickedNodeX - 276;
-                    // const relativeY = clickedNodeY - 345;
-
-                    console.log(graphContainerRect.left, graphContainerRect.top, " | ref")
-                    console.log(relativeX, relativeY, " | relative");
-
-                    // 서버에 전송할 데이터를 구성합니다
-                    this.getNodeLayout(node, relativeX, relativeY);
-
-                    // console.log("pointerup =", relativeX, relativeY)
-
-                    ///
-
-                    // const vng = this.$refs.vng; // VNetworkGraph 컴포넌트 참조 가져오기
-                    // if (vng) {
-                    //     const graphCoords = vng.graphCoordsFromEvent(event); // 이벤트를 기반으로 그래프 내 좌표 가져오기
-                    //     const { x, y } = graphCoords;
-                    //     this.getNodeLayout(node, x, y); // 그래프 내 좌표를 사용하여 노드 레이아웃 업데이트
-                    // }
-
+                "node:dragstart": (startPoint) => {
+                    this.dragStart = startPoint
+                },
+                "node:dragend": (endPoint) => {
+                    this.dragEnd = endPoint
+                },
+                "node:pointerup": ({ node }) => {
+                    const endPoint = this.dragEnd[node]
+                    this.getNodeLayout(node, endPoint.x, endPoint.y);
                 },
             },
             configs: {
                 view: {
-                    // pan: {
-                    //     x: 50,
-                    //     y: 50
-                    // },
                     grid: {
                         visible: true,
                         interval: 20
                     },
-                    // autoPanAndZoomOnLoad: "center-zero",
-                    // fitContentMargin: 20,
-                    autoPanAndZoomOnLoad: "center-content",
-                    fitContentMargin: "40px",
-                    // autoPanOnResize: true,
                     doubleClickZoomEnabled: false,
-                    // layoutHandler: new vNG.GridLayout({ grid: 20 })
                 },
                 node: {
                     normal: {
@@ -351,16 +304,18 @@ export default {
             this.nodes = nodesResult
             this.edges = edgeResult
 
-            // const nodeLayouts = {}
-            // nodeLayouts['986d3931-9c08-43d3-a03f-9c5d6ace6e4c'] = {'x':500,'y':300}
-            // this.layouts.nodes = nodeLayouts
-
             this.formatLayout()
 
             const vngref = this.$refs.vng
 
-            vngref?.transitionWhile(() => vngref.fitToContents(), { duration: 0 })
+            vngref?.setViewBox({
+                left: 0,
+                top: 0,
+                right: 500,
+                bottom: 500,
+            })
 
+            vngref?.transitionWhile(() => vngref.fitToContents(), { duration: 0 })
 
         },
         showGraph() {
@@ -392,18 +347,24 @@ export default {
                     'y': this.nodeFromServer.filter((n) => n.expense_id == e.id)[0].y
                 }
             })
-            nodeLayouts["8e92738d-b636-424d-a711-dbd398641c82"] = { 'category': '1', 'x': 0, 'y': 0 }
-            nodeLayouts["c52c5b43-cc88-4c55-9de2-6a9dbbadc70d"] = {
-                'category': '2', 'x': 220, 'y': 179.33334350585938
-            }
+            // nodeLayouts["8e92738d-b636-424d-a711-dbd398641c82"] = { 'category': '1', 'x': 0, 'y': 0 }
+            // nodeLayouts["c52c5b43-cc88-4c55-9de2-6a9dbbadc70d"] = {
+            //     'category': '2', 'x': 220, 'y': 179.33334350585938
+            // }
 
             this.layouts.nodes = nodeLayouts
             console.log("** = ", this.layouts.nodes)
 
             const vngref = this.$refs.vng
 
-            vngref?.transitionWhile(() => vngref.fitToContents(), { duration: 0 })
+            vngref?.setViewBox({
+                left: 0,
+                top: 0,
+                right: 500,
+                bottom: 500,
+            })
 
+            vngref?.transitionWhile(() => vngref.fitToContents(), { duration: 0 })
 
         },
 
