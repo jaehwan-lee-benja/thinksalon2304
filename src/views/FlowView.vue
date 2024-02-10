@@ -73,6 +73,8 @@ export default {
                     this.removeTooltip();
                 },
                 "node:pointerup": ({ node, event }) => {
+
+                    console.log("event = ", event);
                     // console.log("event =", event)
                     // console.log("pointerup =", node, event.x, event.y)
                     // this.getNodeLayout(node, event.x, event.y);
@@ -80,22 +82,26 @@ export default {
                     ///
 
                     const graphContainerRect = this.$refs.graphContainer.getBoundingClientRect();
+                    
+                    console.log("ref = ", graphContainerRect)
+
+                    const vngPan = this.$refs.vng.getPan();
+                    console.log("vng = ", this.$refs.vng)
+                    console.log("vngPan = ", vngPan)
 
                     // 클릭된 노드의 좌표를 가져옵니다
-                    const clickedNodeX = event.offsetX;
-                    const clickedNodeY = event.offsetY;
+                    const clickedNodeX = event.x;
+                    const clickedNodeY = event.y;
 
                     console.log(clickedNodeX, clickedNodeY, " | clicked");
 
                     // 그래프 컨테이너의 위치를 기준으로 클릭된 노드의 상대적인 좌표를 계산합니다.
-                    const relativeX = clickedNodeX - graphContainerRect.left;
-                    const relativeY = clickedNodeY - graphContainerRect.top;
+                    const relativeX = clickedNodeX - vngPan.x;
+                    const relativeY = clickedNodeY - vngPan.y;
 
                     // // 그래프 컨테이너의 위치를 기준으로 클릭된 노드의 상대적인 좌표를 계산합니다
                     // const relativeX = clickedNodeX - 276;
                     // const relativeY = clickedNodeY - 345;
-
-                    console.log("ref = ", graphContainerRect)
 
                     console.log(graphContainerRect.left, graphContainerRect.top, " | ref")
                     console.log(relativeX, relativeY, " | relative");
