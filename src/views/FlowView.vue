@@ -278,12 +278,34 @@ export default {
             dagre.layout(g)
 
             g.nodes().forEach((nodeId) => {
-                // update node position
-                const x = g.node(nodeId).x
-                const y = g.node(nodeId).y
-                this.layouts.nodes[nodeId] = { x, y }
-                // 라이브러리에 있는 알고리즘에 의한 xy로 서버에 배치
-                this.getNodeLayout(nodeId, x, y)
+
+                // 만약 x가 undefined라면, 아래로 가고, 값이 있다면 위로가기다면 위로가기
+                // 초기화를 하는 것은 모두 undefined로 만드는 것으로 해도 되겠다.
+                const xFromServer = this.nodeFromServer.filter((n) => n.expense_id == nodeId)[0].x
+                console.log("xFromServer = ", xFromServer);
+
+                // xy를 한곳으로 묶는 작업하기 [여기부터]
+                if (xFromServer != undefined) {
+
+                    console.log("Y")
+
+                    this.layouts.nodes[nodeId] = {
+                        'x': xFromServer,
+                        'y': this.nodeFromServer.filter((n) => n.expense_id == nodeId)[0].y
+                    }
+
+                } else {
+
+                    console.log("N")
+
+                    // update node position
+                    const x = g.node(nodeId).x
+                    const y = g.node(nodeId).y
+                    this.layouts.nodes[nodeId] = { x, y }
+                    // 라이브러리에 있는 알고리즘에 의한 xy로 서버에 배치
+                    this.getNodeLayout(nodeId, x, y)
+                }
+
             })
 
         },
