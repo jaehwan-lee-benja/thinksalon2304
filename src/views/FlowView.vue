@@ -1,7 +1,7 @@
 <template>
     <div class="flowViewBtnDiv">
-        <button @click="showGraph" class="flowViewBtn">그래프 보기</button>
-        <button @click="formatExpenses" class="flowViewBtn2">배치 초기화</button>
+        <button @click="showGraphFit" class="flowViewBtn">그래프 보기</button>
+        <button @click="showGraphDefault" class="flowViewBtn2">배치 초기화</button>
     </div>
     <div class="isolatedExpenseDiv">
         <div class="isolatedExpense" v-if="showClickedLiDiv" ref="isolatedContainer">
@@ -32,6 +32,10 @@ export default {
     name: 'FlowView',
     props: {
         expenses: {
+            type: Object,
+            default: () => { }
+        },
+        fetchedExpenses: {
             type: Object,
             default: () => { }
         },
@@ -82,7 +86,7 @@ export default {
                 },
                 "node:pointerup": ({ node }) => {
                     const endPoint = this.dragEnd[node]
-                    this.getNodeLayout(node, endPoint.x, endPoint.y);
+                    this.updateNodeLayout(node, endPoint.x, endPoint.y);
                 },
             },
             configs: {
@@ -115,30 +119,26 @@ export default {
             }
         }
     },
-    // watch: {
-    //     expenses: {
-    //         handler() {
-    //             const expensesLength = this.expenses.length;
-    //             if (expensesLength > 0) {
-    //                 this.$nextTick(() => {
-    //                     this.formatExpenses()
-    //                 });
-    //             }
-    //         },
-    //         deep: true
-    //     }
-    // },
+    watch: {
+        expenses: {
+            handler() {
+                const expensesLength = this.expenses.length;
+                if (expensesLength > 0) {
+                    this.$nextTick(() => {
+                        this.formatExpenses()
+                    });
+                }
+            },
+            deep: true
+        }
+    },
     mounted() {
         document.addEventListener("click", this.handleDocumentClick); // [질문] 이것을 어떻게 바꿀 수 있을까?
         // this.$el.addEventListener("click", this.handleDocumentClick);
         this.fetchDataForNode();
     },
     methods: {
-        getUuidv4() {
-            return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
-                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-            );
-        },
+
         async fetchDataForNode() {
             const a = await supabase
                 .from('node')
@@ -146,32 +146,9 @@ export default {
             const { data } = a;
             this.nodeFromServer = data
         },
-        getNodeLayout(expenseIdHere, xHere, yHere) {
 
-            const nodeLayout = { expense_id: expenseIdHere, x: xHere, y: yHere }
-
-            const expensesLength = this.expenses.length;
-            if (expensesLength > 0) {
-
-                // 기존의 node인지 체크하기
-                const expenseIdArr = []
-                this.nodeFromServer.forEach(e => {
-                    expenseIdArr.push(e.expense_id)
-                })
-
-                const isNew = expenseIdArr.indexOf(expenseIdHere) < 0
-
-                if (!isNew) {
-                    nodeLayout.id = this.nodeFromServer.filter(e => e.expense_id === expenseIdHere)[0].id
-                } else {
-                    nodeLayout.id = this.getUuidv4();
-                }
-
-                this.upsertNodeLayout(nodeLayout)
-            }
-
-        },
         async upsertNodeLayout(nodeLayoutHere) {
+            console.log("nodeLayoutHere = ", nodeLayoutHere)
             try {
                 const { error } = await supabase
                     .from('node')
@@ -185,15 +162,256 @@ export default {
             }
             this.fetchDataForNode();
         },
+
+        updateNodeLayout(expenseIdHere, xHere, yHere) {
+
+            console.log("updateNodeLayout = ", expenseIdHere, xHere, yHere)
+            const nodeLayout = { expense_id: expenseIdHere, x: xHere, y: yHere }
+
+            const expensesLength = this.expenses.length;
+            if (expensesLength > 0) {
+
+                // 기존의 node인지 체크한 후, new인 경우, node id 생성하기
+                const expenseIdArr = []
+                this.nodeFromServer.forEach(e => expenseIdArr.push(e.expense_id))
+                const isNew = expenseIdArr.indexOf(expenseIdHere) < 0
+
+                console.log("isNew? =", isNew)
+
+                if (!isNew) {
+                    nodeLayout.id = this.nodeFromServer.filter(e => e.expense_id === expenseIdHere)[0].id
+                } else {
+                    nodeLayout.id = this.getUuidv4();
+                }
+
+                this.upsertNodeLayout(nodeLayout)
+            }
+
+        },
+
         selectAccount(expenseIdHere, accountIdHere) {
             this.$emit('select-account', expenseIdHere, accountIdHere)
         },
+
         removeExpense(expenseHere) {
             const confirmValue = confirm("삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
             if (confirmValue) {
                 this.$emit('remove-expense', expenseHere)
             }
         },
+
+        formatExpenses() {
+            console.log('formatExpenses here!')
+
+            const nodesResult = {}
+            const edgeResult = {}
+
+            // layout 정리
+            let nodeLayoutResult = {}
+            if (this.expenses.length > 1) {
+                console.log('최초아님')
+                nodeLayoutResult = this.formatLayout();
+            } else {
+                console.log('최초임')
+                nodeLayoutResult = this.formatLayoutDefault()
+            }
+
+            this.expenses.forEach((e) => {
+                nodesResult[e.id] = { 'id': e.id, 'name': e.category, 'size': e.amount };
+
+                if (e.parents_id != null) {
+                    edgeResult[e.id] = { 'id': e.id, 'source': e.parents_id, 'target': e.id, 'size': e.amount };
+                }
+
+            });
+
+            this.nodes = nodesResult
+            this.edges = edgeResult
+            this.layouts.nodes = nodeLayoutResult
+
+            this.setGraphFit();
+
+
+        },
+
+        formatLayout() {
+            console.log('formatLayout here!')
+
+            // 최종적인 값이 담길 오브젝트
+            const nodeLayouts = {}
+
+            console.log(nodeLayouts)
+
+            // 삭제 및 신규 node를 추려내야한다.
+            const idArray = this.expenses.map(e => e.id);
+            const fetchedIdArray = this.fetchedExpenses.map(e => e.id);
+
+            // fetchedArray 중 기존 Array에 없는 id를 필터링해서 모으기 => 삭제된 것
+            const willBeDeletedIdArray = fetchedIdArray.filter(eachId => !idArray.includes(eachId));
+
+            // Array 중 기존 fetchedIdArray에 없는 id를 필터링해서 모으기 => 새로 생긴 것
+            const newIdArray = idArray.filter(eachId => !fetchedIdArray.includes(eachId));
+
+            // normal을 찾기 위해 위 두 배열의 합집합을 구한다, 그리고 전체C에서 차집합한다.
+            const setA = new Set(willBeDeletedIdArray)
+            const setB = new Set(newIdArray)
+            const setC = new Set(idArray)
+            const union = new Set([...setA, ...setB]);
+            const difference = new Set([...setC].filter(x => !union.has(x))); // set1 - set2
+
+            // 전체 idArray에서 차집합한다.
+            const normalIdArray = Array.from(difference)
+
+            // 기존에 있는 e인 경우
+            normalIdArray.forEach((expenseId) => {
+
+                const xFromServer = this.nodeFromServer.filter((n) => n.expense_id == expenseId)[0].x
+                const yFromServer = this.nodeFromServer.filter((n) => n.expense_id == expenseId)[0].y
+                nodeLayouts[expenseId] = { 'x': xFromServer, 'y': yFromServer }
+
+            })
+
+            // 새로운 e인 경우
+            // 이 경우에 대한 서버, 로컬 단의 구분정리가 필요하다.
+            const newExpenses = []
+            
+            this.expenses.forEach((e) => {
+                newIdArray.forEach((expenseId) => {
+                    if(e.id == expenseId) {
+                        newExpenses.push(e)
+                    }
+                })
+            })
+
+            console.log("newExpenses = ", newExpenses);
+
+            newExpenses.forEach((e) => {
+
+                this.nodes[e.id] = { 'id': e.id, 'name': e.category, 'size': e.amount };
+
+                if (e.parents_id != null) {
+                    this.edges[e.id] = { 'id': e.id, 'source': e.parents_id, 'target': e.id, 'size': e.amount };
+                }
+
+            })
+
+            const defaultResult = this.formatLayoutDefault()
+            console.log("defaultResult = ", defaultResult);
+            newIdArray.forEach((expenseId) => {
+                console.log("newId = ", expenseId)
+                nodeLayouts[expenseId] = defaultResult[expenseId]
+                console.log("new = ", nodeLayouts[expenseId])
+
+            })
+
+            // 삭제될 e인 경우
+            willBeDeletedIdArray.forEach((expenseId) => {
+                delete nodeLayouts[expenseId];
+                // 서버에서도 삭제되는 로직 필요
+            })
+
+            return nodeLayouts
+
+        },
+
+        formatLayoutDefault() {
+            console.log('formatLayoutDefault here!')
+            // 최초 생길 때, 디폴트 버튼을 누를 때 진행되는 함수
+
+            const nodeSize = 30
+            const direction = "TB" // "TB" | "LR"
+            if (Object.keys(this.nodes).length <= 1 || Object.keys(this.edges).length == 0) {
+                return
+            }
+
+            // convert graph
+            // ref: https://github.com/dagrejs/dagre/wiki
+            const g = new dagre.graphlib.Graph()
+            // Set an object for the graph label
+            g.setGraph({
+                rankdir: direction,
+                nodesep: nodeSize,
+                edgesep: nodeSize,
+                ranksep: nodeSize * 4,
+            })
+            // Default to assigning a new object as a label for each new edge.
+            g.setDefaultEdgeLabel(() => ({}))
+
+            // Add nodes to the graph. The first argument is the node id. The second is
+            // metadata about the node. In this case we're going to add labels to each of
+            // our nodes.
+            Object.entries(this.nodes).forEach(([nodeId, node]) => {
+                g.setNode(nodeId, { label: node.name, width: nodeSize, height: nodeSize })
+            })
+
+            // Add edges to the graph.
+            Object.values(this.edges).forEach(edge => {
+                g.setEdge(edge.source, edge.target)
+            })
+
+            dagre.layout(g)
+
+            const defaultXYs = {}
+
+            g.nodes().forEach((nodeId) => {
+
+                // update node position
+                const x = g.node(nodeId).x
+                const y = g.node(nodeId).y
+                defaultXYs[nodeId] = { x, y }
+
+            })
+
+            return defaultXYs
+
+        },
+
+        showGraphDefault() {
+            const defaultResult = this.formatLayoutDefault()
+            this.layouts.nodes = defaultResult
+            this.expenses.forEach((e) => {
+                this.updateNodeLayout(e.id, defaultResult[e.id].x, defaultResult[e.id].y)
+            })
+            this.setGraphFit();
+        },
+
+        showGraphFit() {
+
+            const nodeLayouts = {}
+            this.expenses.forEach((e) => {
+                nodeLayouts[e.id] = {
+                    'category': e.category,
+                    'x': this.nodeFromServer.filter((n) => n.expense_id == e.id)[0].x,
+                    'y': this.nodeFromServer.filter((n) => n.expense_id == e.id)[0].y
+                }
+            })
+
+            this.layouts.nodes = nodeLayouts
+            console.log("*layout.nodes* = ", this.layouts.nodes)
+
+            this.setGraphFit();
+
+        },
+
+        setGraphFit() {
+            const vngref = this.$refs.vng
+
+            vngref?.setViewBox({
+                left: 0,
+                top: 0,
+                right: 500,
+                bottom: 500,
+            })
+
+            vngref?.transitionWhile(() => vngref.fitToContents(), { duration: 0 })
+        },
+
+        getUuidv4() {
+            return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+            );
+        },
+
         handleDocumentClick(event) {
             // 클릭이 그래프 컨테이너 외부에서 발생했는지 확인합니다
             const graphContainer = this.$refs.graphContainer;
@@ -242,154 +460,6 @@ export default {
                 this.tooltipTimeout = null;
             }
         },
-
-        formatLayout() {
-            const nodeSize = 30
-            const direction = "TB" // "TB" | "LR"
-            if (Object.keys(this.nodes).length <= 1 || Object.keys(this.edges).length == 0) {
-                return
-            }
-
-            // convert graph
-            // ref: https://github.com/dagrejs/dagre/wiki
-            const g = new dagre.graphlib.Graph()
-            // Set an object for the graph label
-            g.setGraph({
-                rankdir: direction,
-                nodesep: nodeSize,
-                edgesep: nodeSize,
-                ranksep: nodeSize * 4,
-            })
-            // Default to assigning a new object as a label for each new edge.
-            g.setDefaultEdgeLabel(() => ({}))
-
-            // Add nodes to the graph. The first argument is the node id. The second is
-            // metadata about the node. In this case we're going to add labels to each of
-            // our nodes.
-            Object.entries(this.nodes).forEach(([nodeId, node]) => {
-                g.setNode(nodeId, { label: node.name, width: nodeSize, height: nodeSize })
-            })
-
-            // Add edges to the graph.
-            Object.values(this.edges).forEach(edge => {
-                g.setEdge(edge.source, edge.target)
-            })
-
-            dagre.layout(g)
-
-            g.nodes().forEach((nodeId) => {
-
-                // 만약 x가 undefined라면, 아래로 가고, 값이 있다면 위로가기다면 위로가기
-                // 초기화를 하는 것은 모두 undefined로 만드는 것으로 해도 되겠다.
-                const xFromServer = this.nodeFromServer.filter((n) => n.expense_id == nodeId)[0].x
-                console.log("xFromServer = ", xFromServer);
-
-                // xy를 한곳으로 묶는 작업하기 [여기부터]
-                if (xFromServer != undefined) {
-
-                    console.log("Y")
-
-                    this.layouts.nodes[nodeId] = {
-                        'x': xFromServer,
-                        'y': this.nodeFromServer.filter((n) => n.expense_id == nodeId)[0].y
-                    }
-
-                } else {
-
-                    console.log("N")
-
-                    // update node position
-                    const x = g.node(nodeId).x
-                    const y = g.node(nodeId).y
-                    this.layouts.nodes[nodeId] = { x, y }
-                    // 라이브러리에 있는 알고리즘에 의한 xy로 서버에 배치
-                    this.getNodeLayout(nodeId, x, y)
-                }
-
-            })
-
-        },
-        formatExpenses() {
-
-
-            const nodesResult = {}
-            const edgeResult = {}
-
-            this.expenses.forEach((e) => {
-                nodesResult[e.id] = { 'id': e.id, 'name': e.category, 'size': e.amount };
-
-                if (e.parents_id != null) {
-                    edgeResult[e.id] = { 'id': e.id, 'source': e.parents_id, 'target': e.id, 'size': e.amount };
-                }
-            });
-
-            this.nodes = nodesResult
-            this.edges = edgeResult
-
-            this.formatLayout()
-
-            const vngref = this.$refs.vng
-
-            vngref?.setViewBox({
-                left: 0,
-                top: 0,
-                right: 500,
-                bottom: 500,
-            })
-
-            vngref?.transitionWhile(() => vngref.fitToContents(), { duration: 0 })
-
-        },
-        showGraph() {
-
-
-            const nodesResult = {}
-            const edgeResult = {}
-
-            this.expenses.forEach((e) => {
-                nodesResult[e.id] = { 'id': e.id, 'name': e.category, 'size': e.amount };
-
-                if (e.parents_id != null) {
-                    edgeResult[e.id] = { 'id': e.id, 'source': e.parents_id, 'target': e.id, 'size': e.amount };
-                }
-            });
-
-            this.nodes = nodesResult
-            this.edges = edgeResult
-
-            // const nodeLayouts = {}
-            // nodeLayouts['986d3931-9c08-43d3-a03f-9c5d6ace6e4c'] = {'x':500,'y':300}
-            // this.layouts.nodes = nodeLayouts
-
-            const nodeLayouts = {}
-            this.expenses.forEach((e) => {
-                nodeLayouts[e.id] = {
-                    'category': e.category,
-                    'x': this.nodeFromServer.filter((n) => n.expense_id == e.id)[0].x,
-                    'y': this.nodeFromServer.filter((n) => n.expense_id == e.id)[0].y
-                }
-            })
-            // nodeLayouts["8e92738d-b636-424d-a711-dbd398641c82"] = { 'category': '1', 'x': 0, 'y': 0 }
-            // nodeLayouts["c52c5b43-cc88-4c55-9de2-6a9dbbadc70d"] = {
-            //     'category': '2', 'x': 220, 'y': 179.33334350585938
-            // }
-
-            this.layouts.nodes = nodeLayouts
-            console.log("** = ", this.layouts.nodes)
-
-            const vngref = this.$refs.vng
-
-            vngref?.setViewBox({
-                left: 0,
-                top: 0,
-                right: 500,
-                bottom: 500,
-            })
-
-            vngref?.transitionWhile(() => vngref.fitToContents(), { duration: 0 })
-
-        },
-
     },
     components: {
         VNetworkGraph,
