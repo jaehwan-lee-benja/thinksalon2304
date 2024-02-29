@@ -71,6 +71,7 @@ export default {
                 nodes: {},
             },
             layoutNodesNew: [], // 새로 생선된 node의 위치값을 임시 저장
+            layoutNodeIdDelete: [], // 삭제될 nodeId 처리하기
             tooltipTimeout: null, // 툴팁 지연을 위한 타이머 변수
             eventHandlers: {
                 "node:click": ({ node }) => {
@@ -138,7 +139,7 @@ export default {
         },
         editExpenseWorked: {
             handler() {
-                this.upsertLayoutNodesNew()
+                this.upsertOrDeleteLayoutNodes()
             },
             deep: true
         },
@@ -149,12 +150,13 @@ export default {
         this.fetchDataForNode();
     },
     methods: {
-
-        upsertLayoutNodesNew() {
+        upsertOrDeleteLayoutNodes() {
             console.log("this.editExpenseWorked = ", this.editExpenseWorked);
             console.log("this.layoutNodesNew = ", this.layoutNodesNew);
             this.layoutNodesNew.forEach((e) => this.upsertNodeLayout(e))
             this.layoutNodesNew = []
+            this.layoutNodeIdDelete.forEach((eId) => this.deleteNodeLayout(eId))
+            this.layoutNodeIdDelete = []
         },
         async fetchDataForNode() {
             const a = await supabase
@@ -178,6 +180,20 @@ export default {
                 console.error(error);
             }
             this.fetchDataForNode();
+        },
+
+        async deleteNodeLayout(nodeIdHere) {
+            try {
+                const { error } = await supabase
+                    .from('node')
+                    .delete()
+                    .eq('id', nodeIdHere)
+                if (error) {
+                    throw error;
+                }
+            } catch (error) {
+                console.error(error);
+            }
         },
 
         updateNodeLayout(expenseIdHere, xHere, yHere) {
@@ -369,7 +385,7 @@ export default {
             // 삭제될 e인 경우
             willBeDeletedIdArray.forEach((expenseId) => {
                 delete nodeLayouts[expenseId];
-                // 서버에서도 삭제되는 로직 필요
+                this.layoutNodeIdDelete.push(expenseId)
             })
 
             return nodeLayouts
