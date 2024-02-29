@@ -44,7 +44,8 @@
       </div>
       <div class="viewGrid">
         <div class="flowViewDiv">
-          <FlowView v-bind:expenses="expenses" :fetchedExpenses="fetchedExpenses" :clickedExpenseId="clickedExpenseId" @point-clicked-li="pointClickedLi"
+          <FlowView v-bind:expenses="expenses" :fetchedExpenses="fetchedExpenses" :clickedExpenseId="clickedExpenseId"
+            :editExpenseWorked="editExpenseWorked" @point-clicked-li="pointClickedLi"
             @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense" :accounts="accounts"
             @select-account="selectAccount" />
         </div>
@@ -102,6 +103,7 @@ export default {
       isThereChildMonitor: {},
       clickedExpenseId: '',
 
+      editExpenseWorked: true,
     }
   },
   mixins: [LoginSessionModel],
@@ -513,7 +515,7 @@ export default {
 
         // show_sub_list에 대해 서버에 올라가는 값과 로컬에 저장해둔 fetched값을 맞추는 작업
         this.fetchedExpenses.forEach(e => {
-          if(e.id == expenseHere.id) {
+          if (e.id == expenseHere.id) {
             e.show_sub_list = expenseHere.show_sub_list
           }
         })
@@ -612,15 +614,22 @@ export default {
         const idArray = this.expenses.map(e => e.id);
         const fetchedidArray = this.fetchedExpenses.map(e => e.id);
 
-        // fetchedArray 중 기존 Array에 없는 id를 필터링해서 모으기
-        const willBeDeletedIdArray = fetchedidArray.filter(eachId => !idArray.includes(eachId));
+        const deleteOrUpsert = () => {
+          // fetchedArray 중 기존 Array에 없는 id를 필터링해서 모으기
+          const willBeDeletedIdArray = fetchedidArray.filter(eachId => !idArray.includes(eachId));
 
-        willBeDeletedIdArray.forEach(eachId => this.deleteExpense(eachId));
+          willBeDeletedIdArray.forEach(eachId => this.deleteExpense(eachId))
 
-        this.expenses.forEach(e => this.upsertExpense(e))
-        this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
+          this.expenses.forEach(e => this.upsertExpense(e))
+          this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses))
+        }
 
-        alert('저장되었습니다.')
+        Promise.resolve(deleteOrUpsert()).then(() => {
+          // flowView.vue로 저장 완료됨을 알려주기
+          this.editExpenseWorked = !this.editExpenseWorked;
+          alert('저장되었습니다.')
+        })
+
       }
 
     },

@@ -46,6 +46,10 @@ export default {
         accounts: {
             type: Object,
             default: () => { }
+        },
+        editExpenseWorked: {
+            type: Boolean,
+            default: true,
         }
     },
     computed: {
@@ -66,6 +70,7 @@ export default {
             layouts: {
                 nodes: {},
             },
+            layoutNodesNew: [], // 새로 생선된 node의 위치값을 임시 저장
             tooltipTimeout: null, // 툴팁 지연을 위한 타이머 변수
             eventHandlers: {
                 "node:click": ({ node }) => {
@@ -130,7 +135,13 @@ export default {
                 }
             },
             deep: true
-        }
+        },
+        editExpenseWorked: {
+            handler() {
+                this.upsertLayoutNodesNew()
+            },
+            deep: true
+        },
     },
     mounted() {
         document.addEventListener("click", this.handleDocumentClick); // [질문] 이것을 어떻게 바꿀 수 있을까?
@@ -139,6 +150,12 @@ export default {
     },
     methods: {
 
+        upsertLayoutNodesNew() {
+            console.log("this.editExpenseWorked = ", this.editExpenseWorked);
+            console.log("this.layoutNodesNew = ", this.layoutNodesNew);
+            this.layoutNodesNew.forEach((e) => this.upsertNodeLayout(e))
+            this.layoutNodesNew = []
+        },
         async fetchDataForNode() {
             const a = await supabase
                 .from('node')
@@ -180,11 +197,56 @@ export default {
 
                 if (!isNew) {
                     nodeLayout.id = this.nodeFromServer.filter(e => e.expense_id === expenseIdHere)[0].id
+                    this.upsertNodeLayout(nodeLayout)
                 } else {
-                    nodeLayout.id = this.getUuidv4();
+                    const expenseIdFromNew = this.layoutNodesNew.map((e) => e.expense_id)
+                    if (expenseIdFromNew.length > 0) {
+
+                        // 기존에 포함되어있는 값인지 확인하기
+                        const isIncluded = expenseIdFromNew.includes(nodeLayout.expense_id)
+
+                        if (isIncluded) {
+                            // 포함이 되어있는 경우
+                            console.log("A @updateNodeLayout")
+                            console.log("x,y @updateNodeLayout = ", xHere, yHere)
+
+                            // 기존 배열 중 동일한 expense_id의 요소 찾기
+                            const isLayoutNode = (element) => {
+                                if (element.expense_id === nodeLayout.expense_id) {
+                                    return true;
+                                }
+                            }
+                            const oldValue = this.layoutNodesNew.find(isLayoutNode);
+                            console.log("oldValue = ", oldValue)
+
+                            // 기존 값에서 id 가져오기
+                            nodeLayout.id = oldValue.id
+                            console.log("nodeLayout(newValue) = ", nodeLayout)
+
+                            // 배열에서 과거 값을 지금 값으로 바꾸기
+                            const updateArray = (arrHere, oldValueHere, newValueHere) => {
+                                const index = arrHere.indexOf(oldValueHere);
+                                if (index !== -1) {
+                                    arrHere[index] = newValueHere;
+                                }
+                            }
+
+                            updateArray(this.layoutNodesNew, oldValue, nodeLayout)
+
+                        } else {
+                            // 포함이 안되어있는 경우
+                            console.log("B @updateNodeLayout")
+                            nodeLayout.id = this.getUuidv4();
+                            this.layoutNodesNew.push(nodeLayout)
+                        }
+                    } else {
+                        console.log("C @updateNodeLayout")
+                        nodeLayout.id = this.getUuidv4();
+                        this.layoutNodesNew.push(nodeLayout)
+                    }
+                    console.log("this.layoutNodesNew after =", this.layoutNodesNew);
                 }
 
-                this.upsertNodeLayout(nodeLayout)
             }
 
         },
@@ -274,10 +336,10 @@ export default {
             // 새로운 e인 경우
             // 이 경우에 대한 서버, 로컬 단의 구분정리가 필요하다.
             const newExpenses = []
-            
+
             this.expenses.forEach((e) => {
                 newIdArray.forEach((expenseId) => {
-                    if(e.id == expenseId) {
+                    if (e.id == expenseId) {
                         newExpenses.push(e)
                     }
                 })
