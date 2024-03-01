@@ -169,7 +169,7 @@ export default {
             try {
                 const { error } = await supabase
                     .from('node')
-                    .upsert(nodeLayoutHere)
+                    .update(nodeLayoutHere)
                     .eq('id', nodeLayoutHere.id)
                 if (error) {
                     throw error;
@@ -262,7 +262,6 @@ export default {
 
             if (this.expenses.length > 1) {
                 nodeLayoutResult = this.formatLayout();
-                console.log("nodeLayoutResult.length =", Object.keys(nodeLayoutResult).length)
             } else {
                 nodeLayoutResult = this.formatLayoutDefault()
             }
@@ -313,11 +312,17 @@ export default {
 
             // 기존에 있는 e인 경우
 
+            console.log("this.nodeFromServer = ", this.nodeFromServer)
             normalIdArray.forEach((expenseId) => {
-
-                const xFromServer = this.nodeFromServer.filter((n) => n.expense_id == expenseId)[0].x
-                const yFromServer = this.nodeFromServer.filter((n) => n.expense_id == expenseId)[0].y
-                nodeLayouts[expenseId] = { 'x': xFromServer, 'y': yFromServer }
+                try {
+                    // const xFromServer = this.nodeFromServer.filter((n) => n.expense_id == expenseId)[0].x
+                    const xFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).x
+                    const yFromServer = this.nodeFromServer.filter((n) => n.expense_id == expenseId)[0].y
+                    nodeLayouts[expenseId] = { 'x': xFromServer, 'y': yFromServer }
+                } catch(error) {
+                    console.log('expenseId=',expenseId)
+                    // throw error
+                }
 
             })
 
