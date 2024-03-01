@@ -92,7 +92,11 @@ export default {
                 },
                 "node:pointerup": ({ node }) => {
                     const endPoint = this.dragEnd[node]
-                    this.updateNodeLayout(node, endPoint.x, endPoint.y);
+                    // node:click과 겹치는 것을 방지하기 위해 undefined는 제외
+                    if (endPoint) {
+                        this.updateNodeLayout(node, endPoint.x, endPoint.y);
+                    }
+
                 },
             },
             configs: {
@@ -139,7 +143,7 @@ export default {
         },
         editExpenseWorked: {
             handler() {
-                this.upsertOrDeleteLayoutNodes()
+                this.upsertLayoutNodes()
             },
             deep: true
         },
@@ -150,11 +154,9 @@ export default {
         this.fetchDataForNode();
     },
     methods: {
-        upsertOrDeleteLayoutNodes() {
+        upsertLayoutNodes() {
             this.layoutNodesNew.forEach((e) => this.upsertNodeLayout(e))
             this.layoutNodesNew = []
-            this.layoutNodeIdDelete.forEach((eId) => this.deleteNodeLayout(eId))
-            this.layoutNodeIdDelete = []
         },
         async fetchDataForNode() {
             const a = await supabase
@@ -177,20 +179,6 @@ export default {
                 console.error(error);
             }
             this.fetchDataForNode();
-        },
-
-        async deleteNodeLayout(nodeIdHere) {
-            try {
-                const { error } = await supabase
-                    .from('node')
-                    .delete()
-                    .eq('id', nodeIdHere)
-                if (error) {
-                    throw error;
-                }
-            } catch (error) {
-                console.error(error);
-            }
         },
 
         updateNodeLayout(expenseIdHere, xHere, yHere) {
@@ -272,6 +260,7 @@ export default {
 
             // layout 정리
             let nodeLayoutResult = {}
+
             if (this.expenses.length > 1) {
                 nodeLayoutResult = this.formatLayout();
             } else {
@@ -321,7 +310,9 @@ export default {
             // 전체 idArray에서 차집합한다.
             const normalIdArray = Array.from(difference)
 
+
             // 기존에 있는 e인 경우
+
             normalIdArray.forEach((expenseId) => {
 
                 const xFromServer = this.nodeFromServer.filter((n) => n.expense_id == expenseId)[0].x
@@ -329,6 +320,7 @@ export default {
                 nodeLayouts[expenseId] = { 'x': xFromServer, 'y': yFromServer }
 
             })
+
 
             // 새로운 e인 경우
             // 이 경우에 대한 서버, 로컬 단의 구분정리가 필요하다.
@@ -378,6 +370,7 @@ export default {
             // convert graph
             // ref: https://github.com/dagrejs/dagre/wiki
             const g = new dagre.graphlib.Graph()
+            
             // Set an object for the graph label
             g.setGraph({
                 rankdir: direction,
@@ -419,10 +412,13 @@ export default {
 
         showGraphDefault() {
             const defaultResult = this.formatLayoutDefault()
-            this.layouts.nodes = defaultResult
-            this.expenses.forEach((e) => {
-                this.updateNodeLayout(e.id, defaultResult[e.id].x, defaultResult[e.id].y)
-            })
+            // node가 1개인 경우, formatLayoutDefault는 undefined가 된다. => 거르기
+            if (defaultResult) {
+                this.layouts.nodes = defaultResult
+                this.expenses.forEach((e) => {
+                    this.updateNodeLayout(e.id, defaultResult[e.id].x, defaultResult[e.id].y)
+                })
+            }
             this.setGraphFit();
         },
 
