@@ -151,8 +151,6 @@ export default {
     },
     methods: {
         upsertOrDeleteLayoutNodes() {
-            console.log("this.editExpenseWorked = ", this.editExpenseWorked);
-            console.log("this.layoutNodesNew = ", this.layoutNodesNew);
             this.layoutNodesNew.forEach((e) => this.upsertNodeLayout(e))
             this.layoutNodesNew = []
             this.layoutNodeIdDelete.forEach((eId) => this.deleteNodeLayout(eId))
@@ -167,7 +165,6 @@ export default {
         },
 
         async upsertNodeLayout(nodeLayoutHere) {
-            console.log("nodeLayoutHere = ", nodeLayoutHere)
             try {
                 const { error } = await supabase
                     .from('node')
@@ -198,7 +195,6 @@ export default {
 
         updateNodeLayout(expenseIdHere, xHere, yHere) {
 
-            console.log("updateNodeLayout = ", expenseIdHere, xHere, yHere)
             const nodeLayout = { expense_id: expenseIdHere, x: xHere, y: yHere }
 
             const expensesLength = this.expenses.length;
@@ -208,8 +204,6 @@ export default {
                 const expenseIdArr = []
                 this.nodeFromServer.forEach(e => expenseIdArr.push(e.expense_id))
                 const isNew = expenseIdArr.indexOf(expenseIdHere) < 0
-
-                console.log("isNew? =", isNew)
 
                 if (!isNew) {
                     nodeLayout.id = this.nodeFromServer.filter(e => e.expense_id === expenseIdHere)[0].id
@@ -223,8 +217,6 @@ export default {
 
                         if (isIncluded) {
                             // 포함이 되어있는 경우
-                            console.log("A @updateNodeLayout")
-                            console.log("x,y @updateNodeLayout = ", xHere, yHere)
 
                             // 기존 배열 중 동일한 expense_id의 요소 찾기
                             const isLayoutNode = (element) => {
@@ -233,11 +225,9 @@ export default {
                                 }
                             }
                             const oldValue = this.layoutNodesNew.find(isLayoutNode);
-                            console.log("oldValue = ", oldValue)
 
                             // 기존 값에서 id 가져오기
                             nodeLayout.id = oldValue.id
-                            console.log("nodeLayout(newValue) = ", nodeLayout)
 
                             // 배열에서 과거 값을 지금 값으로 바꾸기
                             const updateArray = (arrHere, oldValueHere, newValueHere) => {
@@ -251,16 +241,13 @@ export default {
 
                         } else {
                             // 포함이 안되어있는 경우
-                            console.log("B @updateNodeLayout")
                             nodeLayout.id = this.getUuidv4();
                             this.layoutNodesNew.push(nodeLayout)
                         }
                     } else {
-                        console.log("C @updateNodeLayout")
                         nodeLayout.id = this.getUuidv4();
                         this.layoutNodesNew.push(nodeLayout)
                     }
-                    console.log("this.layoutNodesNew after =", this.layoutNodesNew);
                 }
 
             }
@@ -279,7 +266,6 @@ export default {
         },
 
         formatExpenses() {
-            console.log('formatExpenses here!')
 
             const nodesResult = {}
             const edgeResult = {}
@@ -287,10 +273,8 @@ export default {
             // layout 정리
             let nodeLayoutResult = {}
             if (this.expenses.length > 1) {
-                console.log('최초아님')
                 nodeLayoutResult = this.formatLayout();
             } else {
-                console.log('최초임')
                 nodeLayoutResult = this.formatLayoutDefault()
             }
 
@@ -313,12 +297,9 @@ export default {
         },
 
         formatLayout() {
-            console.log('formatLayout here!')
 
             // 최종적인 값이 담길 오브젝트
             const nodeLayouts = {}
-
-            console.log(nodeLayouts)
 
             // 삭제 및 신규 node를 추려내야한다.
             const idArray = this.expenses.map(e => e.id);
@@ -361,8 +342,6 @@ export default {
                 })
             })
 
-            console.log("newExpenses = ", newExpenses);
-
             newExpenses.forEach((e) => {
 
                 this.nodes[e.id] = { 'id': e.id, 'name': e.category, 'size': e.amount };
@@ -374,13 +353,8 @@ export default {
             })
 
             const defaultResult = this.formatLayoutDefault()
-            console.log("defaultResult = ", defaultResult);
-            newIdArray.forEach((expenseId) => {
-                console.log("newId = ", expenseId)
-                nodeLayouts[expenseId] = defaultResult[expenseId]
-                console.log("new = ", nodeLayouts[expenseId])
 
-            })
+            newIdArray.forEach((expenseId) => nodeLayouts[expenseId] = defaultResult[expenseId])
 
             // 삭제될 e인 경우
             willBeDeletedIdArray.forEach((expenseId) => {
@@ -393,7 +367,6 @@ export default {
         },
 
         formatLayoutDefault() {
-            console.log('formatLayoutDefault here!')
             // 최초 생길 때, 디폴트 버튼을 누를 때 진행되는 함수
 
             const nodeSize = 30
@@ -465,7 +438,6 @@ export default {
             })
 
             this.layouts.nodes = nodeLayouts
-            console.log("*layout.nodes* = ", this.layouts.nodes)
 
             this.setGraphFit();
 

@@ -622,6 +622,7 @@ export default {
 
           this.expenses.forEach(e => this.upsertExpense(e))
           this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses))
+          
         }
 
         Promise.resolve(deleteOrUpsert()).then(() => {
