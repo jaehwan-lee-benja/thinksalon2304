@@ -71,7 +71,6 @@ export default {
                 nodes: {},
             },
             layoutNodesNew: [], // 새로 생선된 node의 위치값을 임시 저장
-            layoutNodeIdDelete: [], // 삭제될 nodeId 처리하기
             tooltipTimeout: null, // 툴팁 지연을 위한 타이머 변수
             eventHandlers: {
                 "node:click": ({ node }) => {
@@ -263,6 +262,7 @@ export default {
 
             if (this.expenses.length > 1) {
                 nodeLayoutResult = this.formatLayout();
+                console.log("nodeLayoutResult.length =", Object.keys(nodeLayoutResult).length)
             } else {
                 nodeLayoutResult = this.formatLayoutDefault()
             }
@@ -346,12 +346,17 @@ export default {
 
             const defaultResult = this.formatLayoutDefault()
 
-            newIdArray.forEach((expenseId) => nodeLayouts[expenseId] = defaultResult[expenseId])
+            newIdArray.forEach((expenseId) => {
+                nodeLayouts[expenseId] = defaultResult[expenseId]
+                // 편집한 내용 저장 시, 서버로 upsert되기위해 담아두기
+                const layoutNodeNew = { expense_id: expenseId, x: nodeLayouts[expenseId].x, y: nodeLayouts[expenseId].y }
+                this.layoutNodesNew.push(layoutNodeNew)
+            })
+
 
             // 삭제될 e인 경우
             willBeDeletedIdArray.forEach((expenseId) => {
                 delete nodeLayouts[expenseId];
-                this.layoutNodeIdDelete.push(expenseId)
             })
 
             return nodeLayouts
