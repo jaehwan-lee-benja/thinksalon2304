@@ -87,6 +87,7 @@ export default {
             }
         },
         createNewExpense(parentsIdHere, parentsLevelHere) {
+            if(this.newAmount == 0) { this.newAmount = '0'}
             const numericValue = parseFloat(this.newAmount.replace(/,/g, ''));
             if (isNaN(numericValue)) {
                 alert("숫자가 아닌 문자가 입력되었습니다. 숫자만 입력해주십시오");

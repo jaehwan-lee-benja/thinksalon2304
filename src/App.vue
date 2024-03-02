@@ -637,7 +637,7 @@ export default {
     createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere) {
 
       const levelForO = parentsLevelHere + 1;
-
+      
       const o = {
         id: this.getUuidv4(),
         parents_id: parentsIdHere,

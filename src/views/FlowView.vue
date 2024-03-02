@@ -27,6 +27,7 @@ import "v-network-graph/lib/style.css"
 import dagre from "dagre/dist/dagre.min.js"
 import IsolatedModel from './IsolatedModel.vue'
 import { supabase } from '../lib/supabaseClient.js'
+import LoginSessionModel from '../views/LoginSessionModel.vue'
 
 export default {
     name: 'FlowView',
@@ -57,6 +58,7 @@ export default {
             return !!this.clickedExpenseId;
         }
     },
+    mixins: [LoginSessionModel],
     data() {
         return {
             nodeFromServer: [],
@@ -70,7 +72,7 @@ export default {
             layouts: {
                 nodes: {},
             },
-            layoutNodesNew: [], // 새로 생선된 node의 위치값을 임시 저장
+            nodeLayoutsNew: [], // 새로 생선된 node의 위치값을 임시 저장
             tooltipTimeout: null, // 툴팁 지연을 위한 타이머 변수
             eventHandlers: {
                 "node:click": ({ node }) => {
@@ -93,7 +95,7 @@ export default {
                     const endPoint = this.dragEnd[node]
                     // node:click과 겹치는 것을 방지하기 위해 undefined는 제외
                     if (endPoint) {
-                        this.updateNodeLayout(node, endPoint.x, endPoint.y);
+                        this.updateNodeLayoutLocal(node, endPoint.x, endPoint.y);
                     }
 
                 },
@@ -142,7 +144,7 @@ export default {
         },
         editExpenseWorked: {
             handler() {
-                this.upsertLayoutNodes()
+                this.insertNodeLayouts()
             },
             deep: true
         },
@@ -153,9 +155,9 @@ export default {
         this.fetchDataForNode();
     },
     methods: {
-        upsertLayoutNodes() {
-            this.layoutNodesNew.forEach((e) => this.upsertNodeLayout(e))
-            this.layoutNodesNew = []
+        insertNodeLayouts() {
+            this.nodeLayoutsNew.forEach((e) => this.insertNodeLayout(e))
+            this.nodeLayoutsNew = []
         },
         async fetchDataForNode() {
             const a = await supabase
@@ -165,7 +167,7 @@ export default {
             this.nodeFromServer = data
         },
 
-        async upsertNodeLayout(nodeLayoutHere) {
+        async updateNodeLayout(nodeLayoutHere) {
             try {
                 const { error } = await supabase
                     .from('node')
@@ -180,7 +182,21 @@ export default {
             this.fetchDataForNode();
         },
 
-        updateNodeLayout(expenseIdHere, xHere, yHere) {
+        async insertNodeLayout(nodeLayoutHere) {
+            try {
+                const { error } = await supabase
+                    .from('node')
+                    .insert(nodeLayoutHere)
+                if (error) {
+                    throw error;
+                }
+            } catch (error) {
+                console.error(error);
+            }
+            this.fetchDataForNode();
+        },
+
+        updateNodeLayoutLocal(expenseIdHere, xHere, yHere) {
 
             const nodeLayout = { expense_id: expenseIdHere, x: xHere, y: yHere }
 
@@ -194,9 +210,9 @@ export default {
 
                 if (!isNew) {
                     nodeLayout.id = this.nodeFromServer.find(e => e.expense_id === expenseIdHere).id
-                    this.upsertNodeLayout(nodeLayout)
+                    this.updateNodeLayout(nodeLayout)
                 } else {
-                    const expenseIdFromNew = this.layoutNodesNew.map((e) => e.expense_id)
+                    const expenseIdFromNew = this.nodeLayoutsNew.map((e) => e.expense_id)
                     if (expenseIdFromNew.length > 0) {
 
                         // 기존에 포함되어있는 값인지 확인하기
@@ -206,12 +222,12 @@ export default {
                             // 포함이 되어있는 경우
 
                             // 기존 배열 중 동일한 expense_id의 요소 찾기
-                            const isLayoutNode = (element) => {
+                            const isNodeLayout = (element) => {
                                 if (element.expense_id === nodeLayout.expense_id) {
                                     return true;
                                 }
                             }
-                            const oldValue = this.layoutNodesNew.find(isLayoutNode);
+                            const oldValue = this.nodeLayoutsNew.find(isNodeLayout);
 
                             // 기존 값에서 id 가져오기
                             nodeLayout.id = oldValue.id
@@ -224,16 +240,16 @@ export default {
                                 }
                             }
 
-                            updateArray(this.layoutNodesNew, oldValue, nodeLayout)
+                            updateArray(this.nodeLayoutsNew, oldValue, nodeLayout)
 
                         } else {
                             // 포함이 안되어있는 경우
                             nodeLayout.id = this.getUuidv4();
-                            this.layoutNodesNew.push(nodeLayout)
+                            this.nodeLayoutsNew.push(nodeLayout)
                         }
                     } else {
                         nodeLayout.id = this.getUuidv4();
-                        this.layoutNodesNew.push(nodeLayout)
+                        this.nodeLayoutsNew.push(nodeLayout)
                     }
                 }
 
@@ -281,7 +297,6 @@ export default {
 
             this.setGraphFit();
 
-
         },
 
         formatLayout() {
@@ -318,8 +333,8 @@ export default {
                     const xFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).x
                     const yFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).y
                     nodeLayouts[expenseId] = { 'x': xFromServer, 'y': yFromServer }
-                } catch(error) {
-                    console.log('expenseId=',expenseId)
+                } catch (error) {
+                    console.log('expenseId=', expenseId)
                     // throw error
                 }
 
@@ -349,12 +364,20 @@ export default {
             })
 
             const defaultResult = this.formatLayoutDefault()
+            
+            const userId = this.session.user.id
 
             newIdArray.forEach((expenseId) => {
                 nodeLayouts[expenseId] = defaultResult[expenseId]
                 // 편집한 내용 저장 시, 서버로 upsert되기위해 담아두기
-                const layoutNodeNew = { expense_id: expenseId, x: nodeLayouts[expenseId].x, y: nodeLayouts[expenseId].y }
-                this.layoutNodesNew.push(layoutNodeNew)
+                const nodeLayoutNew = {
+                    id: this.getUuidv4(),
+                    expense_id: expenseId,
+                    x: nodeLayouts[expenseId].x,
+                    y: nodeLayouts[expenseId].y,
+                    user_id: userId
+                }
+                this.nodeLayoutsNew.push(nodeLayoutNew)
             })
 
 
@@ -379,7 +402,7 @@ export default {
             // convert graph
             // ref: https://github.com/dagrejs/dagre/wiki
             const g = new dagre.graphlib.Graph()
-            
+
             // Set an object for the graph label
             g.setGraph({
                 rankdir: direction,
@@ -425,7 +448,7 @@ export default {
             if (defaultResult) {
                 this.layouts.nodes = defaultResult
                 this.expenses.forEach((e) => {
-                    this.updateNodeLayout(e.id, defaultResult[e.id].x, defaultResult[e.id].y)
+                    this.updateNodeLayoutLocal(e.id, defaultResult[e.id].x, defaultResult[e.id].y)
                 })
             }
             this.setGraphFit();
@@ -537,4 +560,3 @@ export default {
     white-space: nowrap;
 }
 </style>
-
