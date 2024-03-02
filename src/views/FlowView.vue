@@ -193,7 +193,7 @@ export default {
                 const isNew = expenseIdArr.indexOf(expenseIdHere) < 0
 
                 if (!isNew) {
-                    nodeLayout.id = this.nodeFromServer.filter(e => e.expense_id === expenseIdHere)[0].id
+                    nodeLayout.id = this.nodeFromServer.find(e => e.expense_id === expenseIdHere).id
                     this.upsertNodeLayout(nodeLayout)
                 } else {
                     const expenseIdFromNew = this.layoutNodesNew.map((e) => e.expense_id)
@@ -315,9 +315,8 @@ export default {
             console.log("this.nodeFromServer = ", this.nodeFromServer)
             normalIdArray.forEach((expenseId) => {
                 try {
-                    // const xFromServer = this.nodeFromServer.filter((n) => n.expense_id == expenseId)[0].x
                     const xFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).x
-                    const yFromServer = this.nodeFromServer.filter((n) => n.expense_id == expenseId)[0].y
+                    const yFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).y
                     nodeLayouts[expenseId] = { 'x': xFromServer, 'y': yFromServer }
                 } catch(error) {
                     console.log('expenseId=',expenseId)
@@ -438,8 +437,8 @@ export default {
             this.expenses.forEach((e) => {
                 nodeLayouts[e.id] = {
                     'category': e.category,
-                    'x': this.nodeFromServer.filter((n) => n.expense_id == e.id)[0].x,
-                    'y': this.nodeFromServer.filter((n) => n.expense_id == e.id)[0].y
+                    'x': this.nodeFromServer.find((n) => n.expense_id == e.id).x,
+                    'y': this.nodeFromServer.find((n) => n.expense_id == e.id).y
                 }
             })
 

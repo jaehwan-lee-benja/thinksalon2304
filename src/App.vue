@@ -131,7 +131,7 @@ export default {
     },
     totalExpenseId() {
       if (this.expenses.length > 0) {
-        return this.expenses.filter(e => e.level === 1)[0].id
+        return this.expenses.find(e => e.level === 1).id
       } else {
         return "1"
       }
@@ -231,7 +231,7 @@ export default {
       window.open("http://pf.kakao.com/_QxewxfT", "_blank");
     },
     updatedPageName() {
-      return this.expenses.filter(e => e.id === this.selectedPageId)[0].name
+      return this.expenses.find(e => e.id === this.selectedPageId).name
     },
     cancelPointClickedLi() {
       this.clickedExpenseId = ""
@@ -247,13 +247,13 @@ export default {
         // 자식요소가 없을 때는, 펼치지지 않도록 설정
         const parentsAndChildArr = this.expenses.map(e2 => {
           return {
-            "parents": this.expenses.filter(e3 => e3.id === e2.id),
-            "children": this.expenses.filter(e3 => e3.parents_id === e2.id)
+            "parents": this.expenses.find(e3 => e3.id === e2.id),
+            "children": this.expenses.find(e3 => e3.parents_id === e2.id)
           }
         })
 
         parentsAndChildArr.forEach(e4 => {
-          const parentsExpense = e4.parents[0]
+          const parentsExpense = e4.parents
           if (e4.children.length > 0) {
             parentsExpense.show_sub_list = true;
             this.upsertExpense(parentsExpense);
@@ -488,7 +488,7 @@ export default {
     },
     updateParentsToggle(idHere) {
 
-      const expense = this.expenses.filter(e => e.id === idHere)[0]
+      const expense = this.expenses.find(e => e.id === idHere)
       const ParentsToUpdate = this.findParentsExpense(expense, []);
       ParentsToUpdate.forEach(e => {
         e.show_sub_list = true;
@@ -743,7 +743,7 @@ export default {
     },
     async selectPageByLoading() {
 
-      let selectedPage = this.sortExpensePages.filter(e => e.order === 0)[0]
+      let selectedPage = this.sortExpensePages.find(e => e.order === 0)
       if (selectedPage != undefined) {
         this.selectedPageId = selectedPage.id
       } else {
@@ -754,7 +754,7 @@ export default {
 
     },
     selectPageBySelectBox() {
-      const selectedPage = this.expensePages.filter(e => e.page_name === this.pageName)[0]
+      const selectedPage = this.expensePages.find(e => e.page_name === this.pageName)
       this.selectedPageId = selectedPage.id
 
       this.setPageBySelectPage(selectedPage)
@@ -762,16 +762,15 @@ export default {
     },
     selectPageByEditPage() {
 
-      let selectedPage = this.expensePages.filter(e => e.id === this.selectedPageId)
+      let selectedPage = this.expensePages.find(e => e.id === this.selectedPageId)
 
       // selectedPage.length가 0이라면, this.selectedPageId에 대항하는 이전 page가 없어졌다는 뜻이다.(즉, 삭제된 페이지)
-      if (selectedPage.length == 0) {
+      if (Object.keys(selectedPage).length == 0) {
         // 보고 있던 페이지에서, 페이지 설정 창으로 들어가, 해당 페이지를 삭제하는 경우 (selectPageByLoading()와 같음)
-        selectedPage = this.sortExpensePages.filter(e => e.order === 0)[0]
+        selectedPage = this.sortExpensePages.find(e => e.order === 0)
         this.selectedPageId = selectedPage.id
       } else {
         // 그외 경우, 기존에 열려있던 페이지가 selectedPage가 된다.
-        selectedPage = selectedPage[0]
       }
 
       this.setPageBySelectPage(selectedPage)

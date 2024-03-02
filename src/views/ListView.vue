@@ -126,9 +126,9 @@ export default {
     computed: {
         getTotalExpense() {
             if (this.expenses.length > 0) {
-                return this.expenses.filter(expense => expense.id === this.totalExpenseId)[0]
+                return this.expenses.find(expense => expense.id === this.totalExpenseId)
             } else {
-                return [{ category: "로딩중..", amount: 0, id: "" }]
+                return { category: "로딩중..", amount: 0, id: "" }
             }
         },
     },
