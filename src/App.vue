@@ -33,13 +33,13 @@
       <div class="mainBtnDiv">
         <div class="saveEditedDiv">
           <button :class="{
-            'saveEditedBtn_active': isEdited === true,
-            'saveEditedBtn_inactive': isEdited === false
-          }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
+          'saveEditedBtn_active': isEdited === true,
+          'saveEditedBtn_inactive': isEdited === false
+        }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
           <button :class="{
-            'cancelEditedBtn_active': isEdited === true,
-            'cancelEditedBtn_inactive': isEdited === false
-          }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
+          'cancelEditedBtn_active': isEdited === true,
+          'cancelEditedBtn_inactive': isEdited === false
+        }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
         </div>
       </div>
       <div class="viewGrid">
@@ -618,14 +618,14 @@ export default {
           // fetchedArray 중 기존 Array에 없는 id를 필터링해서 모으기
           const willBeDeletedIdArray = fetchedidArray.filter(eachId => !idArray.includes(eachId));
 
-          willBeDeletedIdArray.forEach(eachId => this.deleteExpense(eachId))
-
-          this.expenses.forEach(e => this.upsertExpense(e))
+          return Promise.all([willBeDeletedIdArray.forEach(eachId => this.deleteExpense(eachId)),
+          this.expenses.forEach(e => this.upsertExpense(e)),
           this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses))
-          
+          ])
+
         }
 
-        Promise.resolve(deleteOrUpsert()).then(() => {
+        deleteOrUpsert().then(() => {
           // flowView.vue로 저장 완료됨을 알려주기
           this.editExpenseWorked = !this.editExpenseWorked;
           alert('저장되었습니다.')
@@ -637,7 +637,7 @@ export default {
     createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere) {
 
       const levelForO = parentsLevelHere + 1;
-      
+
       const o = {
         id: this.getUuidv4(),
         parents_id: parentsIdHere,

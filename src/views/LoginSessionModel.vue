@@ -80,7 +80,7 @@ export default {
         await this.insertInitailData();
       }
 
-      await this.fetchData()
+      // await this.fetchData()
 
     },
     async insertInitailData() {

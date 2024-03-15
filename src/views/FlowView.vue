@@ -269,7 +269,7 @@ export default {
         },
 
         formatExpenses() {
-
+            
             const nodesResult = {}
             const edgeResult = {}
 
@@ -328,6 +328,7 @@ export default {
             // 기존에 있는 e인 경우
 
             console.log("this.nodeFromServer = ", this.nodeFromServer)
+
             normalIdArray.forEach((expenseId) => {
                 try {
                     const xFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).x
