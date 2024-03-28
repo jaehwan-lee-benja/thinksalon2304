@@ -620,37 +620,18 @@ export default {
           // fetchedArray 중 기존 Array에 없는 id를 필터링해서 모으기
           const willBeDeletedIdArray = fetchedidArray.filter(eachId => !idArray.includes(eachId));
 
-          // const deleteE = new Promise((resolve, reject) => {
-          //   willBeDeletedIdArray.map(async (eachId) => await this.deleteExpense(eachId))
-          //   resolve("deleteWorked!")
-          // })
-
           const deleteE = willBeDeletedIdArray.map(async (eachId) => {
             return await this.deleteExpense(eachId)
           })
-
-          // const upsertE = () => {
-          //   this.expenses.forEach(e => this.upsertExpense(e))
-          //   return "upsertWorked!"
-          // }
 
           const upsertE = this.expenses.map(async (e) => {
             return await this.upsertExpense(e)
           })
 
-          // const syncFetchedE = () => {
-          //   this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses))
-          //   return "syncFetchedWorked"
-          // }
-   
-
           const result = await Promise.allSettled(deleteE.concat(upsertE))
 
           console.log('promise end')
           this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses))
-
-          //const result = Promise.all([ deleteE(), upsertE(), this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses))])
-
 
           console.log("result")
           return result
