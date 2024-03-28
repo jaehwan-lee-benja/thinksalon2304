@@ -591,6 +591,8 @@ export default {
         }
       } catch (error) {
         console.error(error);
+      } finally {
+        console.log('upsert expense # ', expenseHere.id)
       }
     },
     async deleteExpense(expenseIdHere) {
@@ -606,7 +608,7 @@ export default {
         console.error(error);
       }
     },
-    editExpense() {
+    async editExpense() {
 
       const confirmValue = confirm("편집된 내용을 저장하시겠습니까?")
 
@@ -614,34 +616,48 @@ export default {
         const idArray = this.expenses.map(e => e.id);
         const fetchedidArray = this.fetchedExpenses.map(e => e.id);
 
-        const deleteOrUpsert = () => {
+        const deleteOrUpsert = async () => {
           // fetchedArray 중 기존 Array에 없는 id를 필터링해서 모으기
           const willBeDeletedIdArray = fetchedidArray.filter(eachId => !idArray.includes(eachId));
 
-          const deleteE = () => {
-            willBeDeletedIdArray.forEach(eachId => this.deleteExpense(eachId))
-            return "deleteWorked!"
-          }
+          // const deleteE = new Promise((resolve, reject) => {
+          //   willBeDeletedIdArray.map(async (eachId) => await this.deleteExpense(eachId))
+          //   resolve("deleteWorked!")
+          // })
 
-          const upsertE = () => {
-            this.expenses.forEach(e => this.upsertExpense(e))
-            return "upsertWorked!"
-          }
+          const deleteE = willBeDeletedIdArray.map(async (eachId) => {
+            return await this.deleteExpense(eachId)
+          })
 
-          const syncFetchedE = () => {
-            this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses))
-            return "syncFetchedWorked"
-          }
+          // const upsertE = () => {
+          //   this.expenses.forEach(e => this.upsertExpense(e))
+          //   return "upsertWorked!"
+          // }
 
-          const result = Promise.all([ deleteE(), upsertE(), syncFetchedE()])
+          const upsertE = this.expenses.map(async (e) => {
+            return await this.upsertExpense(e)
+          })
 
-          console.log("result = ", result)
+          // const syncFetchedE = () => {
+          //   this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses))
+          //   return "syncFetchedWorked"
+          // }
+   
 
+          const result = await Promise.allSettled(deleteE.concat(upsertE))
+
+          console.log('promise end')
+          this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses))
+
+          //const result = Promise.all([ deleteE(), upsertE(), this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses))])
+
+
+          console.log("result")
           return result
-
         }
 
-        deleteOrUpsert().then(() => {
+        deleteOrUpsert().then((results) => {
+          console.log('promise result = ', results)
           // flowView.vue로 저장 완료됨을 알려주기
           this.editExpenseWorked = !this.editExpenseWorked;
           alert('저장되었습니다.')
