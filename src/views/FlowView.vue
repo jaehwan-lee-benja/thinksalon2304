@@ -324,23 +324,12 @@ export default {
             // 전체 idArray에서 차집합한다.
             const normalIdArray = Array.from(difference)
 
-
             // 기존에 있는 e인 경우
-
-            console.log("this.nodeFromServer = ", this.nodeFromServer)
-
             normalIdArray.forEach((expenseId) => {
-                try {
-                    const xFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).x
-                    const yFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).y
-                    nodeLayouts[expenseId] = { 'x': xFromServer, 'y': yFromServer }
-                } catch (error) {
-                    console.log('expenseId=', expenseId)
-                    // throw error
-                }
-
+                const xFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).x
+                const yFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).y
+                nodeLayouts[expenseId] = { 'x': xFromServer, 'y': yFromServer }
             })
-
 
             // 새로운 e인 경우
             // 이 경우에 대한 서버, 로컬 단의 구분정리가 필요하다.

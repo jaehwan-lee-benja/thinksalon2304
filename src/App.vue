@@ -33,13 +33,13 @@
       <div class="mainBtnDiv">
         <div class="saveEditedDiv">
           <button :class="{
-          'saveEditedBtn_active': isEdited === true,
-          'saveEditedBtn_inactive': isEdited === false
-        }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
+            'saveEditedBtn_active': isEdited === true,
+            'saveEditedBtn_inactive': isEdited === false
+          }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
           <button :class="{
-          'cancelEditedBtn_active': isEdited === true,
-          'cancelEditedBtn_inactive': isEdited === false
-        }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
+            'cancelEditedBtn_active': isEdited === true,
+            'cancelEditedBtn_inactive': isEdited === false
+          }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
         </div>
       </div>
       <div class="viewGrid">
@@ -238,10 +238,12 @@ export default {
     },
     openOrCloseLi() {
       if (this.isAnyOpenedLi) {
+
         this.expenses.forEach(e => {
           e.show_sub_list = false;
           this.upsertExpense(e);
         })
+
       } else {
 
         // 자식요소가 없을 때는, 펼치지지 않도록 설정
@@ -252,9 +254,11 @@ export default {
           }
         })
 
+        console.log("parentsAndChildArr = ", parentsAndChildArr)
+
         parentsAndChildArr.forEach(e4 => {
           const parentsExpense = e4.parents
-          if (e4.children.length > 0) {
+          if (e4.children && Object.keys(e4.children).length > 0) {
             parentsExpense.show_sub_list = true;
             this.upsertExpense(parentsExpense);
           } else {
@@ -592,7 +596,7 @@ export default {
       } catch (error) {
         console.error(error);
       } finally {
-        console.log('upsert expense # ', expenseHere.id)
+        // 성공하던 실패하던 실행되는 곳
       }
     },
     async deleteExpense(expenseIdHere) {
@@ -630,15 +634,12 @@ export default {
 
           const result = await Promise.allSettled(deleteE.concat(upsertE))
 
-          console.log('promise end')
           this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses))
 
-          console.log("result")
           return result
         }
 
-        deleteOrUpsert().then((results) => {
-          console.log('promise result = ', results)
+        deleteOrUpsert().then(() => {
           // flowView.vue로 저장 완료됨을 알려주기
           this.editExpenseWorked = !this.editExpenseWorked;
           alert('저장되었습니다.')
