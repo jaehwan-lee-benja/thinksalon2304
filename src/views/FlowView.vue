@@ -51,11 +51,26 @@ export default {
         editExpenseWorked: {
             type: Boolean,
             default: true,
-        }
+        },
+        pageChangedMonitor: {
+            type: Boolean,
+            default: true,
+        },
+        gotInitialExpense: {
+            type: Boolean,
+            default: true,
+        },
+        newExpenseIdByCreatedPage: {
+            type: Object,
+            default: () => { }
+        },
     },
     computed: {
         showClickedLiDiv() {
             return !!this.clickedExpenseId;
+        },
+        computedNewExpenseIdByCreatedPage() {
+            return this.newExpenseIdByCreatedPage;
         }
     },
     mixins: [LoginSessionModel],
@@ -148,6 +163,18 @@ export default {
             },
             deep: true
         },
+        pageChangedMonitor: {
+            handler() {
+                this.resetNodeAndEdge()
+            },
+            deep: true
+        },
+        gotInitialExpense: {
+            handler() {
+                this.insertInitialNode()
+            },
+            deep: true
+        },
     },
     mounted() {
         document.addEventListener("click", this.handleDocumentClick); // [질문] 이것을 어떻게 바꿀 수 있을까?
@@ -155,6 +182,24 @@ export default {
         this.fetchDataForNode();
     },
     methods: {
+        resetNodeAndEdge() {
+            // 페이지를 바꾸면서, 기초 값을 리셋한다. 타이밍 문제가 있을 수 있다.
+            this.nodes = {}
+            this.edges = {}
+            this.layouts = {
+                nodes: {},
+            }
+        },
+        insertInitialNode() {
+            this.formatLayoutInitial()
+            // const initialResult = this.formatLayoutInitial()
+            // const initialNodeLayout = {
+            //     id: this.getUuidv4,
+            //     expense_id: expenseIdHere, 
+            //     x: xHere,
+            //     y: yHere,
+            // }
+        },
         insertNodeLayouts() {
             this.nodeLayoutsNew.forEach((e) => this.insertNodeLayout(e))
             this.nodeLayoutsNew = []
@@ -269,7 +314,7 @@ export default {
         },
 
         formatExpenses() {
-            
+
             const nodesResult = {}
             const edgeResult = {}
 
@@ -354,7 +399,7 @@ export default {
             })
 
             const defaultResult = this.formatLayoutDefault()
-            
+
             const userId = this.session.user.id
 
             newIdArray.forEach((expenseId) => {
@@ -432,6 +477,80 @@ export default {
 
         },
 
+        formatLayoutInitial() {
+
+            const initialNode = {}
+            const initialEdge = {}
+            const initialExpense = this.computedNewExpenseIdByCreatedPage;
+
+            initialNode[initialExpense.id] = {
+                'id': initialExpense.id,
+                'name': initialExpense.category,
+                'size': initialExpense.amount
+            };
+
+            if (initialExpense.parents_id != null) {
+                initialEdge[initialExpense.id] = {
+                    'id': initialExpense.id,
+                    'source': initialExpense.parents_id,
+                    'target': initialExpense.id,
+                    'size': initialExpense.amount
+                };
+            }
+
+
+            // 최초 생길 때, 진행되는 함수
+
+            const nodeSize = 30
+            const direction = "TB" // "TB" | "LR"
+
+            if (Object.keys(initialNode).length <= 1 || Object.keys(initialEdge).length == 0) {
+                return
+            }
+
+            // convert graph
+            // ref: https://github.com/dagrejs/dagre/wiki
+            const g = new dagre.graphlib.Graph()
+
+            // Set an object for the graph label
+            g.setGraph({
+                rankdir: direction,
+                nodesep: nodeSize,
+                edgesep: nodeSize,
+                ranksep: nodeSize * 4,
+            })
+            // Default to assigning a new object as a label for each new edge.
+            g.setDefaultEdgeLabel(() => ({}))
+
+            // Add nodes to the graph. The first argument is the node id. The second is
+            // metadata about the node. In this case we're going to add labels to each of
+            // our nodes.
+            Object.entries(initialNode).forEach(([nodeId, node]) => {
+                g.setNode(nodeId, { label: node.name, width: nodeSize, height: nodeSize })
+            })
+
+            // Add edges to the graph.
+            Object.values(initialEdge).forEach(edge => {
+                g.setEdge(edge.source, edge.target)
+            })
+
+            dagre.layout(g)
+
+            const defaultXYs = {}
+
+            g.nodes().forEach((nodeId) => {
+
+                // update node position
+                const x = g.node(nodeId).x
+                const y = g.node(nodeId).y
+                defaultXYs[nodeId] = { x, y }
+
+            })
+
+            return defaultXYs
+
+        },
+
         showGraphDefault() {
             const defaultResult = this.formatLayoutDefault()
             // node가 1개인 경우, formatLayoutDefault는 undefined가 된다. => 거르기
@@ -484,12 +603,18 @@ export default {
             // 클릭이 그래프 컨테이너 외부에서 발생했는지 확인합니다
             const graphContainer = this.$refs.graphContainer;
             const isolatedContainer = this.$refs.isolatedContainer;
-            if (graphContainer || !graphContainer.contains(event.target)) {
-                // 클릭이 그래프 컨테이너 외부에서 발생한 경우, 노드 클릭 효과를 취소합니다
-                if (isolatedContainer != null && !isolatedContainer.contains(event.target)) {
-                    this.$emit('cancel-point-clicked-li');
+
+            if (graphContainer !== null) {
+
+                if (graphContainer || !graphContainer.contains(event.target)) {
+                    // 클릭이 그래프 컨테이너 외부에서 발생한 경우, 노드 클릭 효과를 취소합니다
+                    if (isolatedContainer != null && !isolatedContainer.contains(event.target)) {
+                        this.$emit('cancel-point-clicked-li');
+                    }
                 }
+
             }
+
         },
 
         setTooltipFromEvent(node, event) {

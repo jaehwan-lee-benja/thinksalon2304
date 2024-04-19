@@ -33,13 +33,13 @@
       <div class="mainBtnDiv">
         <div class="saveEditedDiv">
           <button :class="{
-            'saveEditedBtn_active': isEdited === true,
-            'saveEditedBtn_inactive': isEdited === false
-          }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
+          'saveEditedBtn_active': isEdited === true,
+          'saveEditedBtn_inactive': isEdited === false
+        }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
           <button :class="{
-            'cancelEditedBtn_active': isEdited === true,
-            'cancelEditedBtn_inactive': isEdited === false
-          }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
+          'cancelEditedBtn_active': isEdited === true,
+          'cancelEditedBtn_inactive': isEdited === false
+        }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
         </div>
       </div>
       <div class="viewGrid">
@@ -47,7 +47,8 @@
           <FlowView v-bind:expenses="expenses" :fetchedExpenses="fetchedExpenses" :clickedExpenseId="clickedExpenseId"
             :editExpenseWorked="editExpenseWorked" @point-clicked-li="pointClickedLi"
             @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense" :accounts="accounts"
-            @select-account="selectAccount" />
+            @select-account="selectAccount" :pageChangedMonitor="pageChangedMonitor"
+            :gotInitialExpense="gotInitialExpense" :newExpenseByCreatedPage="newExpenseByCreatedPage" />
         </div>
         <div class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler"
@@ -104,6 +105,11 @@ export default {
       clickedExpenseId: '',
 
       editExpenseWorked: true,
+
+      pageChangedMonitor: true,
+
+      gotInitialExpense: true,
+      newExpenseByCreatedPage: {},
     }
   },
   mixins: [LoginSessionModel],
@@ -253,8 +259,6 @@ export default {
             "children": this.expenses.find(e3 => e3.parents_id === e2.id)
           }
         })
-
-        console.log("parentsAndChildArr = ", parentsAndChildArr)
 
         parentsAndChildArr.forEach(e4 => {
           const parentsExpense = e4.parents
@@ -488,7 +492,10 @@ export default {
       }
       this.totalExpenses.push(initialExpenseData);
 
-      await this.upsertExpense(initialExpenseData)
+      await this.upsertExpense(initialExpenseData);
+
+      this.gotInitialExpense = !this.gotInitialExpense;
+      this.newExpenseByCreatedPage = initialExpenseData;
     },
     updateParentsToggle(idHere) {
 
@@ -799,6 +806,9 @@ export default {
       this.expenses.forEach(e => {
         if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
       })
+
+      this.pageChangedMonitor = !this.pageChangedMonitor
+
     },
 
     async fetchDataForAccount() {
