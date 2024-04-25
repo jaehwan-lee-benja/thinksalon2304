@@ -172,19 +172,14 @@ export default {
     },
     methods: {
         insertInitailNode() {
-            console.log("this.createdExpenseIdByNewPage = ", this.createdExpenseIdByNewPage);
-
             const nodeLayout = {
                 id: this.getUuidv4(),
                 user_id: this.session.user.id,
-                expense_id: this.createdExpenseIdByNewPage, 
-                x: 250, 
+                expense_id: this.createdExpenseIdByNewPage,
+                x: 250,
                 y: 250,
 
             }
-
-            console.log("nodeLayout = ", nodeLayout);
-
             this.insertNodeLayout(nodeLayout)
         },
         insertNodeLayouts() {
@@ -228,7 +223,7 @@ export default {
             this.fetchDataForNode();
         },
 
-        updateNodeLayoutLocal(expenseIdHere, xHere, yHere) {
+        async updateNodeLayoutLocal(expenseIdHere, xHere, yHere) {
 
             const nodeLayout = { expense_id: expenseIdHere, x: xHere, y: yHere }
 
@@ -277,7 +272,7 @@ export default {
                         } else {
                             // 포함이 안되어있는 경우
                             nodeLayout.id = this.getUuidv4();
-                            this.nodeLayoutsNew.push(nodeLayout)
+                            await this.nodeLayoutsNew.push(nodeLayout)
                         }
                     } else {
                         nodeLayout.id = this.getUuidv4();
@@ -470,12 +465,24 @@ export default {
         showGraphFit() {
 
             const nodeLayouts = {}
+            const newExpenseIds = this.nodeLayoutsNew.map((n) => n.expense_id)
+            let foundNode = []
+
             this.expenses.forEach((e) => {
+
+                const isNewExpense = newExpenseIds.includes(e.id);
+                if (isNewExpense) {
+                    foundNode = this.nodeLayoutsNew.find((n) => n.expense_id == e.id)
+                } else {
+                    foundNode = this.nodeFromServer.find((n) => n.expense_id == e.id)
+                }
+
                 nodeLayouts[e.id] = {
                     'category': e.category,
-                    'x': this.nodeFromServer.find((n) => n.expense_id == e.id).x,
-                    'y': this.nodeFromServer.find((n) => n.expense_id == e.id).y
+                    'x': foundNode.x,
+                    'y': foundNode.y
                 }
+
             })
 
             this.layouts.nodes = nodeLayouts
