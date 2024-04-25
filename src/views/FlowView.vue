@@ -176,10 +176,10 @@ export default {
 
             const nodeLayout = {
                 id: this.getUuidv4(),
+                user_id: this.session.user.id,
                 expense_id: this.createdExpenseIdByNewPage, 
-                x: 0, 
-                y: 0,
-                user_id: this.session.user.id
+                x: 250, 
+                y: 250,
 
             }
 
