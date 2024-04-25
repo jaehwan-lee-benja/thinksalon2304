@@ -33,13 +33,13 @@
       <div class="mainBtnDiv">
         <div class="saveEditedDiv">
           <button :class="{
-          'saveEditedBtn_active': isEdited === true,
-          'saveEditedBtn_inactive': isEdited === false
-        }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
+            'saveEditedBtn_active': isEdited === true,
+            'saveEditedBtn_inactive': isEdited === false
+          }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
           <button :class="{
-          'cancelEditedBtn_active': isEdited === true,
-          'cancelEditedBtn_inactive': isEdited === false
-        }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
+            'cancelEditedBtn_active': isEdited === true,
+            'cancelEditedBtn_inactive': isEdited === false
+          }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
         </div>
       </div>
       <div class="viewGrid">
@@ -47,8 +47,7 @@
           <FlowView v-bind:expenses="expenses" :fetchedExpenses="fetchedExpenses" :clickedExpenseId="clickedExpenseId"
             :editExpenseWorked="editExpenseWorked" @point-clicked-li="pointClickedLi"
             @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense" :accounts="accounts"
-            @select-account="selectAccount" :pageChangedMonitor="pageChangedMonitor"
-            :gotInitialExpense="gotInitialExpense" :newExpenseByCreatedPage="newExpenseByCreatedPage" />
+            @select-account="selectAccount" :createdExpenseIdByNewPage="createdExpenseIdByNewPage" />
         </div>
         <div class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler"
@@ -99,6 +98,7 @@ export default {
       expensePages: [],
       fetchedExpensePages: [],
       isPageSettingOpened: false,
+      createdExpenseIdByNewPage: '',
 
       toggleActiveHandler: {},
       isThereChildMonitor: {},
@@ -106,10 +106,6 @@ export default {
 
       editExpenseWorked: true,
 
-      pageChangedMonitor: true,
-
-      gotInitialExpense: true,
-      newExpenseByCreatedPage: {},
     }
   },
   mixins: [LoginSessionModel],
@@ -492,10 +488,37 @@ export default {
       }
       this.totalExpenses.push(initialExpenseData);
 
-      await this.upsertExpense(initialExpenseData);
+      // 질문
+      await this.upsertExpense(initialExpenseData)
+      this.createdExpenseIdByNewPage = initialExpenseData.id;
 
-      this.gotInitialExpense = !this.gotInitialExpense;
-      this.newExpenseByCreatedPage = initialExpenseData;
+      // const promise = new Promise(function(){
+      //   this.upsertExpense(initialExpenseData)
+      // });
+
+      // promise.then(() => {
+      //   // 새로 생기는 node를 서버에 올리기 위한 작업
+      //   this.createdExpenseIdByNewPage = initialExpenseData.id;
+      // })
+
+      // const promise = new Promise((resolve, reject) => {
+      //   this.upsertExpense(initialExpenseData, (error, result) => {
+      //     if (error) {
+      //       reject(error);
+      //     } else {
+      //       resolve(result);
+      //     }
+      //   });
+      // });
+
+      // promise.then(() => {
+      //   // 새로 생기는 node를 서버에 올리기 위한 작업
+      //   this.createdExpenseIdByNewPage = initialExpenseData.id;
+      // }).catch(error => {
+      //   // 프로미스가 거부될 경우 처리할 작업
+      //   console.error('Error:', error);
+      // });
+
     },
     updateParentsToggle(idHere) {
 
@@ -806,8 +829,6 @@ export default {
       this.expenses.forEach(e => {
         if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
       })
-
-      this.pageChangedMonitor = !this.pageChangedMonitor
 
     },
 

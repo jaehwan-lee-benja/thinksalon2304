@@ -52,30 +52,25 @@ export default {
             type: Boolean,
             default: true,
         },
-        pageChangedMonitor: {
-            type: Boolean,
-            default: true,
-        },
-        gotInitialExpense: {
-            type: Boolean,
-            default: true,
-        },
         newExpenseIdByCreatedPage: {
             type: Object,
             default: () => { }
+        },
+        createdExpenseIdByNewPage: {
+            type: String,
+            default: '',
         },
     },
     computed: {
         showClickedLiDiv() {
             return !!this.clickedExpenseId;
         },
-        computedNewExpenseIdByCreatedPage() {
-            return this.newExpenseIdByCreatedPage;
-        }
     },
     mixins: [LoginSessionModel],
     data() {
         return {
+            pageLengthMonitor: 0,
+
             nodeFromServer: [],
             dragStart: {},
             dragEnd: {},
@@ -163,17 +158,11 @@ export default {
             },
             deep: true
         },
-        pageChangedMonitor: {
+        createdExpenseIdByNewPage: {
             handler() {
-                this.resetNodeAndEdge()
+                this.insertInitailNode()
             },
-            deep: true
-        },
-        gotInitialExpense: {
-            handler() {
-                this.insertInitialNode()
-            },
-            deep: true
+            xdeep: true
         },
     },
     mounted() {
@@ -182,23 +171,21 @@ export default {
         this.fetchDataForNode();
     },
     methods: {
-        resetNodeAndEdge() {
-            // 페이지를 바꾸면서, 기초 값을 리셋한다. 타이밍 문제가 있을 수 있다.
-            this.nodes = {}
-            this.edges = {}
-            this.layouts = {
-                nodes: {},
+        insertInitailNode() {
+            console.log("this.createdExpenseIdByNewPage = ", this.createdExpenseIdByNewPage);
+
+            const nodeLayout = {
+                id: this.getUuidv4(),
+                expense_id: this.createdExpenseIdByNewPage, 
+                x: 0, 
+                y: 0,
+                user_id: this.session.user.id
+
             }
-        },
-        insertInitialNode() {
-            this.formatLayoutInitial()
-            // const initialResult = this.formatLayoutInitial()
-            // const initialNodeLayout = {
-            //     id: this.getUuidv4,
-            //     expense_id: expenseIdHere, 
-            //     x: xHere,
-            //     y: yHere,
-            // }
+
+            console.log("nodeLayout = ", nodeLayout);
+
+            this.insertNodeLayout(nodeLayout)
         },
         insertNodeLayouts() {
             this.nodeLayoutsNew.forEach((e) => this.insertNodeLayout(e))
@@ -457,80 +444,6 @@ export default {
 
             // Add edges to the graph.
             Object.values(this.edges).forEach(edge => {
-                g.setEdge(edge.source, edge.target)
-            })
-
-            dagre.layout(g)
-
-            const defaultXYs = {}
-
-            g.nodes().forEach((nodeId) => {
-
-                // update node position
-                const x = g.node(nodeId).x
-                const y = g.node(nodeId).y
-                defaultXYs[nodeId] = { x, y }
-
-            })
-
-            return defaultXYs
-
-        },
-
-        formatLayoutInitial() {
-
-            const initialNode = {}
-            const initialEdge = {}
-            const initialExpense = this.computedNewExpenseIdByCreatedPage;
-
-            initialNode[initialExpense.id] = {
-                'id': initialExpense.id,
-                'name': initialExpense.category,
-                'size': initialExpense.amount
-            };
-
-            if (initialExpense.parents_id != null) {
-                initialEdge[initialExpense.id] = {
-                    'id': initialExpense.id,
-                    'source': initialExpense.parents_id,
-                    'target': initialExpense.id,
-                    'size': initialExpense.amount
-                };
-            }
-
-
-            // 최초 생길 때, 진행되는 함수
-
-            const nodeSize = 30
-            const direction = "TB" // "TB" | "LR"
-
-            if (Object.keys(initialNode).length <= 1 || Object.keys(initialEdge).length == 0) {
-                return
-            }
-
-            // convert graph
-            // ref: https://github.com/dagrejs/dagre/wiki
-            const g = new dagre.graphlib.Graph()
-
-            // Set an object for the graph label
-            g.setGraph({
-                rankdir: direction,
-                nodesep: nodeSize,
-                edgesep: nodeSize,
-                ranksep: nodeSize * 4,
-            })
-            // Default to assigning a new object as a label for each new edge.
-            g.setDefaultEdgeLabel(() => ({}))
-
-            // Add nodes to the graph. The first argument is the node id. The second is
-            // metadata about the node. In this case we're going to add labels to each of
-            // our nodes.
-            Object.entries(initialNode).forEach(([nodeId, node]) => {
-                g.setNode(nodeId, { label: node.name, width: nodeSize, height: nodeSize })
-            })
-
-            // Add edges to the graph.
-            Object.values(initialEdge).forEach(edge => {
                 g.setEdge(edge.source, edge.target)
             })
 
