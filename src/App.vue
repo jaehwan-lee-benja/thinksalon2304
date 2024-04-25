@@ -488,9 +488,11 @@ export default {
       }
       this.totalExpenses.push(initialExpenseData);
 
-      // 질문
+      // 질문: 이것이 제대로 되고 있는 것인지?
       await this.upsertExpense(initialExpenseData)
+
       this.createdExpenseIdByNewPage = initialExpenseData.id;
+
 
       // const promise = new Promise(function(){
       //   this.upsertExpense(initialExpenseData)
@@ -500,6 +502,7 @@ export default {
       //   // 새로 생기는 node를 서버에 올리기 위한 작업
       //   this.createdExpenseIdByNewPage = initialExpenseData.id;
       // })
+
 
       // const promise = new Promise((resolve, reject) => {
       //   this.upsertExpense(initialExpenseData, (error, result) => {

@@ -46,6 +46,7 @@ export default {
             },
         },
         theExpenseById() {
+            console.log("this.expenseById = ", this.expenseById);
             return this.expenseById
         },
         isNotTotal() {

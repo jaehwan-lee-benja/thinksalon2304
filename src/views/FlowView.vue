@@ -305,15 +305,6 @@ export default {
             const nodesResult = {}
             const edgeResult = {}
 
-            // layout 정리
-            let nodeLayoutResult = {}
-
-            if (this.expenses.length > 1) {
-                nodeLayoutResult = this.formatLayout();
-            } else {
-                nodeLayoutResult = this.formatLayoutDefault()
-            }
-
             this.expenses.forEach((e) => {
                 nodesResult[e.id] = { 'id': e.id, 'name': e.category, 'size': e.amount };
 
@@ -325,7 +316,7 @@ export default {
 
             this.nodes = nodesResult
             this.edges = edgeResult
-            this.layouts.nodes = nodeLayoutResult
+            this.layouts.nodes = this.formatLayout();
 
             this.setGraphFit();
 
