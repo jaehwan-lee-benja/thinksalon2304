@@ -182,10 +182,12 @@ export default {
             }
             this.insertNodeLayout(nodeLayout)
         },
+        
         insertNodeLayouts() {
             this.nodeLayoutsNew.forEach((e) => this.insertNodeLayout(e))
             this.nodeLayoutsNew = []
         },
+
         async fetchDataForNode() {
             const a = await supabase
                 .from('node')
