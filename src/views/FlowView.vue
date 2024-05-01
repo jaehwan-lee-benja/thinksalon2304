@@ -138,6 +138,8 @@ export default {
                         height: node => Math.pow(node.size / 500, 1 / 2),
                         borderRadius: 2,
                         // radius: node => Math.pow(node.size / 1000, 1 / 2),
+                        strokeWidth: 3,
+                        strokeColor: "#11212D",
                     },
                     hover: {
                         color: "#F6C5C5",
