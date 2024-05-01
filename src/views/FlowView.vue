@@ -24,6 +24,7 @@
             <template #edge-label="{ edge, ...slotProps }">
                 <v-edge-label :text="edge.label" align="center" vertical-align="above" v-bind="slotProps" />
             </template>
+            <!-- 질문 -->
         </VNetworkGraph>
         <div v-if="tooltip" class="tooltip"
             :style="{ position: 'absolute', top: tooltip.top + 'px', left: tooltip.left + 'px' }">

@@ -77,23 +77,39 @@ export default {
       }
 
       if (this.isNewUser && session !== null) {
-        await this.insertInitailData();
+
+        console.log("this.isNewUser = ", this.isNewUser);
+        console.log("session = ", session);
+
+        await this.insertInitailExpenseData();
+        await this.insertInitailAccountData();
+        
       }
 
       // await this.fetchData()
 
     },
-    async insertInitailData() {
+    async insertInitailExpenseData() {
       const initialExpenseData = {
-        id: this.getUuidv4(),
+        id: await this.getUuidv4(),
         parents_id: null,
         category: '총계',
         amount: 0,
         order: null,
         level: 1,
-        page_id: await this.getPageId()
+        page_id: await this.getPageId(),
+        account_id: ''
       }
-      this.insertData(initialExpenseData)
+      await this.insertExpenseData(initialExpenseData)
+    },
+    async insertInitailAccountData() {
+      const initialAccountData = {
+        id: await this.getUuidv4(),
+        name: "미지정",
+        number: "",
+        order: 0
+      }
+      await this.insertAccountData(initialAccountData)
     },
     async getPageId() {
       this.initialPageData = {
@@ -119,10 +135,24 @@ export default {
         console.error(error);
       }
     },
-    async insertData(dataHere) {
+    async insertExpenseData(dataHere) {
+      console.log("dataHere @ insertExpenseData = ", dataHere);
       try {
         const { error } = await supabase
           .from('expense')
+          .insert(dataHere)
+        if (error) {
+          throw error;
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async insertAccountData(dataHere) {
+      console.log("dataHere @ insertAccountData = ", dataHere);
+      try {
+        const { error } = await supabase
+          .from('account')
           .insert(dataHere)
         if (error) {
           throw error;
