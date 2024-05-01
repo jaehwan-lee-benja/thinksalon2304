@@ -152,7 +152,7 @@ export default {
                         color: "#D3D2D0"
                     },
                     hover: {
-                        color: "#4a5c6a",
+                        color: "#F6C5C5",
                     },
                     margin: 4,
                     marker: {
@@ -233,7 +233,6 @@ export default {
 
             if (eachE) {
 
-                console.log("eachE.account_id = ", eachE.account_id);
                 const account = this.accounts.find((a) => a.id == eachE.account_id);
 
                 let accountName = ""

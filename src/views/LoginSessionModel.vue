@@ -13,11 +13,18 @@ export default {
       loginMode: true,
       email: '',
       initialPageData: '',
+      initialDataInserted: false, // 새로운 데이터가 삽입되었는지 여부를 추적하는 상태 추가
     }
   },
   mounted() {
-    this.fetchDataForLogIn(),
-      this.sessionListener()
+    // this.fetchDataForLogIn(),
+    this.sessionListener()
+  },
+  watch: {
+    session: {
+      handler: 'fetchDataForLogIn',
+      immediate: true // 초기에 한 번 실행되도록 함
+    }
   },
   methods: {
     async loginGoogle() {
@@ -44,50 +51,70 @@ export default {
         }
       }
     },
-    async fetchDataForLogIn() {
+    async fetchDataForLogIn(session) {
 
-      const fetchedData = await supabase
-        .from('expense')
-        .select()
-        .order('order', { ascending: true })
+      // const fetchedData = await supabase
+      //   .from('expense')
+      //   .select()
+      //   .order('order', { ascending: true })
 
-      const session = this.session;
+      // const session = this.session;
 
-      let userId = "";
+      // let userId = "";
 
-      if (session !== null) {
-        userId = session.user.id;
-      } else {
-        userId = null;
-      }
+      // if (session !== null) {
+      //   userId = session.user.id;
+      // } else {
+      //   userId = null;
+      // }
 
-      function whatId(el) {
-        if (el.user_id === userId) {
-          return true
-        }
-      }
+      // function whatId(el) {
+      //   if (el.user_id === userId) {
+      //     return true
+      //   }
+      // }
 
-      const dataById = fetchedData.data.filter(whatId);
-      const dataLength = dataById.length;
+      // const dataById = fetchedData.data.filter(whatId);
+      // const dataLength = dataById.length;
 
-      if (dataLength > 0) {
-        this.isNewUser = false;
-      } else {
-        this.isNewUser = true;
-      }
+      // if (dataLength > 0) {
+      //   this.isNewUser = false;
+      // } else {
+      //   this.isNewUser = true;
+      // }
 
-      if (this.isNewUser && session !== null) {
+      // if (this.isNewUser && session !== null) {
 
-        console.log("this.isNewUser = ", this.isNewUser);
-        console.log("session = ", session);
+      //   console.log("this.isNewUser = ", this.isNewUser);
+      //   console.log("session = ", session);
 
-        await this.insertInitailExpenseData();
-        await this.insertInitailAccountData();
-        
-      }
+      //   await this.insertInitailExpenseData();
+      //   await this.insertInitailAccountData();
+
+      // }
 
       // await this.fetchData()
 
+      if (session) {
+        // 사용자가 로그인한 경우에만 실행
+        const fetchedData = await supabase
+          .from('expense')
+          .select()
+          .order('order', { ascending: true })
+
+        const userId = session.user.id;
+
+        const dataById = fetchedData.data.filter(el => el.user_id === userId);
+        const dataLength = dataById.length;
+
+        this.isNewUser = dataLength === 0;
+
+        if (this.isNewUser && !this.initialDataInserted) {
+          await this.insertInitailExpenseData();
+          await this.insertInitailAccountData();
+          this.initialDataInserted = true;
+        }
+      }
     },
     async insertInitailExpenseData() {
       const initialExpenseData = {
