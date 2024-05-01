@@ -12,7 +12,21 @@
     </div>
     <div class="graphDiv" ref="graphContainer" style="position: relative;">
         <VNetworkGraph ref="vng" class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs"
-            :event-handlers="eventHandlers" />
+            :event-handlers="eventHandlers">
+            <template #override-node-label="{
+                nodeId, scale, x, y, config, textAnchor, dominantBaseline
+            }">
+                <!-- <text x="0" y="0" :font-size="9 * scale" text-anchor="middle" dominant-baseline="central" fill="#ffffff">{{
+                    text }}</text> -->
+                <!-- <text x="0" y="0" :font-size="config.fontSize * scale" :text-anchor="textAnchor"
+                    :dominant-baseline="dominantBaseline" :fill="config.color" :transform="`translate(${x} ${y})`">{{ text
+                    }}</text> -->
+                <text x="0" y="0" :font-size="config.fontSize * scale" :text-anchor="textAnchor"
+                    :dominant-baseline="dominantBaseline" :fill="config.color" :transform="`translate(${x} ${y})`">
+                    <tspan v-html="formatNodeName(nodeId)"></tspan>
+                </text>
+            </template>
+        </VNetworkGraph>
         <div v-if="tooltip" class="tooltip"
             :style="{ position: 'absolute', top: tooltip.top + 'px', left: tooltip.left + 'px' }">
             {{ tooltip.content }}
@@ -171,6 +185,22 @@ export default {
         this.fetchDataForNode();
     },
     methods: {
+        formatNodeName(nodeIdHere) {
+            const eachE = this.expenses.find((e) => nodeIdHere == e.id);
+            const account = this.accounts.find((a) => a.id == eachE.account_id);
+
+                let accountName = ""
+                if (account) {
+                    accountName = account.name
+                } else {
+                    accountName = "-"
+                }
+
+            console.log("accountName = ", accountName)
+
+            return `<tspan x="0%" text-anchor="middle">${eachE.category}</tspan><tspan x="0%" text-anchor="middle" dx="0" dy="1.2em">(${accountName})</tspan>`;
+        
+        },
         insertInitailNode() {
             const nodeLayout = {
                 id: this.getUuidv4(),
@@ -182,7 +212,7 @@ export default {
             }
             this.insertNodeLayout(nodeLayout)
         },
-        
+
         insertNodeLayouts() {
             this.nodeLayoutsNew.forEach((e) => this.insertNodeLayout(e))
             this.nodeLayoutsNew = []
@@ -303,7 +333,18 @@ export default {
             const edgeResult = {}
 
             this.expenses.forEach((e) => {
-                nodesResult[e.id] = { 'id': e.id, 'name': e.category, 'size': e.amount };
+                const account = this.accounts.find((a) => a.id == e.account_id)
+                let accountName = ""
+                if (account) {
+                    accountName = account.name
+                } else {
+                    accountName = "계좌매칭 안됨"
+                }
+                nodesResult[e.id] = {
+                    'id': e.id,
+                    'name': `${e.category} (${accountName})`,
+                    'size': e.amount
+                };
 
                 if (e.parents_id != null) {
                     edgeResult[e.id] = { 'id': e.id, 'source': e.parents_id, 'target': e.id, 'size': e.amount };
