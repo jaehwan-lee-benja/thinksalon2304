@@ -229,17 +229,22 @@ export default {
     methods: {
         formatNodeName(nodeIdHere) {
             const eachE = this.expenses.find((e) => nodeIdHere == e.id);
-            const account = this.accounts.find((a) => a.id == eachE.account_id);
 
-            let accountName = ""
-            if (account) {
-                accountName = account.name
-            } else {
-                accountName = "-"
+            if (eachE) {
+
+                console.log("eachE.account_id = ", eachE.account_id);
+                const account = this.accounts.find((a) => a.id == eachE.account_id);
+
+                let accountName = ""
+                if (account) {
+                    accountName = account.name
+                } else {
+                    accountName = "-"
+                }
+
+                return `<tspan x="0%" text-anchor="middle">${eachE.category}</tspan><tspan x="0%" text-anchor="middle" dx="0" dy="1.2em">(${accountName})</tspan>`;
+
             }
-
-            return `<tspan x="0%" text-anchor="middle">${eachE.category}</tspan><tspan x="0%" text-anchor="middle" dx="0" dy="1.2em">(${accountName})</tspan>`;
-
         },
         insertInitailNode() {
             const nodeLayout = {
