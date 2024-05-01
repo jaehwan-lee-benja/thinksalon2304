@@ -16,15 +16,13 @@
             <template #override-node-label="{
                 nodeId, scale, x, y, config, textAnchor, dominantBaseline
             }">
-                <!-- <text x="0" y="0" :font-size="9 * scale" text-anchor="middle" dominant-baseline="central" fill="#ffffff">{{
-                    text }}</text> -->
-                <!-- <text x="0" y="0" :font-size="config.fontSize * scale" :text-anchor="textAnchor"
-                    :dominant-baseline="dominantBaseline" :fill="config.color" :transform="`translate(${x} ${y})`">{{ text
-                    }}</text> -->
                 <text x="0" y="0" :font-size="config.fontSize * scale" :text-anchor="textAnchor"
                     :dominant-baseline="dominantBaseline" :fill="config.color" :transform="`translate(${x} ${y})`">
                     <tspan v-html="formatNodeName(nodeId)"></tspan>
                 </text>
+            </template>
+            <template #edge-label="{ edge, ...slotProps }">
+                <v-edge-label :text="edge.label" align="center" vertical-align="above" v-bind="slotProps" />
             </template>
         </VNetworkGraph>
         <div v-if="tooltip" class="tooltip"
@@ -134,9 +132,12 @@ export default {
                 },
                 node: {
                     normal: {
-                        type: "circle",
+                        type: "rect",
                         color: "#4a5c6a",
-                        radius: node => Math.pow(node.size / 1000, 1 / 2),
+                        width: node => Math.pow(node.size / 300, 1 / 2),
+                        height: node => Math.pow(node.size / 500, 1 / 2),
+                        borderRadius: 2,
+                        // radius: node => Math.pow(node.size / 1000, 1 / 2),
                     },
                     hover: {
                         color: "#F6C5C5",
@@ -149,7 +150,46 @@ export default {
                     },
                     hover: {
                         color: "#4a5c6a",
+                    },
+                    margin: 4,
+                    marker: {
+                        source: {
+                            type: "none",
+                            width: 2,
+                            height: 2,
+                            margin: -1,
+                            offset: 0,
+                            units: "strokeWidth",
+                            color: null,
+                        },
+                        target: {
+                            type: "arrow",
+                            width: 2,
+                            height: 2,
+                            margin: -1,
+                            offset: 0,
+                            units: "strokeWidth",
+                            color: null,
+                        },
+                    },
+
+                    label: {
+                        fontFamily: undefined,
+                        fontSize: 11,
+                        lineHeight: 1.1,
+                        color: "#000000",
+                        margin: 4,
+                        background: {
+                            visible: true,
+                            color: "#ffffff",
+                            padding: {
+                                vertical: 1,
+                                horizontal: 4,
+                            },
+                            borderRadius: 2,
+                        },
                     }
+
                 }
             }
         }
@@ -189,17 +229,15 @@ export default {
             const eachE = this.expenses.find((e) => nodeIdHere == e.id);
             const account = this.accounts.find((a) => a.id == eachE.account_id);
 
-                let accountName = ""
-                if (account) {
-                    accountName = account.name
-                } else {
-                    accountName = "-"
-                }
-
-            console.log("accountName = ", accountName)
+            let accountName = ""
+            if (account) {
+                accountName = account.name
+            } else {
+                accountName = "-"
+            }
 
             return `<tspan x="0%" text-anchor="middle">${eachE.category}</tspan><tspan x="0%" text-anchor="middle" dx="0" dy="1.2em">(${accountName})</tspan>`;
-        
+
         },
         insertInitailNode() {
             const nodeLayout = {
@@ -347,7 +385,13 @@ export default {
                 };
 
                 if (e.parents_id != null) {
-                    edgeResult[e.id] = { 'id': e.id, 'source': e.parents_id, 'target': e.id, 'size': e.amount };
+                    edgeResult[e.id] = {
+                        'id': e.id,
+                        'source': e.parents_id,
+                        'target': e.id,
+                        'size': e.amount,
+                        'label': e.amount
+                    };
                 }
 
             });
