@@ -13,6 +13,6 @@ export default {
     },
     theExpense() {
       return this.getExpenseById
-    }
+    },
   },
 };

@@ -4,6 +4,9 @@
 
 <script>
 import { supabase } from '../lib/supabaseClient.js'
+import Mutex from '../lib/mutex.js'
+
+const mutex = new Mutex()
 
 export default {
   data() {
@@ -17,14 +20,9 @@ export default {
     }
   },
   mounted() {
-    // this.fetchDataForLogIn(),
     this.sessionListener()
   },
   watch: {
-    session: {
-      handler: 'fetchDataForLogIn',
-      immediate: true // 초기에 한 번 실행되도록 함
-    }
   },
   methods: {
     async loginGoogle() {
@@ -51,72 +49,45 @@ export default {
         }
       }
     },
-    async fetchDataForLogIn(session) {
+    async fetchDataForLogIn() {
 
-      // const fetchedData = await supabase
-      //   .from('expense')
-      //   .select()
-      //   .order('order', { ascending: true })
+      if (this.session) {
 
-      // const session = this.session;
+        await mutex.lock() // 여기서 mutex가 유휴 상태일 때 까지 대기하며, 유휴 상태가 되면 잠금을 걸고 진행한다.
 
-      // let userId = "";
+        try {
 
-      // if (session !== null) {
-      //   userId = session.user.id;
-      // } else {
-      //   userId = null;
-      // }
+          // 사용자가 로그인한 경우에만 실행
+          const fetchedData = await supabase
+            .from('expense')
+            .select()
+            .order('order', { ascending: true })
 
-      // function whatId(el) {
-      //   if (el.user_id === userId) {
-      //     return true
-      //   }
-      // }
+          const userId = this.session.user.id;
 
-      // const dataById = fetchedData.data.filter(whatId);
-      // const dataLength = dataById.length;
+          const dataById = fetchedData.data.filter(el => el.user_id === userId);
+          const dataLength = dataById.length;
 
-      // if (dataLength > 0) {
-      //   this.isNewUser = false;
-      // } else {
-      //   this.isNewUser = true;
-      // }
+          this.isNewUser = dataLength === 0;
 
-      // if (this.isNewUser && session !== null) {
+          if (this.isNewUser && !this.initialDataInserted) {
 
-      //   console.log("this.isNewUser = ", this.isNewUser);
-      //   console.log("session = ", session);
+            console.log("initialDataInserted");
 
-      //   await this.insertInitailExpenseData();
-      //   await this.insertInitailAccountData();
+            await this.insertInitailExpenseData(userId);
+            await this.insertInitailAccountData(userId);
+            this.initialDataInserted = true;
+          }
 
-      // }
+        } finally {
 
-      // await this.fetchData()
+          mutex.release() // 반드시 실행한다. 그렇지 않으면 Dead-lock 발생함.
 
-      if (session) {
-        // 사용자가 로그인한 경우에만 실행
-        const fetchedData = await supabase
-          .from('expense')
-          .select()
-          .order('order', { ascending: true })
-
-        const userId = session.user.id;
-
-        const dataById = fetchedData.data.filter(el => el.user_id === userId);
-        const dataLength = dataById.length;
-
-        this.isNewUser = dataLength === 0;
-
-        if (this.isNewUser && !this.initialDataInserted) {
-          await this.insertInitailExpenseData();
-          await this.insertInitailAccountData();
-          this.initialDataInserted = true;
         }
+
       }
     },
-    async insertInitailExpenseData() {
+    async insertInitailExpenseData(userIdHere) {
       const initialExpenseData = {
         id: await this.getUuidv4(),
         parents_id: null,
@@ -125,22 +96,24 @@ export default {
         order: null,
         level: 1,
         page_id: await this.getPageId(),
-        account_id: ''
+        account_id: null,
+        user_id: userIdHere
       }
       await this.insertExpenseData(initialExpenseData)
     },
-    async insertInitailAccountData() {
+    async insertInitailAccountData(userIdHere) {
       const initialAccountData = {
         id: await this.getUuidv4(),
         name: "미지정",
         number: "",
-        order: 0
+        order: 0,
+        user_id: userIdHere
       }
       await this.insertAccountData(initialAccountData)
     },
     async getPageId() {
       this.initialPageData = {
-        id: this.getUuidv4(),
+        id: await this.getUuidv4(),
         page_name: '새 페이지',
         order: 0,
       }
@@ -195,10 +168,16 @@ export default {
       return data;
     },
     sessionListener() {
+      console.log('sessionListener')
       supabase.auth.onAuthStateChange((event, session) => {
+        console.log('session event',event)
+        if(event ==='SIGNED_IN'){
         this.session = session;
         this.email = session?.user.email;
         this.loginBtnHandler();
+        this.fetchDataForLogIn()
+
+        }
       })
     },
     loginBtnHandler() {

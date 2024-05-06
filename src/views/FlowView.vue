@@ -14,8 +14,8 @@
         <VNetworkGraph ref="vng" class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs"
             :event-handlers="eventHandlers">
             <template #override-node-label="{
-                nodeId, scale, x, y, config, textAnchor, dominantBaseline
-            }">
+            nodeId, scale, x, y, config, textAnchor, dominantBaseline
+        }">
                 <text x="0" y="0" :font-size="config.fontSize * scale" :text-anchor="textAnchor"
                     :dominant-baseline="dominantBaseline" :fill="config.color" :transform="`translate(${x} ${y})`">
                     <tspan v-html="formatNodeName(nodeId)"></tspan>
@@ -36,11 +36,9 @@
 <script>
 import { VNetworkGraph } from "v-network-graph"
 import "v-network-graph/lib/style.css"
-// import * as vNG from "v-network-graph"
 import dagre from "dagre/dist/dagre.min.js"
 import IsolatedModel from './IsolatedModel.vue'
 import { supabase } from '../lib/supabaseClient.js'
-import LoginSessionModel from '../views/LoginSessionModel.vue'
 
 export default {
     name: 'FlowView',
@@ -79,7 +77,6 @@ export default {
             return !!this.clickedExpenseId;
         },
     },
-    mixins: [LoginSessionModel],
     data() {
         return {
             pageLengthMonitor: 0,
