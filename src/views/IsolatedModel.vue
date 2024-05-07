@@ -1,8 +1,8 @@
 <template>
     <div class='isolatedAlignStyle'>
-        <ExpenseModel v-bind:expenseById="this.theExpense" :clickedExpenseId="clickedExpenseId"
+        <ExpenseModel v-bind:expenseById="this.getExpenseById" :clickedExpenseId="clickedExpenseId"
             @remove-expense="removeExpense" />
-        <ExpenseDetailModel class="isolatedDetailDiv" v-bind:expenseById="this.theExpense" :expenses="expenses"
+        <ExpenseDetailModel class="isolatedDetailDiv" v-bind:expenseById="this.getExpenseById" :expenses="expenses"
             :accounts="accounts" @select-account="selectAccount" />
     </div>
 </template>

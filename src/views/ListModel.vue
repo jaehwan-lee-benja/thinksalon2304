@@ -5,20 +5,20 @@
                 <button :class="{
                     'toggleBtn_active': this.toggleActiveHandler === true,
                     'toggleBtn_inactive': this.toggleActiveHandler === false,
-                }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(this.theExpense)">
-                    {{ this.theExpense.show_sub_list ? "&#9660;" : "&#9654;" }}
+                }" :disabled="!this.toggleActiveHandler" @click="toggleSubList(this.getExpenseById)">
+                    {{ this.getExpenseById.show_sub_list ? "&#9660;" : "&#9654;" }}
                 </button>
             </td>
             <td v-if="isNotTotal" class="thOnList">
-                {{ this.theExpense.order }}
+                {{ this.getExpenseById.order }}
             </td>
 
             <td class="thOnList">
-                <ExpenseModel v-bind:expenseById="this.theExpense" :clickedExpenseId="clickedExpenseId"
+                <ExpenseModel v-bind:expenseById="this.getExpenseById" :clickedExpenseId="clickedExpenseId"
                     @remove-expense="removeExpense" :isList="true" />
                 <button class="expenseDetailBtn" @click="handlerLiDetailDiv"> {{ !this.isLiDetailDivOpened ? "…" : "닫기" }}
                 </button>
-                <ExpenseDetailModel class="liDetailDiv" v-if="isLiDetailDivOpened" v-bind:expenseById="this.theExpense"
+                <ExpenseDetailModel class="liDetailDiv" v-if="isLiDetailDivOpened" v-bind:expenseById="this.getExpenseById"
                     :expenses="expenses" :accounts="accounts" @select-account="selectAccount" />
             </td>
         </tr>
@@ -75,7 +75,7 @@ export default {
     },
     computed: {
         isNotTotal() {
-            if (this.theExpense.level > 1) {
+            if (this.getExpenseById.level > 1) {
                 return true
             } else {
                 return false

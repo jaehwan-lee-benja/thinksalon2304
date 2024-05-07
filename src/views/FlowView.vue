@@ -71,6 +71,10 @@ export default {
             type: String,
             default: '',
         },
+        session: {
+            type: String,
+            default: '',
+        },
     },
     computed: {
         showClickedLiDiv() {
@@ -214,7 +218,7 @@ export default {
         },
         createdExpenseIdByNewPage: {
             handler() {
-                this.insertInitailNode()
+                this.insertInitiallNode()
             },
             xdeep: true
         },
@@ -243,16 +247,16 @@ export default {
 
             }
         },
-        insertInitailNode() {
+        async insertInitiallNode() {
+            console.log("insertInitiallNode")
             const nodeLayout = {
                 id: this.getUuidv4(),
                 user_id: this.session.user.id,
                 expense_id: this.createdExpenseIdByNewPage,
-                x: 250,
-                y: 250,
-
+                x: null,
+                y: null,
             }
-            this.insertNodeLayout(nodeLayout)
+            await this.insertNodeLayout(nodeLayout)
         },
 
         insertNodeLayouts() {
@@ -284,6 +288,7 @@ export default {
         },
 
         async insertNodeLayout(nodeLayoutHere) {
+            console.log("nodeLayoutHere = ", nodeLayoutHere);
             try {
                 const { error } = await supabase
                     .from('node')
@@ -434,11 +439,15 @@ export default {
             const normalIdArray = Array.from(difference)
 
             // 기존에 있는 e인 경우
-            normalIdArray.forEach((expenseId) => {
-                const xFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).x
-                const yFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).y
-                nodeLayouts[expenseId] = { 'x': xFromServer, 'y': yFromServer }
-            })
+            console.log("normalIdArray = ", normalIdArray);
+            console.log("this.nodeFromServer = ", this.nodeFromServer);
+            if (this.nodeFromServer.length > 0) {
+                normalIdArray.forEach((expenseId) => {
+                    const xFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).x
+                    const yFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).y
+                    nodeLayouts[expenseId] = { 'x': xFromServer, 'y': yFromServer }
+                })
+            }
 
             // 새로운 e인 경우
             // 이 경우에 대한 서버, 로컬 단의 구분정리가 필요하다.

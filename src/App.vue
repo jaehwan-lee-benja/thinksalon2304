@@ -47,7 +47,8 @@
           <FlowView v-bind:expenses="expenses" :fetchedExpenses="fetchedExpenses" :clickedExpenseId="clickedExpenseId"
             :editExpenseWorked="editExpenseWorked" @point-clicked-li="pointClickedLi"
             @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense" :accounts="accounts"
-            @select-account="selectAccount" :createdExpenseIdByNewPage="createdExpenseIdByNewPage" />
+            @select-account="selectAccount" :createdExpenseIdByNewPage="createdExpenseIdByNewPage" 
+            :session="session"/>
         </div>
         <div class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler"
@@ -351,8 +352,7 @@ export default {
       }
 
     },
-    async getUuidv4() {
-      console.log("getUuidv4")
+    getUuidv4() {
       return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
       );
@@ -493,35 +493,6 @@ export default {
       await this.upsertExpense(initialExpenseData)
 
       this.createdExpenseIdByNewPage = initialExpenseData.id;
-
-
-      // const promise = new Promise(function(){
-      //   this.upsertExpense(initialExpenseData)
-      // });
-
-      // promise.then(() => {
-      //   // 새로 생기는 node를 서버에 올리기 위한 작업
-      //   this.createdExpenseIdByNewPage = initialExpenseData.id;
-      // })
-
-
-      // const promise = new Promise((resolve, reject) => {
-      //   this.upsertExpense(initialExpenseData, (error, result) => {
-      //     if (error) {
-      //       reject(error);
-      //     } else {
-      //       resolve(result);
-      //     }
-      //   });
-      // });
-
-      // promise.then(() => {
-      //   // 새로 생기는 node를 서버에 올리기 위한 작업
-      //   this.createdExpenseIdByNewPage = initialExpenseData.id;
-      // }).catch(error => {
-      //   // 프로미스가 거부될 경우 처리할 작업
-      //   console.error('Error:', error);
-      // });
 
     },
     updateParentsToggle(idHere) {

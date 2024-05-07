@@ -12,7 +12,7 @@
                 </td>
                 <td v-if="!isThereChild" class="tdForNew"> <span>new</span> </td>
                 <td v-if="isNewListDivOpened" class="thOnList">
-                    <form @submit.prevent="createNewExpense(this.theExpense.id, this.theExpense.level)">
+                    <form @submit.prevent="createNewExpense(this.getExpenseById.id, this.getExpenseById.level)">
                         <div class="listViewLiDiv">
                             <input class="categoryStyle" v-model="this.newCategory" placeholder="새 리스트 적기">
                             <span> : </span>

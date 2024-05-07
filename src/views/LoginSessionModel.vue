@@ -72,8 +72,6 @@ export default {
 
           if (this.isNewUser && !this.initialDataInserted) {
 
-            console.log("initialDataInserted");
-
             await this.insertInitailExpenseData(userId);
             await this.insertInitailAccountData(userId);
             this.initialDataInserted = true;
@@ -100,6 +98,9 @@ export default {
         user_id: userIdHere
       }
       await this.insertExpenseData(initialExpenseData)
+
+      this.createdExpenseIdByNewPage = initialExpenseData.id;
+
     },
     async insertInitailAccountData(userIdHere) {
       const initialAccountData = {
@@ -136,7 +137,6 @@ export default {
       }
     },
     async insertExpenseData(dataHere) {
-      console.log("dataHere @ insertExpenseData = ", dataHere);
       try {
         const { error } = await supabase
           .from('expense')
@@ -149,7 +149,6 @@ export default {
       }
     },
     async insertAccountData(dataHere) {
-      console.log("dataHere @ insertAccountData = ", dataHere);
       try {
         const { error } = await supabase
           .from('account')
@@ -168,15 +167,12 @@ export default {
       return data;
     },
     sessionListener() {
-      console.log('sessionListener')
       supabase.auth.onAuthStateChange((event, session) => {
-        console.log('session event',event)
         if(event ==='SIGNED_IN'){
         this.session = session;
         this.email = session?.user.email;
         this.loginBtnHandler();
         this.fetchDataForLogIn()
-
         }
       })
     },
