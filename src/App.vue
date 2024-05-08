@@ -693,7 +693,9 @@ export default {
       const accountsLength = Object.keys(this.accounts).length;
       return accountsLength;
     },
-    async fetchData() {
+    async fetchData(here) {
+
+      console.log("check?=", here)
 
       console.log("fetchData")
       await this.fetchDataForPage()
@@ -707,9 +709,9 @@ export default {
 
       this.totalExpenses = data;
 
-      const user = this.session.user
-
       if (data.length > 0) {
+
+        console.log("yes")
 
         await this.selectPageByLoading(); //페이지 선택 후 this.expenses가 만들어짐
 
@@ -719,10 +721,10 @@ export default {
           if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
         })
 
-      } else if ( user ) {
-        console.log("data.length", data.length, user.id)
       } else {
-        console.log("data.length", data.length, "no user")
+
+        console.log("no")
+
       }
 
     },

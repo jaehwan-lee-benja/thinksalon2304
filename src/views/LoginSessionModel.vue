@@ -75,6 +75,9 @@ export default {
             await this.insertInitailExpenseData(userId);
             await this.insertInitailAccountData(userId);
             this.initialDataInserted = true;
+
+            this.fetchData("check")
+
           }
 
         } finally {
