@@ -97,6 +97,7 @@ export default {
         account_id: null,
         user_id: userIdHere
       }
+      console.log("initialExpenseData.page_id = ", initialExpenseData.page_id)
       await this.insertExpenseData(initialExpenseData)
 
       this.createdExpenseIdByNewPage = initialExpenseData.id;
@@ -118,13 +119,13 @@ export default {
         page_name: '새 페이지',
         order: 0,
       }
-
       await this.insertPageData(this.initialPageData)
       this.selectedPageId = this.initialPageData.id
 
       return this.initialPageData.id
     },
     async insertPageData(dataHere) {
+      console.log("dataHere @insertPageData = ", dataHere)
       try {
         const { error } = await supabase
           .from('expense_page')

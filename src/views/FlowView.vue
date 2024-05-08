@@ -248,7 +248,6 @@ export default {
             }
         },
         async insertInitiallNode() {
-            console.log("insertInitiallNode")
             const nodeLayout = {
                 id: this.getUuidv4(),
                 user_id: this.session.user.id,
@@ -288,7 +287,6 @@ export default {
         },
 
         async insertNodeLayout(nodeLayoutHere) {
-            console.log("nodeLayoutHere = ", nodeLayoutHere);
             try {
                 const { error } = await supabase
                     .from('node')
@@ -439,8 +437,6 @@ export default {
             const normalIdArray = Array.from(difference)
 
             // 기존에 있는 e인 경우
-            console.log("normalIdArray = ", normalIdArray);
-            console.log("this.nodeFromServer = ", this.nodeFromServer);
             if (this.nodeFromServer.length > 0) {
                 normalIdArray.forEach((expenseId) => {
                     const xFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).x

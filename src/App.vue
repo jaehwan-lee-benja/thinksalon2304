@@ -695,6 +695,7 @@ export default {
     },
     async fetchData() {
 
+      console.log("fetchData")
       await this.fetchDataForPage()
       await this.fetchDataForAccount()
 
@@ -706,6 +707,8 @@ export default {
 
       this.totalExpenses = data;
 
+      const user = this.session.user
+
       if (data.length > 0) {
 
         await this.selectPageByLoading(); //페이지 선택 후 this.expenses가 만들어짐
@@ -716,6 +719,10 @@ export default {
           if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
         })
 
+      } else if ( user ) {
+        console.log("data.length", data.length, user.id)
+      } else {
+        console.log("data.length", data.length, "no user")
       }
 
     },
@@ -796,6 +803,7 @@ export default {
 
     },
     setPageBySelectPage(selectedPageHere) {
+      console.log("selectedPageHere = ", selectedPageHere);
       this.pageName = selectedPageHere.page_name;
 
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
