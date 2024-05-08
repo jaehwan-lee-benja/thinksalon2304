@@ -76,7 +76,7 @@ export default {
             await this.insertInitailAccountData(userId);
             this.initialDataInserted = true;
 
-            this.fetchData("check")
+            this.fetchData()
 
           }
 
@@ -100,7 +100,6 @@ export default {
         account_id: null,
         user_id: userIdHere
       }
-      console.log("initialExpenseData.page_id = ", initialExpenseData.page_id)
       await this.insertExpenseData(initialExpenseData)
 
       this.createdExpenseIdByNewPage = initialExpenseData.id;
@@ -128,7 +127,6 @@ export default {
       return this.initialPageData.id
     },
     async insertPageData(dataHere) {
-      console.log("dataHere @insertPageData = ", dataHere)
       try {
         const { error } = await supabase
           .from('expense_page')

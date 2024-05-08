@@ -693,11 +693,8 @@ export default {
       const accountsLength = Object.keys(this.accounts).length;
       return accountsLength;
     },
-    async fetchData(here) {
+    async fetchData() {
 
-      console.log("check?=", here)
-
-      console.log("fetchData")
       await this.fetchDataForPage()
       await this.fetchDataForAccount()
 
@@ -711,8 +708,6 @@ export default {
 
       if (data.length > 0) {
 
-        console.log("yes")
-
         await this.selectPageByLoading(); //페이지 선택 후 this.expenses가 만들어짐
 
         this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
@@ -720,10 +715,6 @@ export default {
         this.expenses.forEach(e => {
           if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
         })
-
-      } else {
-
-        console.log("no")
 
       }
 
@@ -805,7 +796,6 @@ export default {
 
     },
     setPageBySelectPage(selectedPageHere) {
-      console.log("selectedPageHere = ", selectedPageHere);
       this.pageName = selectedPageHere.page_name;
 
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
