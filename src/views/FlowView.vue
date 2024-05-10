@@ -67,7 +67,7 @@ export default {
             type: Object,
             default: () => { }
         },
-        createdExpenseIdByNewPage: {
+        createdExpenseIdForMonitor: {
             type: String,
             default: '',
         },
@@ -75,6 +75,10 @@ export default {
             type: String,
             default: '',
         },
+        createdExpenseIdByCreateNewE: {
+            type: String,
+            default: '',
+        }
     },
     computed: {
         showClickedLiDiv() {
@@ -216,12 +220,18 @@ export default {
             },
             deep: true
         },
-        createdExpenseIdByNewPage: {
+        createdExpenseIdForMonitor: {
             handler() {
                 this.insertInitiallNode()
             },
             xdeep: true
         },
+        createdExpenseIdByCreateNewE: {
+            handler() {
+                this.pushInitiallNode()
+            },
+            xdeep: true
+        }
     },
     mounted() {
         document.addEventListener("click", this.handleDocumentClick); // [질문] 이것을 어떻게 바꿀 수 있을까?
@@ -251,11 +261,23 @@ export default {
             const nodeLayout = {
                 id: this.getUuidv4(),
                 user_id: this.session.user.id,
-                expense_id: this.createdExpenseIdByNewPage,
+                expense_id: this.createdExpenseIdForMonitor,
                 x: null,
                 y: null,
             }
             await this.insertNodeLayout(nodeLayout)
+        },
+
+        async pushInitiallNode() {
+            console.log("check!")
+            const nodeLayout = {
+                id: this.getUuidv4(),
+                user_id: this.session.user.id,
+                expense_id: this.createdExpenseIdByCreateNewE,
+                x: null,
+                y: null,
+            }
+            await this.nodeLayoutsNew.push(nodeLayout)
         },
 
         insertNodeLayouts() {
@@ -283,7 +305,7 @@ export default {
             } catch (error) {
                 console.error(error);
             }
-            this.fetchDataForNode();
+            await this.fetchDataForNode();
         },
 
         async insertNodeLayout(nodeLayoutHere) {
@@ -297,7 +319,7 @@ export default {
             } catch (error) {
                 console.error(error);
             }
-            this.fetchDataForNode();
+            await this.fetchDataForNode();
         },
 
         async updateNodeLayoutLocal(expenseIdHere, xHere, yHere) {
@@ -437,6 +459,7 @@ export default {
             const normalIdArray = Array.from(difference)
 
             // 기존에 있는 e인 경우
+            console.log("this.nodeFromServer = ", this.nodeFromServer);
             if (this.nodeFromServer.length > 0) {
                 normalIdArray.forEach((expenseId) => {
                     const xFromServer = this.nodeFromServer.find((n) => n.expense_id == expenseId).x

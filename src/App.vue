@@ -33,13 +33,13 @@
       <div class="mainBtnDiv">
         <div class="saveEditedDiv">
           <button :class="{
-            'saveEditedBtn_active': isEdited === true,
-            'saveEditedBtn_inactive': isEdited === false
-          }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
+          'saveEditedBtn_active': isEdited === true,
+          'saveEditedBtn_inactive': isEdited === false
+        }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
           <button :class="{
-            'cancelEditedBtn_active': isEdited === true,
-            'cancelEditedBtn_inactive': isEdited === false
-          }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
+          'cancelEditedBtn_active': isEdited === true,
+          'cancelEditedBtn_inactive': isEdited === false
+        }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
         </div>
       </div>
       <div class="viewGrid">
@@ -47,8 +47,8 @@
           <FlowView v-bind:expenses="expenses" :fetchedExpenses="fetchedExpenses" :clickedExpenseId="clickedExpenseId"
             :editExpenseWorked="editExpenseWorked" @point-clicked-li="pointClickedLi"
             @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense" :accounts="accounts"
-            @select-account="selectAccount" :createdExpenseIdByNewPage="createdExpenseIdByNewPage" 
-            :session="session"/>
+            @select-account="selectAccount" :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
+            :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" />
         </div>
         <div class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler"
@@ -99,7 +99,9 @@ export default {
       expensePages: [],
       fetchedExpensePages: [],
       isPageSettingOpened: false,
-      createdExpenseIdByNewPage: '',
+      createdExpenseIdForMonitor: '',
+      createdExpenseIdByCreateNewE: '',
+      previousPageName: '',
 
       toggleActiveHandler: {},
       isThereChildMonitor: {},
@@ -492,7 +494,7 @@ export default {
       // 질문: 이것이 제대로 되고 있는 것인지?
       await this.upsertExpense(initialExpenseData)
 
-      this.createdExpenseIdByNewPage = initialExpenseData.id;
+      this.createdExpenseIdForMonitor = initialExpenseData.id;
 
     },
     updateParentsToggle(idHere) {
@@ -678,6 +680,7 @@ export default {
       this.totalExpenses.push(o);
       this.expenses.push(o);
       this.isThereChildMonitor[parentsIdHere] = true;
+      this.createdExpenseIdByCreateNewE = o.id;
 
     },
     setOrder(parentsIdHere) {
@@ -773,10 +776,28 @@ export default {
 
     },
     selectPageBySelectBox() {
-      const selectedPage = this.expensePages.find(e => e.page_name === this.pageName)
-      this.selectedPageId = selectedPage.id
 
-      this.setPageBySelectPage(selectedPage)
+      this.previousPageName = this.pageName;
+      console.log("this.previousPageName = ", this.previousPageName)
+
+      if (this.isEdited) {
+        console.log("true") // 수정 필요
+        const confirmValue = confirm("편집된 내용이 있습니다. 편집된 내용에 대한 저장 또는 취소 후 페이지 이동이 가능합니다.")
+
+        if (confirmValue) {
+          this.pageName = this.previousPageName
+          return
+        }
+
+      } else {
+        console.log("false")
+        const selectedPage = this.expensePages.find(e => e.page_name === this.pageName)
+        this.selectedPageId = selectedPage.id
+
+        this.setPageBySelectPage(selectedPage)
+      }
+
+
 
     },
     selectPageByEditPage() {

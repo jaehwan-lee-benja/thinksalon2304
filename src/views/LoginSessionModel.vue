@@ -102,7 +102,7 @@ export default {
       }
       await this.insertExpenseData(initialExpenseData)
 
-      this.createdExpenseIdByNewPage = initialExpenseData.id;
+      this.createdExpenseIdForMonitor = initialExpenseData.id;
 
     },
     async insertInitailAccountData(userIdHere) {
