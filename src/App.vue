@@ -4,7 +4,7 @@
       <div class="pageListDiv">
 
         <h3>페이지 이동하기</h3>
-        <select class="pageSelect" v-model="pageName" @change="selectPageBySelectBox()">
+        <select class="pageSelect" v-model="pageName" @change="selectPageBySelectBox" ref="pageSelectRef">
           <option v-for="page in sortExpensePages" :key="page.id" :value="page.page_name">
             {{ page.page_name }}
           </option>
@@ -33,13 +33,13 @@
       <div class="mainBtnDiv">
         <div class="saveEditedDiv">
           <button :class="{
-          'saveEditedBtn_active': isEdited === true,
-          'saveEditedBtn_inactive': isEdited === false
-        }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
+            'saveEditedBtn_active': isEdited === true,
+            'saveEditedBtn_inactive': isEdited === false
+          }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
           <button :class="{
-          'cancelEditedBtn_active': isEdited === true,
-          'cancelEditedBtn_inactive': isEdited === false
-        }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
+            'cancelEditedBtn_active': isEdited === true,
+            'cancelEditedBtn_inactive': isEdited === false
+          }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
         </div>
       </div>
       <div class="viewGrid">
@@ -95,13 +95,13 @@ export default {
       accounts: [],
       fetchedAccounts: [],
       isAccountSettingOpened: false,
+      previousPageName: '',
 
       expensePages: [],
       fetchedExpensePages: [],
       isPageSettingOpened: false,
       createdExpenseIdForMonitor: '',
       createdExpenseIdByCreateNewE: '',
-      previousPageName: '',
 
       toggleActiveHandler: {},
       isThereChildMonitor: {},
@@ -777,28 +777,21 @@ export default {
     },
     selectPageBySelectBox() {
 
-      this.previousPageName = this.pageName;
-      console.log("this.previousPageName = ", this.previousPageName)
+      const previousPageName = this.previousPageName;
 
       if (this.isEdited) {
-        console.log("true") // 수정 필요
-        const confirmValue = confirm("편집된 내용이 있습니다. 편집된 내용에 대한 저장 또는 취소 후 페이지 이동이 가능합니다.")
 
-        if (confirmValue) {
-          this.pageName = this.previousPageName
-          return
-        }
+        alert("편집된 내용이 있습니다. 편집된 내용에 대한 저장 또는 취소 후 페이지 이동이 가능합니다.")
+        this.pageName = previousPageName
+        this.$refs.pageSelectRef.value = previousPageName;
 
       } else {
-        console.log("false")
+
         const selectedPage = this.expensePages.find(e => e.page_name === this.pageName)
         this.selectedPageId = selectedPage.id
-
         this.setPageBySelectPage(selectedPage)
+        
       }
-
-
-
     },
     selectPageByEditPage() {
 
@@ -818,6 +811,7 @@ export default {
     },
     setPageBySelectPage(selectedPageHere) {
       this.pageName = selectedPageHere.page_name;
+      this.previousPageName = this.pageName;
 
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
       this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
