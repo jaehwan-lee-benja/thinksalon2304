@@ -13,6 +13,11 @@
     <div class="graphDiv" ref="graphContainer" style="position: relative;">
         <VNetworkGraph ref="vng" class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs"
             :event-handlers="eventHandlers">
+
+            <template #edge-label="{ edge, ...slotProps }">
+                <v-edge-label :text="edge.label" align="center" vertical-align="above" v-bind="slotProps" />
+            </template>
+
             <template #override-node-label="{
             nodeId, scale, x, y, config, textAnchor, dominantBaseline
         }">
@@ -21,10 +26,7 @@
                     <tspan v-html="formatNodeName(nodeId)"></tspan>
                 </text>
             </template>
-            <template #edge-label="{ edge, ...slotProps }">
-                <v-edge-label :text="edge.label" align="center" vertical-align="above" v-bind="slotProps" />
-            </template>
-            <!-- 질문 -->
+           
         </VNetworkGraph>
         <div v-if="tooltip" class="tooltip"
             :style="{ position: 'absolute', top: tooltip.top + 'px', left: tooltip.left + 'px' }">
@@ -185,7 +187,7 @@ export default {
                         fontFamily: undefined,
                         fontSize: 11,
                         lineHeight: 1.1,
-                        color: "#000000",
+                        color: "black",
                         margin: 4,
                         background: {
                             visible: true,
@@ -418,7 +420,7 @@ export default {
                         'source': e.parents_id,
                         'target': e.id,
                         'size': e.amount,
-                        'label': e.amount
+                        'label': "check"
                     };
                 }
 
