@@ -15,7 +15,7 @@
             :event-handlers="eventHandlers">
 
             <template #edge-label="{ edge, ...slotProps }">
-                <v-edge-label :text="edge.label" align="center" vertical-align="above" v-bind="slotProps" />
+                <v-edge-label :text="edge.label" v-bind="slotProps" />
             </template>
 
             <template #override-node-label="{
@@ -139,6 +139,9 @@ export default {
                     doubleClickZoomEnabled: false,
                 },
                 node: {
+                    label: {
+                        visible: true,
+                    },
                     normal: {
                         type: "rect",
                         color: "#4a5c6a",
@@ -183,22 +186,7 @@ export default {
                         },
                     },
 
-                    label: {
-                        fontFamily: undefined,
-                        fontSize: 11,
-                        lineHeight: 1.1,
-                        color: "black",
-                        margin: 4,
-                        background: {
-                            visible: true,
-                            color: "#ffffff",
-                            padding: {
-                                vertical: 1,
-                                horizontal: 4,
-                            },
-                            borderRadius: 2,
-                        },
-                    }
+
 
                 }
             }
