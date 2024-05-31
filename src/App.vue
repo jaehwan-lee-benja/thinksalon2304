@@ -33,21 +33,23 @@
       <div class="mainBtnDiv">
         <div class="saveEditedDiv">
           <button :class="{
-            'saveEditedBtn_active': isEdited === true,
-            'saveEditedBtn_inactive': isEdited === false
-          }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
+          'saveEditedBtn_active': isEdited === true,
+          'saveEditedBtn_inactive': isEdited === false
+        }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
           <button :class="{
-            'cancelEditedBtn_active': isEdited === true,
-            'cancelEditedBtn_inactive': isEdited === false
-          }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
+          'cancelEditedBtn_active': isEdited === true,
+          'cancelEditedBtn_inactive': isEdited === false
+        }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
         </div>
       </div>
       <div class="viewGrid">
         <div class="flowViewDiv">
           <FlowView v-bind:expenses="expenses" :fetchedExpenses="fetchedExpenses" :clickedExpenseId="clickedExpenseId"
-            :editExpenseWorked="editExpenseWorked" @point-clicked-li="pointClickedLi"
-            @cancel-point-clicked-li="cancelPointClickedLi" @remove-expense="removeExpense" :accounts="accounts"
-            @select-account="selectAccount" :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
+            :clickedEdgeTargetId="clickedEdgeTargetId" :editExpenseWorked="editExpenseWorked"
+            @point-clicked-li="pointClickedLi" @cancel-point-clicked-li="cancelPointClickedLi"
+            @point-clicked-Edge="pointClickedEdge" @cancel-point-clicked-edge="cancelPointClickedEdge"
+            @remove-expense="removeExpense" :accounts="accounts" @select-account="selectAccount"
+            :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
             :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" />
         </div>
         <div class="listViewDiv">
@@ -106,6 +108,7 @@ export default {
       toggleActiveHandler: {},
       isThereChildMonitor: {},
       clickedExpenseId: '',
+      clickedEdgeTargetId: '',
 
       editExpenseWorked: true,
 
@@ -241,6 +244,9 @@ export default {
     cancelPointClickedLi() {
       this.clickedExpenseId = ""
     },
+    cancelPointClickedEdge() {
+      this.clickedEdgeTargetId = ""
+    },
     openOrCloseLi() {
       if (this.isAnyOpenedLi) {
 
@@ -275,6 +281,9 @@ export default {
     pointClickedLi(idHere) {
       this.clickedExpenseId = idHere
       this.updateParentsToggle(idHere)
+    },
+    pointClickedEdge(idHere) {
+      this.clickedEdgeTargetId = idHere
     },
     async cancelEditingPage() {
       this.expensePages = "";
@@ -790,7 +799,7 @@ export default {
         const selectedPage = this.expensePages.find(e => e.page_name === this.pageName)
         this.selectedPageId = selectedPage.id
         this.setPageBySelectPage(selectedPage)
-        
+
       }
     },
     selectPageByEditPage() {

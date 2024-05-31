@@ -9,6 +9,9 @@
                 :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :accounts="accounts"
                 @select-account="selectAccount" />
         </div>
+        <div class="isolatedExpense" v-if="showClickedEdgeDiv" ref="isolatedContainer">
+            <IsolatedEdgeModel v-bind:clickedEdgeTargetId="this.clickedEdgeTargetId" :clickedEdgeSourceId="this.clickedEdgeSourceId" :session="session"/>
+        </div>
     </div>
     <div class="graphDiv" ref="graphContainer" style="position: relative;">
         <VNetworkGraph ref="vng" class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs"
@@ -26,7 +29,7 @@
                     <tspan v-html="formatNodeName(nodeId)"></tspan>
                 </text>
             </template>
-           
+
         </VNetworkGraph>
         <div v-if="tooltip" class="tooltip"
             :style="{ position: 'absolute', top: tooltip.top + 'px', left: tooltip.left + 'px' }">
@@ -40,6 +43,7 @@ import { VNetworkGraph, VEdgeLabel } from "v-network-graph"
 import "v-network-graph/lib/style.css"
 import dagre from "dagre/dist/dagre.min.js"
 import IsolatedModel from './IsolatedModel.vue'
+import IsolatedEdgeModel from './IsolatedEdgeModel.vue'
 import { supabase } from '../lib/supabaseClient.js'
 
 export default {
@@ -54,6 +58,10 @@ export default {
             default: () => { }
         },
         clickedExpenseId: {
+            type: String,
+            default: '',
+        },
+        clickedEdgeTargetId: {
             type: String,
             default: '',
         },
@@ -86,6 +94,9 @@ export default {
         showClickedLiDiv() {
             return !!this.clickedExpenseId;
         },
+        showClickedEdgeDiv() {
+            return !!this.clickedEdgeTargetId;
+        },
     },
     data() {
         return {
@@ -94,6 +105,8 @@ export default {
             nodeFromServer: [],
             dragStart: {},
             dragEnd: {},
+
+            clickedEdgeSourceId: "",
 
             tooltip: null,
 
@@ -105,7 +118,19 @@ export default {
             nodeLayoutsNew: [], // 새로 생선된 node의 위치값을 임시 저장
             tooltipTimeout: null, // 툴팁 지연을 위한 타이머 변수
             eventHandlers: {
+                "edge:click": ({ edge }) => {
+                    if (this.clickedExpenseId !== "") {
+                        this.$emit('cancel-point-clicked-li');
+                    }
+                    const clickedTarget = this.edges[edge].expenseId;
+                    this.$emit('point-clicked-Edge', clickedTarget);
+                    const clickedSource = this.edges[edge].source;
+                    this.clickedEdgeSourceId = clickedSource;
+                },
                 "node:click": ({ node }) => {
+                    if (this.clickedEdgeTargetId !== "") {
+                        this.$emit('cancel-point-clicked-edge');
+                    }
                     const id = this.nodes[node].id;
                     this.$emit('point-clicked-li', id);
                 },
@@ -185,11 +210,24 @@ export default {
                             color: null,
                         },
                     },
-
-
-
+                    label: {
+                        fontFamily: undefined,
+                        fontSize: 11,
+                        lineHeight: 1.1,
+                        color: "#000000",
+                        margin: 10,
+                        background: {
+                            visible: false,
+                            color: "#ffffff",
+                            padding: {
+                                vertical: 1,
+                                horizontal: 4,
+                            },
+                            borderRadius: 2,
+                        },
+                    },
                 }
-            }
+            },
         }
     },
     watch: {
@@ -404,11 +442,11 @@ export default {
 
                 if (e.parents_id != null) {
                     edgeResult[e.id] = {
-                        'id': e.id,
+                        'expenseId': e.id,
                         'source': e.parents_id,
                         'target': e.id,
                         'size': e.amount,
-                        'label': e.amount
+                        'label': e.category
                     };
                 }
 
@@ -628,6 +666,7 @@ export default {
                     // 클릭이 그래프 컨테이너 외부에서 발생한 경우, 노드 클릭 효과를 취소합니다
                     if (isolatedContainer != null && !isolatedContainer.contains(event.target)) {
                         this.$emit('cancel-point-clicked-li');
+                        this.$emit('cancel-point-clicked-edge');
                     }
                 }
 
@@ -675,6 +714,7 @@ export default {
     components: {
         VNetworkGraph,
         IsolatedModel,
+        IsolatedEdgeModel,
         VEdgeLabel
     },
 
