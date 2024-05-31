@@ -52,7 +52,7 @@
             :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
             :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" />
         </div>
-        <div class="listViewDiv">
+        <div v-if=false class="listViewDiv">
           <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler"
             :isThereChildMonitor="isThereChildMonitor" :totalExpenseId="totalExpenseId"
             :clickedExpenseId="clickedExpenseId" :selectedPageId="selectedPageId" :isAnyOpenedLi="isAnyOpenedLi"

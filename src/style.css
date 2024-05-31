@@ -252,7 +252,7 @@ input:read-only {
   padding-left: 20px;
   padding-top: 30px;
   display: grid;
-  grid-template-columns: 500px 1fr;
+  grid-template-columns: 4fr 1fr;
   grid-gap: 10px;
   overflow-y: scroll;
   overflow-x: scroll;
