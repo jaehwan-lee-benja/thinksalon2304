@@ -106,6 +106,8 @@ export default {
             dragStart: {},
             dragEnd: {},
 
+            edgeFromServer: [],
+
             clickedEdgeSourceId: "",
 
             tooltip: null,
@@ -265,6 +267,7 @@ export default {
         document.addEventListener("click", this.handleDocumentClick); // [질문] 이것을 어떻게 바꿀 수 있을까?
         // this.$el.addEventListener("click", this.handleDocumentClick);
         this.fetchDataForNode();
+        this.fetchDataForEdge();
     },
     methods: {
         formatNodeName(nodeIdHere) {
@@ -318,6 +321,14 @@ export default {
                 .select()
             const { data } = a;
             this.nodeFromServer = data
+        },
+
+        async fetchDataForEdge() {
+            const a = await supabase
+                .from('edge')
+                .select()
+            const { data } = a;
+            this.edgeFromServer = data
         },
 
         async updateNodeLayout(nodeLayoutHere) {
@@ -440,13 +451,21 @@ export default {
                     'size': e.amount
                 };
 
+                let edgeLabel = ""
+
+                this.edgeFromServer.forEach((edge) => {
+                    if(edge.source == e.parents_id && edge.target == e.id) {
+                        edgeLabel = edge.when + " / " + edge.method
+                    }
+                })
+
                 if (e.parents_id != null) {
                     edgeResult[e.id] = {
                         'expenseId': e.id,
                         'source': e.parents_id,
                         'target': e.id,
                         'size': e.amount,
-                        'label': e.category
+                        'label': edgeLabel
                     };
                 }
 
