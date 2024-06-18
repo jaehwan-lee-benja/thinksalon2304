@@ -10,8 +10,9 @@
                 @select-account="selectAccount" />
         </div>
         <div class="isolatedExpense" v-if="showClickedEdgeDiv" ref="isolatedContainer">
-            <IsolatedEdgeModel v-bind:expenses="expenses" :accounts="accounts" :clickedEdgeTargetId="this.clickedEdgeTargetId"
-                :clickedEdgeSourceId="this.clickedEdgeSourceId" :session="session" :selectedMonitor="selectedMonitor" />
+            <IsolatedEdgeModel v-bind:expenses="expenses" :accounts="accounts"
+                :clickedEdgeTargetId="this.clickedEdgeTargetId" :clickedEdgeSourceId="this.clickedEdgeSourceId"
+                :session="session" :selectedMonitor="selectedMonitor" />
         </div>
     </div>
     <div class="graphDiv" ref="graphContainer" style="position: relative;">
@@ -541,7 +542,12 @@ export default {
             const defaultResult = this.formatLayoutDefault()
 
             console.log("this.session = ", this.session)
-            const userId = this.session?.user.id
+
+            let userId = ""
+
+            if (this.session) {
+                userId = this.session.user.id
+            }
 
             newIdArray.forEach((expenseId) => {
                 nodeLayouts[expenseId] = defaultResult[expenseId]
