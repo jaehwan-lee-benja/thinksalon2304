@@ -30,8 +30,23 @@ table,
 td,
 th {
   border-collapse: collapse;
-  border: 0px solid black;
+  border: 0px solid #000000;
   text-align: center;
+}
+
+.edgeDivStyle{
+  border: 1px solid black;
+  padding: 8px;
+  margin: 12px 6px;
+  border-radius: 6px;
+}
+
+.edgeDivStyle table {
+  border-collapse: collapse;
+}
+
+.edgeDivStyle td {
+  text-align: left; /* Left align text in all td elements */
 }
 
 .tdOnAccount {

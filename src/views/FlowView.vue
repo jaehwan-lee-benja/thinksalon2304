@@ -10,7 +10,8 @@
                 @select-account="selectAccount" />
         </div>
         <div class="isolatedExpense" v-if="showClickedEdgeDiv" ref="isolatedContainer">
-            <IsolatedEdgeModel v-bind:clickedEdgeTargetId="this.clickedEdgeTargetId" :clickedEdgeSourceId="this.clickedEdgeSourceId" :session="session"/>
+            <IsolatedEdgeModel v-bind:expenses="expenses" :accounts="accounts" :clickedEdgeTargetId="this.clickedEdgeTargetId"
+                :clickedEdgeSourceId="this.clickedEdgeSourceId" :session="session" :selectedMonitor="selectedMonitor" />
         </div>
     </div>
     <div class="graphDiv" ref="graphContainer" style="position: relative;">
@@ -22,8 +23,8 @@
             </template>
 
             <template #override-node-label="{
-            nodeId, scale, x, y, config, textAnchor, dominantBaseline
-        }">
+                nodeId, scale, x, y, config, textAnchor, dominantBaseline
+            }">
                 <text x="0" y="0" :font-size="config.fontSize * scale" :text-anchor="textAnchor"
                     :dominant-baseline="dominantBaseline" :fill="config.color" :transform="`translate(${x} ${y})`">
                     <tspan v-html="formatNodeName(nodeId)"></tspan>
@@ -109,6 +110,7 @@ export default {
             edgeFromServer: [],
 
             clickedEdgeSourceId: "",
+            selectedMonitor: true,
 
             tooltip: null,
 
@@ -128,6 +130,7 @@ export default {
                     this.$emit('point-clicked-Edge', clickedTarget);
                     const clickedSource = this.edges[edge].source;
                     this.clickedEdgeSourceId = clickedSource;
+                    this.selectedMonitor = !this.selectedMonitor;
                 },
                 "node:click": ({ node }) => {
                     if (this.clickedEdgeTargetId !== "") {
@@ -454,7 +457,7 @@ export default {
                 let edgeLabel = ""
 
                 this.edgeFromServer.forEach((edge) => {
-                    if(edge.source == e.parents_id && edge.target == e.id) {
+                    if (edge.source == e.parents_id && edge.target == e.id) {
                         edgeLabel = edge.when + " / " + edge.method
                     }
                 })

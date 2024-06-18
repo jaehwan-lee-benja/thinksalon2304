@@ -1,5 +1,5 @@
 <template>
-    <h3>돈의 지점 정의하기</h3>
+    <h3>돈의 거점 정의하기</h3>
     <div class='isolatedAlignStyle'>
         <ExpenseModel v-bind:expenseById="this.getExpenseById" :clickedExpenseId="clickedExpenseId"
             @remove-expense="removeExpense" />

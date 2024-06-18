@@ -1,14 +1,43 @@
 <template>
-    <h3>돈이 옮겨지는 방법 기록하기</h3>
+    <h3>돈이 옮겨지는 방법 정의하기</h3>
     <div>
-        언제: <input class="categoryStyle" v-model="when">
+        <p>[경로]</p>
+        <div class="edgeDivStyle">
+            <table>
+                <tr>
+                    <td>
+                        from: 
+                    </td>
+                    <td>
+                        {{ this.sourceE + " (계좌: " + this.sourceA + ")" }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        to: 
+                    </td>
+                    <td>
+                        {{ this.targetE + " (계좌: " + this.targetA + ")" }}
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
     <div>
-        방법: <input class="categoryStyle" v-model="method"> /
-        방법 관련 메모: <input class="categoryStyle" v-model="methodMemo">
-    </div>
-    <div>
-        일반 메모: <input class="categoryStyle" v-model="memo">
+        <p>[이동 방법]</p>
+        <div class="edgeDivStyle">
+            <div>
+                언제: <input class="categoryStyle" v-model="when">
+            </div>
+            <div>
+                방법: <input class="categoryStyle" v-model="method"> /
+                방법 관련 메모: <input class="categoryStyle" v-model="methodMemo">
+            </div>
+            <div>
+                일반 메모: <input class="categoryStyle" v-model="memo">
+            </div>
+        </div>
+
     </div>
     <button class="expenseDetailBtn" @click="upsertEdge()">업데이트</button>
 </template>
@@ -28,6 +57,14 @@ export default {
         }
     },
     props: {
+        expenses: {
+            type: Object,
+            default: () => { }
+        },
+        accounts: {
+            type: Object,
+            default: () => { }
+        },
         clickedEdgeTargetId: {
             type: String,
             default: '',
@@ -40,9 +77,45 @@ export default {
             type: String,
             default: '',
         },
+        selectedMonitor: {
+            type: Boolean,
+            default: true,
+        }
     },
     mounted() {
         this.fetchEdgeData()
+    },
+    watch: {
+        selectedMonitor: {
+            handler() {
+                this.selectEdge()
+            },
+            deep: true
+        },
+    },
+    computed: {
+        sourceE() {
+            return this.expenses.find((e) => e.id == this.clickedEdgeSourceId).category
+        },
+        targetE() {
+            return this.expenses.find((e) => e.id == this.clickedEdgeTargetId).category
+        },
+        sourceA() {
+            const accountId = this.expenses.find((e) => e.id == this.clickedEdgeSourceId).account_id
+            let selectedAccount = this.accounts.find((a) => a.id == accountId)
+            if (!selectedAccount) {
+                selectedAccount = { name: "-" }
+            }
+            return selectedAccount.name
+        },
+        targetA() {
+            const accountId = this.expenses.find((e) => e.id == this.clickedEdgeTargetId).account_id
+            let selectedAccount = this.accounts.find((a) => a.id == accountId)
+            if (!selectedAccount) {
+                selectedAccount = { name: "-" }
+            }
+            return selectedAccount.name
+        },
     },
     methods: {
         async fetchEdgeData() {
@@ -56,10 +129,18 @@ export default {
         selectEdge() {
             const selectedSource = this.edge.filter(e1 => e1.source == this.clickedEdgeSourceId);
             const selectedTarget = selectedSource.find(e2 => e2.target == this.clickedEdgeTargetId);
-            this.when = selectedTarget.when
-            this.method = selectedTarget.method
-            this.methodMemo = selectedTarget.methodMemo
-            this.memo = selectedTarget.memo
+            console.log("selectedTarget = ", selectedTarget);
+            if (selectedTarget) {
+                this.when = selectedTarget.when
+                this.method = selectedTarget.method
+                this.methodMemo = selectedTarget.methodMemo
+                this.memo = selectedTarget.memo
+            } else {
+                this.when = ""
+                this.method = ""
+                this.methodMemo = ""
+                this.memo = ""
+            }
         },
         async upsertEdge() {
             const edgeDate = {
