@@ -24,6 +24,7 @@ export default {
             method: "",
             methodMemo: "",
             memo: "",
+            edge: "",
         }
     },
     props: {
@@ -40,7 +41,26 @@ export default {
             default: '',
         },
     },
+    mounted() {
+        this.fetchEdgeData()
+    },
     methods: {
+        async fetchEdgeData() {
+            const a = await supabase
+                .from('edge')
+                .select()
+            const { data } = a;
+            this.edge = data;
+            this.selectEdge()
+        },
+        selectEdge() {
+            const selectedSource = this.edge.filter(e1 => e1.source == this.clickedEdgeSourceId);
+            const selectedTarget = selectedSource.find(e2 => e2.target == this.clickedEdgeTargetId);
+            this.when = selectedTarget.when
+            this.method = selectedTarget.method
+            this.methodMemo = selectedTarget.methodMemo
+            this.memo = selectedTarget.memo
+        },
         async upsertEdge() {
             const edgeDate = {
                 id: this.getUuidv4(),
