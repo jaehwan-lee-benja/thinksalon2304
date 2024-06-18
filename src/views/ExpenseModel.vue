@@ -1,13 +1,37 @@
 <template>
-    <div :class="{
-        'listViewLiDiv_clicked': this.updateClickedExpenseId === true,
-        'listViewLiDiv': this.updateClickedExpenseId === false
-    }">
-        <input class="categoryStyle" v-model="theExpenseById.category">
-        <span> : </span>
-        <input class="amountStyle" ref="amountInput" v-model="formattedAmount" @input="validateInput">
+    <div class="isolatedTableDivStyle">
+        <table>
+            <tr>
+                <td>
+                    명칭 :
+                </td>
+                <td>
+                    <input class="categoryStyle" v-model="theExpenseById.category">
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    계좌 :
+                </td>
+                <td>
+                    <select class="accountSelect" v-model="selectedAccountName" @change="selectAccount">
+                        <option value="" disabled selected>계좌 선택하기</option>
+                        <option v-for="account in accounts" :key="account.id" :value="account.name" :id="account.id">
+                            {{ account.name }}
+                        </option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    금액 :
+                </td>
+                <td>
+                    <input class="amountStyle" ref="amountInput" v-model="formattedAmount" @input="validateInput">
+                </td>
+            </tr>
+        </table>
     </div>
-    <button class="expenseDetailBtn" v-if="isNotTotal" @click="removeExpense(theExpenseById)">x</button>
 </template>
 
 <script>
@@ -17,6 +41,10 @@ export default {
     name: 'ExpenseModel',
     mixins: [expenseMixin],
     props: {
+        expenses: {
+            type: Object,
+            default: () => ({})
+        },
         expenseById: {
             type: Object,
             default: () => { }
@@ -29,6 +57,38 @@ export default {
             type: Boolean,
             default: false,
         },
+        accounts: {
+            type: Object,
+            default: () => ({})
+        },
+    },
+    mounted() {
+        this.getAccount();
+    },
+    data() {
+        return {
+            selectedAccountName: ''
+        }
+    },
+    watch: {
+        selectedAccountName(newValue) {
+            const selectedAccount = this.accounts.find(account => account.name === newValue);
+            if (selectedAccount) {
+                this.$emit('select-account', this.expenseById.id, selectedAccount.id);
+            }
+        },
+        expenses: {
+            // 편집 취소하는 경우, 서버에 저장된 값으로 돌아오기
+            handler() {
+                const expensesLength = this.expenses.length;
+                if (expensesLength > 0) {
+                    this.$nextTick(() => {
+                        this.getAccount()
+                    });
+                }
+            },
+            deep: true
+        }
     },
     computed: {
         formattedAmount: {
@@ -48,13 +108,6 @@ export default {
         theExpenseById() {
             return this.expenseById
         },
-        isNotTotal() {
-            if (this.expenseById.level > 1) {
-                return true
-            } else {
-                return false
-            }
-        },
         updateClickedExpenseId() {
             if (this.clickedExpenseId === this.expenseById.id && this.isList === true) {
                 return true
@@ -65,6 +118,19 @@ export default {
 
     },
     methods: {
+        selectAccount() {
+            const selectedAccount = this.accounts.find(account => account.name === this.theExpenseById.account_id);
+            if (selectedAccount) {
+                this.$emit('select-account', this.expenseById.id, selectedAccount.id)
+            }
+        },
+        getAccount() {
+            let theAccount = { name: "" };
+            if (this.expenseById.account_id != null) {
+                theAccount = this.accounts.find(e => e.id === this.expenseById.account_id) || { name: "" };
+            }
+            this.selectedAccountName = theAccount.name;
+        },
         removeExpense(expenseHere) {
             this.$emit('remove-expense', expenseHere);
         },

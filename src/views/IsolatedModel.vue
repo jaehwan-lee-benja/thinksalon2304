@@ -1,10 +1,13 @@
 <template>
     <div class="isolatedDivStyle">
         <div class='isolatedAlignStyle'>
-            <ExpenseModel v-bind:expenseById="this.getExpenseById" :clickedExpenseId="clickedExpenseId"
-                @remove-expense="removeExpense" />
+            <p>[거점 정보]</p>
+            <ExpenseModel v-bind:expenses="expenses" :expenseById="this.getExpenseById" :clickedExpenseId="clickedExpenseId"
+                :accounts="accounts" @select-account="selectAccount" />
+            <p>[참고]</p>
             <ExpenseDetailModel class="isolatedDetailDiv" v-bind:expenseById="this.getExpenseById" :expenses="expenses"
                 :accounts="accounts" @select-account="selectAccount" />
+            <button class="expenseDetailBtn" v-if="isNotTotal" @click="removeExpense(this.getExpenseById)">거점 삭제하기</button>
         </div>
     </div>
 </template>
@@ -39,6 +42,15 @@ export default {
             default: () => { }
         }
     },
+    computed: {
+        isNotTotal() {
+            if (this.getExpenseById.level > 1) {
+                return true
+            } else {
+                return false
+            }
+        },
+    },
     data() {
         return {
             isLiDetailDivOpened: false,
@@ -50,6 +62,7 @@ export default {
             this.$emit('select-account', expenseIdHere, accountIdHere)
         },
         removeExpense(expenseHere) {
+            console.log("expenseHere = ", expenseHere)
             this.$emit('remove-expense', expenseHere);
         }
     },

@@ -34,19 +34,20 @@ th {
   text-align: center;
 }
 
-.edgeDivStyle{
+.isolatedTableDivStyle {
   border: 1px solid black;
   padding: 8px;
   margin: 12px 6px;
   border-radius: 6px;
 }
 
-.edgeDivStyle table {
+.isolatedTableDivStyle table {
   border-collapse: collapse;
 }
 
-.edgeDivStyle td {
-  text-align: left; /* Left align text in all td elements */
+.isolatedTableDivStyle td {
+  text-align: left;
+  /* Left align text in all td elements */
 }
 
 .tdOnAccount {
@@ -153,14 +154,14 @@ input:read-only {
   background-color: transparent;
   border: 1px solid #9BA8AB;
   color: #9BA8AB;
-  margin: 0 0 0 5px;
+  margin: 10px;
+  width: 80%;
 }
 
 .expenseDetailBtn:hover {
   background-color: #4a5c6a;
   border: 1px solid #4a5c6a;
   color: white;
-  margin: 0 0 0 5px;
 }
 
 
@@ -293,16 +294,6 @@ input:read-only {
   cursor: pointer;
 }
 
-.accountSelect {
-  background-color: white;
-  border-radius: 4px;
-  border: 0px;
-  width: 120px;
-  margin: 10px 2px;
-  padding: 3px;
-  cursor: pointer;
-}
-
 .listViewDiv {
   white-space: nowrap;
   width: 600px;
@@ -378,17 +369,31 @@ input:read-only {
 }
 
 .categoryStyle {
-  width: 100px;
+  width: calc(90% - 10px); /* margin-left 만큼 빼줍니다 */
+  margin-left: 10px;
+  box-sizing: border-box; /* box-sizing을 border-box로 설정 */
+
 }
 
 .amountStyle {
   text-align: right;
-  width: 70px;
-  margin-right: 10px;
+  width: calc(90% - 10px); /* margin-left 만큼 빼줍니다 */
+  margin-left: 10px;
+  box-sizing: border-box; /* box-sizing을 border-box로 설정 */
+
 }
 
-.memo {
-  width: 100px;
+.accountSelect {
+  background-color: white;
+  border: 0px solid white;
+  width: calc(90% - 10px); /* margin-left 만큼 빼줍니다 */
+  margin: 4px 0px 4px 10px;
+  cursor: pointer;
+  padding: 4px 7px;
+  padding-left: 1px; /* padding-left를 0으로 설정하여 내부 글씨의 왼쪽 마진을 없앰 */
+  border-radius: 4px;
+  box-sizing: border-box; /* box-sizing을 border-box로 설정 */
+
 }
 
 .saveEditedBtn_active {
@@ -496,7 +501,7 @@ input:read-only {
   background-color: rgb(204, 208, 207, 0.9);
   width: 40%;
   height: 40%;
-  padding: 20px 20px 20px 20px; 
+  padding: 20px 20px 20px 20px;
   margin: 20px;
   right: 0px;
   bottom: 0px;

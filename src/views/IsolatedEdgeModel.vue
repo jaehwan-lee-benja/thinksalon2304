@@ -2,14 +2,14 @@
     <div class="isolatedDivStyle">
         <div>
             <p>[경로]</p>
-            <div class="edgeDivStyle">
+            <div class="isolatedTableDivStyle">
                 <table>
                     <tr>
                         <td>
                             from:
                         </td>
                         <td>
-                            {{ this.sourceE + " (계좌: " + this.sourceA + ")" }}
+                            <input class="categoryStyle" :value="this.sourceE + ' (계좌: ' + this.sourceA + ')'" readonly>
                         </td>
                     </tr>
                     <tr>
@@ -17,7 +17,7 @@
                             to:
                         </td>
                         <td>
-                            {{ this.targetE + " (계좌: " + this.targetA + ")" }}
+                            <input class="categoryStyle" :value="this.targetE + ' (계좌: ' + this.targetA + ')'" readonly>
                         </td>
                     </tr>
                 </table>
@@ -25,19 +25,41 @@
         </div>
         <div>
             <p>[이동 방법]</p>
-            <div class="edgeDivStyle">
-                <div>
-                    언제: <input class="categoryStyle" v-model="when">
-                </div>
-                <div>
-                    방법: <input class="categoryStyle" v-model="method"> /
-                    방법 관련 메모: <input class="categoryStyle" v-model="methodMemo">
-                </div>
-                <div>
-                    일반 메모: <input class="categoryStyle" v-model="memo">
-                </div>
+            <div class="isolatedTableDivStyle">
+                <table>
+                    <tr>
+                        <td>
+                            언제:
+                        </td>
+                        <td>
+                            <input class="categoryStyle" v-model="when">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            방법:
+                        </td>
+                        <td>
+                            <input class="categoryStyle" v-model="method">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                        </td>
+                        <td>
+                            <input class="categoryStyle" v-model="methodMemo">
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            메모:
+                        </td>
+                        <td>
+                            <input class="categoryStyle" v-model="memo">
+                        </td>
+                    </tr>
+                </table>
             </div>
-
         </div>
         <button class="expenseDetailBtn" @click="upsertEdge()">업데이트</button>
     </div>
