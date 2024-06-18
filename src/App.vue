@@ -33,33 +33,23 @@
       <div class="mainBtnDiv">
         <div class="saveEditedDiv">
           <button :class="{
-          'saveEditedBtn_active': isEdited === true,
-          'saveEditedBtn_inactive': isEdited === false
-        }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
+            'saveEditedBtn_active': isEdited === true,
+            'saveEditedBtn_inactive': isEdited === false
+          }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
           <button :class="{
-          'cancelEditedBtn_active': isEdited === true,
-          'cancelEditedBtn_inactive': isEdited === false
-        }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
+            'cancelEditedBtn_active': isEdited === true,
+            'cancelEditedBtn_inactive': isEdited === false
+          }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
         </div>
       </div>
-      <div class="viewGrid">
-        <div class="flowViewDiv">
-          <FlowView v-bind:expenses="expenses" :fetchedExpenses="fetchedExpenses" :clickedExpenseId="clickedExpenseId"
-            :clickedEdgeTargetId="clickedEdgeTargetId" :editExpenseWorked="editExpenseWorked"
-            @point-clicked-li="pointClickedLi" @cancel-point-clicked-li="cancelPointClickedLi"
-            @point-clicked-Edge="pointClickedEdge" @cancel-point-clicked-edge="cancelPointClickedEdge"
-            @remove-expense="removeExpense" :accounts="accounts" @select-account="selectAccount"
-            :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
-            :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" />
-        </div>
-        <div v-if=false class="listViewDiv">
-          <ListView v-bind:expenses="expenses" :toggleActiveHandler="toggleActiveHandler"
-            :isThereChildMonitor="isThereChildMonitor" :totalExpenseId="totalExpenseId"
-            :clickedExpenseId="clickedExpenseId" :selectedPageId="selectedPageId" :isAnyOpenedLi="isAnyOpenedLi"
-            @create-new-expense="createNewExpense" @remove-expense="removeExpense"
-            @cancel-editing-expense="cancelEditingExpense" @toggle-sub-list="toggleSubList" @memo-save="memoSave"
-            @open-or-close-li="openOrCloseLi" :accounts="accounts" @select-account="selectAccount" />
-        </div>
+      <div class="flowViewDiv">
+        <FlowView v-bind:expenses="expenses" :fetchedExpenses="fetchedExpenses" :clickedExpenseId="clickedExpenseId"
+          :clickedEdgeTargetId="clickedEdgeTargetId" :editExpenseWorked="editExpenseWorked"
+          @point-clicked-li="pointClickedLi" @cancel-point-clicked-li="cancelPointClickedLi"
+          @point-clicked-Edge="pointClickedEdge" @cancel-point-clicked-edge="cancelPointClickedEdge"
+          @remove-expense="removeExpense" :accounts="accounts" @select-account="selectAccount"
+          :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
+          :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" />
       </div>
       <div v-if="isPageSettingOpened" class="modal">
         <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
@@ -80,7 +70,6 @@
 <script>
 import { supabase } from './lib/supabaseClient.js'
 import LoginSessionModel from './views/LoginSessionModel.vue'
-import ListView from './views/ListView.vue'
 import FlowView from './views/FlowView.vue'
 import PageSettingView from './views/PageSettingView.vue'
 import AccountSettingView from './views/AccountSettingView.vue'
@@ -116,7 +105,6 @@ export default {
   },
   mixins: [LoginSessionModel],
   components: {
-    ListView,
     FlowView,
     PageSettingView,
     AccountSettingView,

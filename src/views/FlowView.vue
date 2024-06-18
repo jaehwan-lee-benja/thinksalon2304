@@ -540,7 +540,8 @@ export default {
 
             const defaultResult = this.formatLayoutDefault()
 
-            const userId = this.session.user.id
+            console.log("this.session = ", this.session)
+            const userId = this.session?.user.id
 
             newIdArray.forEach((expenseId) => {
                 nodeLayouts[expenseId] = defaultResult[expenseId]
