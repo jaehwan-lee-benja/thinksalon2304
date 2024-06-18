@@ -1,45 +1,46 @@
 <template>
-    <h3>돈이 옮겨지는 방법 정의하기</h3>
-    <div>
-        <p>[경로]</p>
-        <div class="edgeDivStyle">
-            <table>
-                <tr>
-                    <td>
-                        from: 
-                    </td>
-                    <td>
-                        {{ this.sourceE + " (계좌: " + this.sourceA + ")" }}
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        to: 
-                    </td>
-                    <td>
-                        {{ this.targetE + " (계좌: " + this.targetA + ")" }}
-                    </td>
-                </tr>
-            </table>
-        </div>
-    </div>
-    <div>
-        <p>[이동 방법]</p>
-        <div class="edgeDivStyle">
-            <div>
-                언제: <input class="categoryStyle" v-model="when">
-            </div>
-            <div>
-                방법: <input class="categoryStyle" v-model="method"> /
-                방법 관련 메모: <input class="categoryStyle" v-model="methodMemo">
-            </div>
-            <div>
-                일반 메모: <input class="categoryStyle" v-model="memo">
+    <div class="isolatedDivStyle">
+        <div>
+            <p>[경로]</p>
+            <div class="edgeDivStyle">
+                <table>
+                    <tr>
+                        <td>
+                            from:
+                        </td>
+                        <td>
+                            {{ this.sourceE + " (계좌: " + this.sourceA + ")" }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            to:
+                        </td>
+                        <td>
+                            {{ this.targetE + " (계좌: " + this.targetA + ")" }}
+                        </td>
+                    </tr>
+                </table>
             </div>
         </div>
+        <div>
+            <p>[이동 방법]</p>
+            <div class="edgeDivStyle">
+                <div>
+                    언제: <input class="categoryStyle" v-model="when">
+                </div>
+                <div>
+                    방법: <input class="categoryStyle" v-model="method"> /
+                    방법 관련 메모: <input class="categoryStyle" v-model="methodMemo">
+                </div>
+                <div>
+                    일반 메모: <input class="categoryStyle" v-model="memo">
+                </div>
+            </div>
 
+        </div>
+        <button class="expenseDetailBtn" @click="upsertEdge()">업데이트</button>
     </div>
-    <button class="expenseDetailBtn" @click="upsertEdge()">업데이트</button>
 </template>
 
 <script>
@@ -94,14 +95,22 @@ export default {
         },
     },
     computed: {
+        expenseChecked() {
+            const expensesLength = this.expenses.length;
+            if (expensesLength > 0) {
+                return this.expenses
+            } else {
+                return { category: "로딩중.." }
+            }
+        },
         sourceE() {
-            return this.expenses.find((e) => e.id == this.clickedEdgeSourceId).category
+            return this.expenseChecked.find((e) => e.id == this.clickedEdgeSourceId).category
         },
         targetE() {
-            return this.expenses.find((e) => e.id == this.clickedEdgeTargetId).category
+            return this.expenseChecked.find((e) => e.id == this.clickedEdgeTargetId).category
         },
         sourceA() {
-            const accountId = this.expenses.find((e) => e.id == this.clickedEdgeSourceId).account_id
+            const accountId = this.expenseChecked.find((e) => e.id == this.clickedEdgeSourceId).account_id
             let selectedAccount = this.accounts.find((a) => a.id == accountId)
             if (!selectedAccount) {
                 selectedAccount = { name: "-" }
@@ -109,7 +118,7 @@ export default {
             return selectedAccount.name
         },
         targetA() {
-            const accountId = this.expenses.find((e) => e.id == this.clickedEdgeTargetId).account_id
+            const accountId = this.expenseChecked.find((e) => e.id == this.clickedEdgeTargetId).account_id
             let selectedAccount = this.accounts.find((a) => a.id == accountId)
             if (!selectedAccount) {
                 selectedAccount = { name: "-" }

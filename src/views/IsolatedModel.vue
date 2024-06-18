@@ -1,10 +1,11 @@
 <template>
-    <h3>돈의 거점 정의하기</h3>
-    <div class='isolatedAlignStyle'>
-        <ExpenseModel v-bind:expenseById="this.getExpenseById" :clickedExpenseId="clickedExpenseId"
-            @remove-expense="removeExpense" />
-        <ExpenseDetailModel class="isolatedDetailDiv" v-bind:expenseById="this.getExpenseById" :expenses="expenses"
-            :accounts="accounts" @select-account="selectAccount" />
+    <div class="isolatedDivStyle">
+        <div class='isolatedAlignStyle'>
+            <ExpenseModel v-bind:expenseById="this.getExpenseById" :clickedExpenseId="clickedExpenseId"
+                @remove-expense="removeExpense" />
+            <ExpenseDetailModel class="isolatedDetailDiv" v-bind:expenseById="this.getExpenseById" :expenses="expenses"
+                :accounts="accounts" @select-account="selectAccount" />
+        </div>
     </div>
 </template>
 

@@ -5,11 +5,15 @@
     </div>
     <div class="isolatedExpenseDiv">
         <div class="isolatedExpense" v-if="showClickedLiDiv" ref="isolatedContainer">
+            <h3>돈의 거점 정의하기</h3>
+            <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
             <IsolatedModel v-bind:expenses="expenses" :expenseId="this.clickedExpenseId" @remove-expense="removeExpense"
                 :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :accounts="accounts"
                 @select-account="selectAccount" />
         </div>
         <div class="isolatedExpense" v-if="showClickedEdgeDiv" ref="isolatedContainer">
+            <h3>돈의 이동 정의하기</h3>
+            <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
             <IsolatedEdgeModel v-bind:expenses="expenses" :accounts="accounts"
                 :clickedEdgeTargetId="this.clickedEdgeTargetId" :clickedEdgeSourceId="this.clickedEdgeSourceId"
                 :session="session" :selectedMonitor="selectedMonitor" />
@@ -268,8 +272,6 @@ export default {
         }
     },
     mounted() {
-        document.addEventListener("click", this.handleDocumentClick); // [질문] 이것을 어떻게 바꿀 수 있을까?
-        // this.$el.addEventListener("click", this.handleDocumentClick);
         this.fetchDataForNode();
         this.fetchDataForEdge();
     },
@@ -684,25 +686,10 @@ export default {
             );
         },
 
-        handleDocumentClick(event) {
-            // 클릭이 그래프 컨테이너 외부에서 발생했는지 확인합니다
-            const graphContainer = this.$refs.graphContainer;
-            const isolatedContainer = this.$refs.isolatedContainer;
-
-            if (graphContainer !== null) {
-
-                if (graphContainer || !graphContainer.contains(event.target)) {
-                    // 클릭이 그래프 컨테이너 외부에서 발생한 경우, 노드 클릭 효과를 취소합니다
-                    if (isolatedContainer != null && !isolatedContainer.contains(event.target)) {
-                        this.$emit('cancel-point-clicked-li');
-                        this.$emit('cancel-point-clicked-edge');
-                    }
-                }
-
-            }
-
+        closeIsolated() {
+            this.$emit('cancel-point-clicked-li');
+            this.$emit('cancel-point-clicked-edge');
         },
-
         setTooltipFromEvent(node, event) {
             this.removeTooltip();
 
