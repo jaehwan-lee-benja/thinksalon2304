@@ -330,6 +330,15 @@ input:read-only {
   z-index: 1;
 }
 
+.flowViewBtn3 {
+  position: absolute;
+  margin: 20px 20px 20px 220px;
+  background-color: #f4f4f4;
+  border: 1px solid #4a5c6a;
+  color: #4a5c6a;
+  z-index: 1;
+}
+
 .closeIsolatedBtn {
   position: absolute;
   top: 0px;

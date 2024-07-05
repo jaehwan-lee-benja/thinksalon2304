@@ -2,16 +2,22 @@
     <div class="flowViewBtnDiv">
         <button @click="showGraphFit" class="flowViewBtn">그래프 보기</button>
         <button @click="showGraphDefault" class="flowViewBtn2">배치 초기화</button>
+        <button @click="showCreateExpenseDiv" class="flowViewBtn3">새 거점 만들기</button>
     </div>
     <div class="isolatedExpenseDiv">
-        <div class="isolatedExpense" v-if="showClickedLiDiv" ref="isolatedContainer">
+        <div class="isolatedExpense" v-if="createExpenseDivHandler">
+            <h3>신규 거점 만들기</h3>
+            <button @click="closeCreateExpenseDiv" class="closeIsolatedBtn">창닫기</button>
+            <IsolatedCreateExpense v-bind:expenses="expenses" :accounts="accounts"/>
+        </div>
+        <div class="isolatedExpense" v-if="showClickedLiDiv">
             <h3>돈의 거점 정의하기</h3>
             <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
             <IsolatedModel v-bind:expenses="expenses" :expenseId="this.clickedExpenseId" @remove-expense="removeExpense"
                 :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :accounts="accounts"
                 @select-account="selectAccount" />
         </div>
-        <div class="isolatedExpense" v-if="showClickedEdgeDiv" ref="isolatedContainer">
+        <div class="isolatedExpense" v-if="showClickedEdgeDiv">
             <h3>돈의 이동 정의하기</h3>
             <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
             <IsolatedEdgeModel v-bind:expenses="expenses" :accounts="accounts"
@@ -50,6 +56,7 @@ import "v-network-graph/lib/style.css"
 import dagre from "dagre/dist/dagre.min.js"
 import IsolatedModel from './IsolatedModel.vue'
 import IsolatedEdgeModel from './IsolatedEdgeModel.vue'
+import IsolatedCreateExpense from './IsolatedCreateExpense.vue'
 import { supabase } from '../lib/supabaseClient.js'
 
 export default {
@@ -106,6 +113,8 @@ export default {
     },
     data() {
         return {
+            createExpenseDivHandler: false,
+
             pageLengthMonitor: 0,
 
             nodeFromServer: [],
@@ -276,6 +285,15 @@ export default {
         this.fetchDataForEdge();
     },
     methods: {
+        showCreateExpenseDiv(){
+            this.$emit('cancel-point-clicked-li');
+            this.$emit('cancel-point-clicked-edge');
+            this.createExpenseDivHandler = true;
+            // this.$emit('create-new-expense', parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere)
+        },
+        closeCreateExpenseDiv() {
+            this.createExpenseDivHandler = false;
+        },
         formatNodeName(nodeIdHere) {
             const eachE = this.expenses.find((e) => nodeIdHere == e.id);
 
@@ -687,6 +705,7 @@ export default {
         },
 
         closeIsolated() {
+            this.closeCreateExpenseDiv();
             this.$emit('cancel-point-clicked-li');
             this.$emit('cancel-point-clicked-edge');
         },
@@ -731,6 +750,7 @@ export default {
         VNetworkGraph,
         IsolatedModel,
         IsolatedEdgeModel,
+        IsolatedCreateExpense,
         VEdgeLabel
     },
 

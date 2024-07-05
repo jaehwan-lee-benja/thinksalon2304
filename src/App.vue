@@ -49,7 +49,8 @@
           @point-clicked-Edge="pointClickedEdge" @cancel-point-clicked-edge="cancelPointClickedEdge"
           @remove-expense="removeExpense" :accounts="accounts" @select-account="selectAccount"
           :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
-          :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" />
+          :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" 
+          @create-new-expense="createNewExpense"/>
       </div>
       <div v-if="isPageSettingOpened" class="modal">
         <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
