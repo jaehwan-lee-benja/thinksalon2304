@@ -7,6 +7,16 @@
                     {{ expense.category }}
                 </option>
             </select>
+            <p>[거점 이름 정하기]</p>
+            <input class="categoryStyle" v-model="newCategory">
+            <p>[거점 크기 정하기(돈의 양)]</p>
+            <input class="categoryStyle" v-model="newAmount">
+            <p>[거점 계좌 매칭하기]</p>
+            <select v-model="selectedAccount" @change="selectAccount">
+                <option v-for="account in this.accounts" :key="account.id" :value="account.id">
+                    {{ account.name }}
+                </option>
+            </select>
         </div>
     </div>
 </template>
@@ -28,11 +38,14 @@ export default {
     data() {
         return {
             parentsExpense: "",
+            newCategory: "",
+            newAmount: "",
+            selectedAccount: ""
         }
     },
     methods: {
         selectAccount() {
-            // this.$emit('select-account', expenseIdHere, accountIdHere)
+            console.log("this.selectedAccount = ", this.selectedAccount)
         },
         selectParentsExpense() {
             console.log("parentsExpense = ", this.parentsExpense)
