@@ -8,7 +8,8 @@
         <div class="isolatedExpense" v-if="createExpenseDivHandler">
             <h3>신규 거점 만들기</h3>
             <button @click="closeCreateExpenseDiv" class="closeIsolatedBtn">창닫기</button>
-            <IsolatedCreateExpense v-bind:expenses="expenses" :accounts="accounts"/>
+            <IsolatedCreateExpense v-bind:expenses="expenses" :accounts="accounts"
+                @create-new-expense="createNewExpense" />
         </div>
         <div class="isolatedExpense" v-if="showClickedLiDiv">
             <h3>돈의 거점 정의하기</h3>
@@ -34,8 +35,8 @@
             </template>
 
             <template #override-node-label="{
-                nodeId, scale, x, y, config, textAnchor, dominantBaseline
-            }">
+            nodeId, scale, x, y, config, textAnchor, dominantBaseline
+        }">
                 <text x="0" y="0" :font-size="config.fontSize * scale" :text-anchor="textAnchor"
                     :dominant-baseline="dominantBaseline" :fill="config.color" :transform="`translate(${x} ${y})`">
                     <tspan v-html="formatNodeName(nodeId)"></tspan>
@@ -285,11 +286,14 @@ export default {
         this.fetchDataForEdge();
     },
     methods: {
-        showCreateExpenseDiv(){
+        createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere, selectedAccountIdHere) {
+            this.$emit('create-new-expense', parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere, selectedAccountIdHere);
+            this.createExpenseDivHandler = false;
+        },
+        showCreateExpenseDiv() {
             this.$emit('cancel-point-clicked-li');
             this.$emit('cancel-point-clicked-edge');
             this.createExpenseDivHandler = true;
-            // this.$emit('create-new-expense', parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere)
         },
         closeCreateExpenseDiv() {
             this.createExpenseDivHandler = false;

@@ -3,7 +3,7 @@
         <div class='isolatedAlignStyle'>
             <p>[상위 거점 선택하기]</p>
             <select v-model="parentsExpense" @change="selectParentsExpense">
-                <option v-for="expense in this.expenses" :key="expense.id" :value="expense.id">
+                <option v-for="expense in this.expenses" :key="expense.id" :value="expense">
                     {{ expense.category }}
                 </option>
             </select>
@@ -13,11 +13,12 @@
             <input class="categoryStyle" v-model="newAmount">
             <p>[거점 계좌 매칭하기]</p>
             <select v-model="selectedAccount" @change="selectAccount">
-                <option v-for="account in this.accounts" :key="account.id" :value="account.id">
+                <option v-for="account in this.accounts" :key="account.id" :value="account">
                     {{ account.name }}
                 </option>
             </select>
         </div>
+        <button @click="createNewExpense">만들기</button>
     </div>
 </template>
 
@@ -49,6 +50,9 @@ export default {
         },
         selectParentsExpense() {
             console.log("parentsExpense = ", this.parentsExpense)
+        },
+        createNewExpense() {
+            this.$emit('create-new-expense', this.parentsExpense.id, this.parentsExpense.level, this.newCategory, this.newAmount, this.selectedAccount.id);
         }
     },
 }

@@ -653,7 +653,7 @@ export default {
       }
 
     },
-    createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere) {
+    createNewExpense(parentsIdHere, parentsLevelHere, newCategoryHere, newAmountHere, selectedAccountIdHere) {
 
       const levelForO = parentsLevelHere + 1;
 
@@ -666,7 +666,8 @@ export default {
         order: this.setOrder(parentsIdHere),
         level: levelForO,
         show_sub_list: false,
-        page_id: this.selectedPageId
+        page_id: this.selectedPageId,
+        account_id: selectedAccountIdHere
       };
 
       if (levelForO < 5) {
