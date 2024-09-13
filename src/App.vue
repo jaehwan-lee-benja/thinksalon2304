@@ -27,30 +27,33 @@
       </div>
     </div>
     <div class="mainDiv">
-      <div class="pageNameDiv">
-        <h2>{{ this.pageName }}</h2>
-      </div>
-      <div class="mainBtnDiv">
-        <div class="saveEditedDiv">
-          <button :class="{
-            'saveEditedBtn_active': isEdited === true,
-            'saveEditedBtn_inactive': isEdited === false
-          }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
-          <button :class="{
-            'cancelEditedBtn_active': isEdited === true,
-            'cancelEditedBtn_inactive': isEdited === false
-          }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
-        </div>
-      </div>
       <div class="flowViewDiv">
+        <div class="flowViewControlDiv">
+            <div class="pageNameDiv">
+              <h2>{{ this.pageName }}</h2>
+            </div>
+            <div class="mainBtnDiv">
+              <div class="saveEditedDiv">
+                <button :class="{
+                  'saveEditedBtn_active': isEdited === true,
+                  'saveEditedBtn_inactive': isEdited === false
+                }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
+                <button :class="{
+                  'cancelEditedBtn_active': isEdited === true,
+                  'cancelEditedBtn_inactive': isEdited === false
+                }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
+              </div>
+            </div>
+          </div>
         <FlowView v-bind:expenses="expenses" :fetchedExpenses="fetchedExpenses" :clickedExpenseId="clickedExpenseId"
           :clickedEdgeTargetId="clickedEdgeTargetId" :editExpenseWorked="editExpenseWorked"
           @point-clicked-li="pointClickedLi" @cancel-point-clicked-li="cancelPointClickedLi"
           @point-clicked-Edge="pointClickedEdge" @cancel-point-clicked-edge="cancelPointClickedEdge"
           @remove-expense="removeExpense" :accounts="accounts" @select-account="selectAccount"
           :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
-          :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" 
-          @create-new-expense="createNewExpense"/>
+          :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" @create-new-expense="createNewExpense">
+
+        </FlowView>
       </div>
       <div v-if="isPageSettingOpened" class="modal">
         <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"

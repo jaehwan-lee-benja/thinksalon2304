@@ -1,31 +1,34 @@
 <template>
-    <div class="flowViewBtnDiv">
-        <button @click="showGraphFit" class="flowViewBtn">그래프 보기</button>
-        <button @click="showGraphDefault" class="flowViewBtn2">배치 초기화</button>
-        <button @click="showCreateExpenseDiv" class="flowViewBtn3">새 거점 만들기</button>
+    <div class="bottonControlDiv">
+        <div class="flowViewBtnDiv">
+            <button @click="showGraphFit" class="flowViewBtn">그래프 보기</button>
+            <button @click="showGraphDefault" class="flowViewBtn">배치 초기화</button>
+            <button @click="showCreateExpenseDiv" class="flowViewBtn">새 거점 만들기</button>
+        </div>
+        <div class="isolatedExpenseDiv">
+            <div class="isolatedExpense" v-if="createExpenseDivHandler">
+                <h3>신규 거점 만들기</h3>
+                <button @click="closeCreateExpenseDiv" class="closeIsolatedBtn">창닫기</button>
+                <IsolatedCreateExpense v-bind:expenses="expenses" :accounts="accounts"
+                    @create-new-expense="createNewExpense" />
+            </div>
+            <div class="isolatedExpense" v-if="showClickedLiDiv">
+                <h3>돈의 거점 정의하기</h3>
+                <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
+                <IsolatedModel v-bind:expenses="expenses" :expenseId="this.clickedExpenseId"
+                    @remove-expense="removeExpense" :selectedPageId="selectedPageId"
+                    :clickedExpenseId="clickedExpenseId" :accounts="accounts" @select-account="selectAccount" />
+            </div>
+            <div class="isolatedExpense" v-if="showClickedEdgeDiv">
+                <h3>돈의 이동 정의하기</h3>
+                <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
+                <IsolatedEdgeModel v-bind:expenses="expenses" :accounts="accounts"
+                    :clickedEdgeTargetId="this.clickedEdgeTargetId" :clickedEdgeSourceId="this.clickedEdgeSourceId"
+                    :session="session" :selectedMonitor="selectedMonitor" />
+            </div>
+        </div>
     </div>
-    <div class="isolatedExpenseDiv">
-        <div class="isolatedExpense" v-if="createExpenseDivHandler">
-            <h3>신규 거점 만들기</h3>
-            <button @click="closeCreateExpenseDiv" class="closeIsolatedBtn">창닫기</button>
-            <IsolatedCreateExpense v-bind:expenses="expenses" :accounts="accounts"
-                @create-new-expense="createNewExpense" />
-        </div>
-        <div class="isolatedExpense" v-if="showClickedLiDiv">
-            <h3>돈의 거점 정의하기</h3>
-            <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
-            <IsolatedModel v-bind:expenses="expenses" :expenseId="this.clickedExpenseId" @remove-expense="removeExpense"
-                :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :accounts="accounts"
-                @select-account="selectAccount" />
-        </div>
-        <div class="isolatedExpense" v-if="showClickedEdgeDiv">
-            <h3>돈의 이동 정의하기</h3>
-            <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
-            <IsolatedEdgeModel v-bind:expenses="expenses" :accounts="accounts"
-                :clickedEdgeTargetId="this.clickedEdgeTargetId" :clickedEdgeSourceId="this.clickedEdgeSourceId"
-                :session="session" :selectedMonitor="selectedMonitor" />
-        </div>
-    </div>
+
     <div class="graphDiv" ref="graphContainer" style="position: relative;">
         <VNetworkGraph ref="vng" class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs"
             :event-handlers="eventHandlers">
@@ -35,8 +38,8 @@
             </template>
 
             <template #override-node-label="{
-            nodeId, scale, x, y, config, textAnchor, dominantBaseline
-        }">
+                nodeId, scale, x, y, config, textAnchor, dominantBaseline
+            }">
                 <text x="0" y="0" :font-size="config.fontSize * scale" :text-anchor="textAnchor"
                     :dominant-baseline="dominantBaseline" :fill="config.color" :transform="`translate(${x} ${y})`">
                     <tspan v-html="formatNodeName(nodeId)"></tspan>

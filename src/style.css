@@ -9,12 +9,12 @@ body {
   width: 100%;
   margin: 0;
   padding: 0;
-  overflow: overlay;
+  overflow: hidden;
 }
 
 body {
   background-color: #F8F7F7;
-  min-height: 100vh;
+  /* min-height: 100vh; */
 }
 
 div {
@@ -217,34 +217,33 @@ input:read-only {
 
 .menuGrid {
   display: grid;
-  grid-template-rows: 4fr 1fr;
-  grid-gap: 10px;
+  grid-template-rows: 3fr 1fr;
   background: #4a5c6a;
   color: #FFFFFF;
   font-size: 13px;
-  padding: 20px;
-  margin: auto;
+  padding: 20px 20px 0 20px;
   height: 100vh;
   width: 200px;
   flex-shrink: 0;
   position: fixed;
+  z-index: 997;
 }
 
 .loginDiv {
   padding: 10px;
   width: 160px;
-  border-top: 1px solid #9BA8AB;
   word-wrap: break-word;
 }
 
 .mainDiv {
   margin-left: 200px;
-  padding-top: 10px;
+  /* padding-top: 10px; */
   overflow: hidden;
   height: 100vh;
 }
 
 .pageNameDiv {
+  background-color: transparent;
   height: 7%;
   padding-left: 20px;
   display: flex;
@@ -252,9 +251,9 @@ input:read-only {
 }
 
 .mainBtnDiv {
+  background-color: transparent;
   padding: 5px 0px 10px 20px;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.05), 0 5px 5px rgba(0, 0, 0, 0.03);
-  position: relative;
+  /* position: relative; */
 }
 
 .saveEditedDiv {
@@ -305,38 +304,41 @@ input:read-only {
   /* padding: 10px; */
   background-color: #f4f4f4;
   width: 100%;
-  height: 90%;
+  height: 100%;
+}
+
+.flowViewControlDiv {
+  position: fixed;
+  z-index: 996;
+  padding-top: 20px;
+}
+
+.bottonControlDiv {
+  position: absolute;
+  background-color: #f4f4f4;
+  display: grid;
+  grid-template-columns: 1fr 6fr;
+  gap: 5px;
+  bottom: 0;
+  height: 25%;
+  width: 100%;
+  padding: 10px 5px;
+  box-shadow: 0px -8px 20px 2px rgba(0, 0, 0, 0.15);
+  z-index: 996;
 }
 
 .flowViewBtnDiv {
-  position: relative;
+  display: flex; /* flexbox 활성화 */
+  flex-direction: column; /* 버튼들을 세로로 정렬 */
 }
 
 .flowViewBtn {
-  position: absolute;
-  margin: 20px;
   background-color: #f4f4f4;
   border: 1px solid #4a5c6a;
   color: #4a5c6a;
   z-index: 1;
-}
-
-.flowViewBtn2 {
-  position: absolute;
-  margin: 20px 20px 20px 120px;
-  background-color: #f4f4f4;
-  border: 1px solid #4a5c6a;
-  color: #4a5c6a;
-  z-index: 1;
-}
-
-.flowViewBtn3 {
-  position: absolute;
-  margin: 20px 20px 20px 220px;
-  background-color: #f4f4f4;
-  border: 1px solid #4a5c6a;
-  color: #4a5c6a;
-  z-index: 1;
+  width: 90%;
+  margin-bottom: 5px;
 }
 
 .closeIsolatedBtn {
@@ -354,10 +356,10 @@ input:read-only {
 
 .graphDiv {
   /* --svg-height: 200px; */
-  height: 100%;
+  height: 75%;
   /* padding: 10px; */
   /* position: relative; */
-  /* overflow: hidden; */
+  overflow: hidden;
 }
 
 .createNewPageDiv {
@@ -378,30 +380,37 @@ input:read-only {
 }
 
 .categoryStyle {
-  width: calc(90% - 10px); /* margin-left 만큼 빼줍니다 */
+  width: calc(90% - 10px);
+  /* margin-left 만큼 빼줍니다 */
   margin-left: 10px;
-  box-sizing: border-box; /* box-sizing을 border-box로 설정 */
+  box-sizing: border-box;
+  /* box-sizing을 border-box로 설정 */
 
 }
 
 .amountStyle {
   text-align: right;
-  width: calc(90% - 10px); /* margin-left 만큼 빼줍니다 */
+  width: calc(90% - 10px);
+  /* margin-left 만큼 빼줍니다 */
   margin-left: 10px;
-  box-sizing: border-box; /* box-sizing을 border-box로 설정 */
+  box-sizing: border-box;
+  /* box-sizing을 border-box로 설정 */
 
 }
 
 .accountSelect {
   background-color: white;
   border: 0px solid white;
-  width: calc(90% - 10px); /* margin-left 만큼 빼줍니다 */
+  width: calc(90% - 10px);
+  /* margin-left 만큼 빼줍니다 */
   margin: 4px 0px 4px 10px;
   cursor: pointer;
   padding: 4px 7px;
-  padding-left: 1px; /* padding-left를 0으로 설정하여 내부 글씨의 왼쪽 마진을 없앰 */
+  padding-left: 1px;
+  /* padding-left를 0으로 설정하여 내부 글씨의 왼쪽 마진을 없앰 */
   border-radius: 4px;
-  box-sizing: border-box; /* box-sizing을 border-box로 설정 */
+  box-sizing: border-box;
+  /* box-sizing을 border-box로 설정 */
 
 }
 
@@ -433,7 +442,7 @@ input:read-only {
   height: 40px;
   margin: 0.5%;
   color: rgb(168, 40, 40);
-  background-color: transparent;
+  background-color: #f4f4f4;
   border: 1px solid rgb(168, 40, 40);
 }
 
@@ -442,7 +451,7 @@ input:read-only {
   height: 40px;
   margin: 0.5%;
   color: #e2e2e2;
-  background-color: transparent;
+  background-color: #f4f4f4;
   border: 1px solid #e2e2e2;
 }
 
@@ -502,31 +511,26 @@ input:read-only {
 }
 
 .isolatedExpenseDiv {
-  position: relative;
+  height: 100%;
+  width: 80%;
+  overflow: auto; /* 내용이 넘치면 스크롤 생성 */
 }
 
 .isolatedExpense {
-  position: fixed;
-  background-color: rgb(204, 208, 207, 0.9);
-  width: 40%;
-  height: 40%;
-  padding: 20px 20px 20px 20px;
-  margin: 20px;
-  right: 0px;
-  bottom: 0px;
-  border-radius: 10px;
-  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.1);
-  z-index: 1;
+  /* position: relative; */
+  height: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .isolatedDivStyle {
-  overflow-y: auto;
-  height: 90%;
-  margin: 10px;
+  /* overflow-y: auto; */
+  /* height: 90%;
+  width: 90%; */
 }
 
 .isolatedDetailDiv {
-  padding: 5px;
+  /* padding: 5px; */
 }
 
 .toggleBtn_active {
@@ -574,6 +578,18 @@ input:read-only {
 
 .isolatedAlignStyle {
   position: relative;
+}
+
+.isolatedTableStyle {
+  width: auto;
+  border-collapse: collapse;
+  margin: 20px 0;
+}
+
+.isolatedTableStyle td {
+  padding: 5px 5px;
+  border: 1px solid #dddddd;
+  text-align: left;
 }
 
 .listViewLiStyle {
