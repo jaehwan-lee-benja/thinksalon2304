@@ -12,13 +12,25 @@
                 <IsolatedCreateExpense v-bind:expenses="expenses" :accounts="accounts"
                     @create-new-expense="createNewExpense" />
             </div>
-            <div class="isolatedExpense" v-if="showClickedLiDiv">
+            <!-- <div class="isolatedExpense" v-if="showClickedLiDiv" ref="nodeDetailDiv">
                 <h3>돈의 거점 정의하기</h3>
                 <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
                 <IsolatedModel v-bind:expenses="expenses" :expenseId="this.clickedExpenseId"
                     @remove-expense="removeExpense" :selectedPageId="selectedPageId"
                     :clickedExpenseId="clickedExpenseId" :accounts="accounts" @select-account="selectAccount" />
+            </div> -->
+            <div v-if="showTooltip" ref="tooltipElement" class="tooltip"
+                :style="{ position: 'absolute', top: `${tooltipPosition.top}px`, left: `${tooltipPosition.left}px` }">
+                <div class="isolatedExpense">
+                    <h3>돈의 거점 정의하기</h3>
+                    <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
+                    <IsolatedModel v-bind:expenses="expenses" :expenseId="clickedExpenseId"
+                        @remove-expense="removeExpense" :selectedPageId="selectedPageId"
+                        :clickedExpenseId="clickedExpenseId" :accounts="accounts" @select-account="selectAccount" />
+                </div>
             </div>
+
+
             <div class="isolatedExpense" v-if="showClickedEdgeDiv">
                 <h3>돈의 이동 정의하기</h3>
                 <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
@@ -117,6 +129,10 @@ export default {
     },
     data() {
         return {
+
+            showTooltip: false, // 툴팁 표시 여부
+            tooltipPosition: { top: 0, left: 0 }, // 툴팁 위치
+
             createExpenseDivHandler: false,
 
             pageLengthMonitor: 0,
@@ -150,19 +166,22 @@ export default {
                     this.clickedEdgeSourceId = clickedSource;
                     this.selectedMonitor = !this.selectedMonitor;
                 },
-                "node:click": ({ node }) => {
+                "node:click": ({ node, event }) => {
                     if (this.clickedEdgeTargetId !== "") {
                         this.$emit('cancel-point-clicked-edge');
                     }
                     const id = this.nodes[node].id;
                     this.$emit('point-clicked-li', id);
-                },
-                "node:pointerover": ({ node, event }) => {
+
                     this.setTooltipFromEvent(node, event);
+
                 },
-                "node:pointerout": () => {
-                    this.removeTooltip();
-                },
+                // "node:pointerover": ({ node, event }) => {
+                //     this.setTooltipFromEvent(node, event);
+                // },
+                // "node:pointerout": () => {
+                //     this.removeTooltip();
+                // },
                 "node:dragstart": (startPoint) => {
                     this.dragStart = startPoint
                 },
@@ -716,21 +735,61 @@ export default {
             this.$emit('cancel-point-clicked-li');
             this.$emit('cancel-point-clicked-edge');
         },
+        // setTooltipFromEvent(node, event) {
+        //     this.removeTooltip();
+
+        //     this.tooltipTimeout = setTimeout(() => {
+        //         const amount = this.nodes[node].size.toLocaleString();
+        //         const name = this.nodes[node].name;
+
+        //         // 상대적인 위치 계산을 통해 툴팁을 설정
+        //         const relativePosition = this.calculateRelativePosition(event, this.$refs.graphContainer);
+        //         this.setTooltip({
+        //             content: `${name} : ${amount}`,
+        //             ...relativePosition
+        //         });
+        //     }, 200);
+        // },
+
         setTooltipFromEvent(node, event) {
             this.removeTooltip();
 
             this.tooltipTimeout = setTimeout(() => {
-                const amount = this.nodes[node].size.toLocaleString();
-                const name = this.nodes[node].name;
+                // 그래프 컨테이너 기준 위치 계산
+                const containerRect = this.$refs.graphContainer.getBoundingClientRect();
+                const mouseX = event.clientX;
+                const mouseY = event.clientY;
 
-                // 상대적인 위치 계산을 통해 툴팁을 설정
-                const relativePosition = this.calculateRelativePosition(event, this.$refs.graphContainer);
-                this.setTooltip({
-                    content: `${name} : ${amount}`,
-                    ...relativePosition
+                // showTooltip을 true로 설정해 툴팁을 렌더링
+                this.showTooltip = true;
+
+                // DOM 업데이트 후 툴팁 크기를 가져와 위치 계산
+                this.$nextTick(() => {
+                    const tooltipElement = this.$refs.tooltipElement;
+
+                    if (tooltipElement) {
+                        const tooltipWidth = tooltipElement.offsetWidth;
+                        const tooltipHeight = tooltipElement.offsetHeight;
+
+                        // 툴팁 위치 계산 (마우스 좌표 기준)
+                        const tooltipX = mouseX - containerRect.left - tooltipWidth / 2; // 중앙 정렬
+                        const tooltipY = mouseY - containerRect.top - tooltipHeight - 10; // 약간 위로 올리기 (10px)
+
+                        // 보정된 툴팁 위치 설정
+                        this.tooltipPosition = {
+                            top: Math.max(0, tooltipY), // 화면 밖으로 나가지 않도록 제한
+                            left: Math.max(0, tooltipX), // 화면 밖으로 나가지 않도록 제한
+                        };
+                    }
                 });
             }, 200);
         },
+
+
+        removeTooltip() {
+            this.showTooltip = false; // 툴팁 숨기기
+        },
+
 
         calculateRelativePosition(event, container) {
             // container에서의 상대적인 위치 계산
@@ -741,17 +800,21 @@ export default {
             return { top, left };
         },
 
-        setTooltip({ content, top, left }) {
-            this.tooltip = { content, top, left };
+        // setTooltip({ content, top, left }) {
+        //     this.tooltip = { content, top, left };
+        // },
+
+        setTooltip({ top, left }) {
+            this.tooltip = { top, left };
         },
 
-        removeTooltip() {
-            this.tooltip = null;
-            if (this.tooltipTimeout) {
-                clearTimeout(this.tooltipTimeout);
-                this.tooltipTimeout = null;
-            }
-        },
+        // removeTooltip() {
+        //     this.tooltip = null;
+        //     if (this.tooltipTimeout) {
+        //         clearTimeout(this.tooltipTimeout);
+        //         this.tooltipTimeout = null;
+        //     }
+        // },
     },
     components: {
         VNetworkGraph,
@@ -768,12 +831,22 @@ export default {
 @import '../style.css';
 
 .tooltip {
-    background-color: #EFEFEF;
+    z-index: 1000;
+    /* 다른 요소 위에 표시 */
+    background: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    border-radius: 4px;
+    pointer-events: none;
+    /* 마우스 이벤트 무시 */
+    transition: transform 0.2s ease-out;
+    /* background-color: #EFEFEF;
     font-size: 12px;
     border: 1px solid #ccc;
     padding: 5px;
     border-radius: 4px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    white-space: nowrap;
+    white-space: nowrap; */
 }
 </style>
