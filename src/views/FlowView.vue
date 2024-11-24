@@ -19,16 +19,7 @@
                     @remove-expense="removeExpense" :selectedPageId="selectedPageId"
                     :clickedExpenseId="clickedExpenseId" :accounts="accounts" @select-account="selectAccount" />
             </div> -->
-            <div v-if="showTooltip" ref="tooltipElement" class="tooltip"
-                :style="{ position: 'absolute', top: `${tooltipPosition.top}px`, left: `${tooltipPosition.left}px` }">
-                <div class="isolatedExpense">
-                    <h3>돈의 거점 정의하기</h3>
-                    <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
-                    <IsolatedModel v-bind:expenses="expenses" :expenseId="clickedExpenseId"
-                        @remove-expense="removeExpense" :selectedPageId="selectedPageId"
-                        :clickedExpenseId="clickedExpenseId" :accounts="accounts" @select-account="selectAccount" />
-                </div>
-            </div>
+
 
 
             <div class="isolatedExpense" v-if="showClickedEdgeDiv">
@@ -42,6 +33,18 @@
     </div>
 
     <div class="graphDiv" ref="graphContainer" style="position: relative;">
+
+        <div v-if="showTooltip" ref="tooltipElement" class="tooltip"
+            :style="{ position: 'absolute', top: `${tooltipPosition.top}px`, left: `${tooltipPosition.left}px` }">
+            <div class="isolatedExpense">
+                <h3>돈의 거점 정의하기</h3>
+                <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
+                <IsolatedModel v-bind:expenses="expenses" :expenseId="clickedExpenseId" @remove-expense="removeExpense"
+                    :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :accounts="accounts"
+                    @select-account="selectAccount" />
+            </div>
+        </div>
+        
         <VNetworkGraph ref="vng" class="graph" :nodes="nodes" :edges="edges" :layouts="layouts" :configs="configs"
             :event-handlers="eventHandlers">
 
@@ -176,9 +179,9 @@ export default {
                     this.setTooltipFromEvent(node, event);
 
                 },
-                // "node:pointerover": ({ node, event }) => {
-                //     this.setTooltipFromEvent(node, event);
-                // },
+                "node:pointerover": ({ node, event }) => {
+                    this.setTooltipFromEvent2(node, event);
+                },
                 // "node:pointerout": () => {
                 //     this.removeTooltip();
                 // },
@@ -735,30 +738,35 @@ export default {
             this.$emit('cancel-point-clicked-li');
             this.$emit('cancel-point-clicked-edge');
         },
-        // setTooltipFromEvent(node, event) {
-        //     this.removeTooltip();
 
-        //     this.tooltipTimeout = setTimeout(() => {
-        //         const amount = this.nodes[node].size.toLocaleString();
-        //         const name = this.nodes[node].name;
+        setTooltipFromEvent2(node, event) {
+            // this.removeTooltip();
 
-        //         // 상대적인 위치 계산을 통해 툴팁을 설정
-        //         const relativePosition = this.calculateRelativePosition(event, this.$refs.graphContainer);
-        //         this.setTooltip({
-        //             content: `${name} : ${amount}`,
-        //             ...relativePosition
-        //         });
-        //     }, 200);
-        // },
+            this.tooltipTimeout = setTimeout(() => {
+                const amount = this.nodes[node].size.toLocaleString();
+                const name = this.nodes[node].name;
+
+                // 상대적인 위치 계산을 통해 툴팁을 설정
+                const relativePosition = this.calculateRelativePosition(event, this.$refs.graphContainer);
+                this.setTooltip({
+                    content: `${name} : ${amount}`,
+                    ...relativePosition
+                });
+
+                console.log("relativePosition = ", relativePosition)
+            }, 200);
+        },
 
         setTooltipFromEvent(node, event) {
-            this.removeTooltip();
+            // this.removeTooltip();
 
             this.tooltipTimeout = setTimeout(() => {
                 // 그래프 컨테이너 기준 위치 계산
                 const containerRect = this.$refs.graphContainer.getBoundingClientRect();
                 const mouseX = event.clientX;
                 const mouseY = event.clientY;
+
+                console.log(mouseX, mouseY)
 
                 // showTooltip을 true로 설정해 툴팁을 렌더링
                 this.showTooltip = true;
