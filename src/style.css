@@ -213,6 +213,8 @@ input:read-only {
 
 .menuMainGrid {
   width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr; /* 메뉴와 메인 영역 레이아웃 */
 }
 
 .menuGrid {
@@ -227,6 +229,7 @@ input:read-only {
   flex-shrink: 0;
   position: fixed;
   z-index: 997;
+  transition: all 0.3s ease; /* 애니메이션 효과 */
 }
 
 .loginDiv {
@@ -240,6 +243,11 @@ input:read-only {
   /* padding-top: 10px; */
   overflow: hidden;
   height: 100vh;
+  padding: 20px;
+}
+
+.toggleButton {
+  margin-bottom: 10px;
 }
 
 .pageNameDiv {

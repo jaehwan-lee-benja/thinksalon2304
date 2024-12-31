@@ -1,6 +1,7 @@
 <template>
   <div class="menuMainGrid">
-    <div class="menuGrid">
+    <button @click="toggleMenu" class="toggleButton">메뉴 토글</button>
+    <div class="menuGrid" v-show="menuVisible">
       <div class="pageListDiv">
 
         <h3>페이지 이동하기</h3>
@@ -81,6 +82,8 @@ import AccountSettingView from './views/AccountSettingView.vue'
 export default {
   data() {
     return {
+
+      menuVisible: false, // 메뉴 표시 여부 상태
 
       totalExpenses: [],
       expenses: [],
@@ -217,6 +220,9 @@ export default {
     },
   },
   methods: {
+    toggleMenu() {
+      this.menuVisible = !this.menuVisible; // 상태를 반전
+    },
     selectAccount(expenseIdHere, accountIdHere) {
       this.expenses.forEach(e => {
         if (e.id == expenseIdHere) {
