@@ -94,6 +94,12 @@ th {
 h2 {
   color: #11212D;
   margin: 0;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  line-height: 1;
+  font-weight: bold;
+  display: inline-block; /* 또는 inline-flex */
+  vertical-align: middle; /* 또는 top, bottom */
 }
 
 span {
@@ -204,6 +210,10 @@ input:read-only {
   height: 30px;
 }
 
+.menuBtnDiv{
+  margin-top: 20px;
+}
+
 .menuBtn {
   width: 100%;
   height: 40px;
@@ -220,15 +230,15 @@ input:read-only {
 .menuGrid {
   display: grid;
   grid-template-rows: 3fr 1fr;
-  background: #4a5c6a;
+  background-color: rgba(74,92,106,0.8);
   color: #FFFFFF;
   font-size: 13px;
-  padding: 20px 20px 0 20px;
+  padding: 120px 20px 0 20px;
   height: 100vh;
   width: 200px;
   flex-shrink: 0;
   position: fixed;
-  z-index: 997;
+  z-index: 995;
   transition: all 0.3s ease; /* 애니메이션 효과 */
 }
 
@@ -239,30 +249,54 @@ input:read-only {
 }
 
 .mainDiv {
-  margin-left: 200px;
-  /* padding-top: 10px; */
   overflow: hidden;
   height: 100vh;
-  padding: 20px;
 }
 
 .toggleButton {
-  margin-bottom: 10px;
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  margin: 40px 20px;
+  z-index: 996;
+  background-color: transparent;
+  border: 1px solid #4a5c6a;
+  color: #4a5c6a;
+}
+
+.toggleButton:hover {
+  background-color: #004EFC;
+  border: 1px solid transparent;
+  color: #F8F7F7;
+}
+
+.toggleButtonClicked {
+  position: absolute;
+  height: 40px;
+  width: 40px;
+  margin: 40px 20px;
+  z-index: 996;
+  background-color: transparent;
+  border: 1px solid #F8F7F7;
+  color: #F8F7F7;
+}
+
+.toggleButtonClicked:hover {
+  background-color: #004EFC;
+  border: 1px solid transparent;
+  color: #F8F7F7;
 }
 
 .pageNameDiv {
-  background-color: transparent;
-  height: 7%;
-  padding-left: 20px;
+  padding-left: 0 0 0 30px;
   display: flex;
   align-items: center;
+  margin: 0;
 }
 
-.mainBtnDiv {
+/* .mainBtnDiv {
   background-color: transparent;
-  padding: 5px 0px 10px 20px;
-  /* position: relative; */
-}
+} */
 
 .saveEditedDiv {
   width: 400px;
@@ -309,16 +343,19 @@ input:read-only {
 }
 
 .flowViewDiv {
-  /* padding: 10px; */
   background-color: #f4f4f4;
   width: 100%;
   height: 100%;
 }
 
 .flowViewControlDiv {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  background-color: transparent;
   position: fixed;
-  z-index: 996;
-  padding-top: 20px;
+  z-index: 994;
+  padding: 40px 20px 0 100px;
+  align-items: center; /* 세로 중앙 정렬 */
 }
 
 .bottonControlDiv {
@@ -363,10 +400,7 @@ input:read-only {
 }
 
 .graphDiv {
-  /* --svg-height: 200px; */
   height: 75%;
-  /* padding: 10px; */
-  /* position: relative; */
   overflow: hidden;
 }
 
@@ -389,11 +423,8 @@ input:read-only {
 
 .categoryStyle {
   width: calc(90% - 10px);
-  /* margin-left 만큼 빼줍니다 */
   margin-left: 10px;
   box-sizing: border-box;
-  /* box-sizing을 border-box로 설정 */
-
 }
 
 .amountStyle {

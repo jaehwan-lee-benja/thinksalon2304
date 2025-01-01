@@ -1,51 +1,58 @@
 <template>
   <div class="menuMainGrid">
-    <button @click="toggleMenu" class="toggleButton">메뉴 토글</button>
-    <div class="menuGrid" v-show="menuVisible">
-      <div class="pageListDiv">
+    <div>
+      <button @click="toggleMenu" :class="{
+                'toggleButtonClicked': menuVisible === true,
+                'toggleButton': menuVisible === false
+              }" >☰</button>
+      <div class="menuGrid" v-show="menuVisible">
+        <div class="pageListDiv">
 
-        <h3>페이지 이동하기</h3>
-        <select class="pageSelect" v-model="pageName" @change="selectPageBySelectBox" ref="pageSelectRef">
-          <option v-for="page in sortExpensePages" :key="page.id" :value="page.page_name">
-            {{ page.page_name }}
-          </option>
-        </select>
+          <h3>페이지 이동하기</h3>
+          <select class="pageSelect" v-model="pageName" @change="selectPageBySelectBox" ref="pageSelectRef">
+            <option v-for="page in sortExpensePages" :key="page.id" :value="page.page_name">
+              {{ page.page_name }}
+            </option>
+          </select>
 
-        <button class="menuBtn" @click="openPageSettingDiv">페이지 설정하기</button>
-        <button class="menuBtn" @click="openAccountDiv">계좌 설정하기</button>
-        <button class="menuBtn" @click="openContact">문의하기</button>
+          <div class="menuBtnDiv">
+            <button class="menuBtn" @click="openPageSettingDiv">페이지 설정하기</button>
+            <button class="menuBtn" @click="openAccountDiv">계좌 설정하기</button>
+            <button class="menuBtn" @click="openContact">문의하기</button>
+          </div>
 
-      </div>
-      <div class="loginDiv">
-        <div v-if="loginMode">
-          <button class="loginBtn" @click="loginGoogle">구글 로그인</button>
-          <p> *버튼을 눌러 로그인할 수 있습니다.</p>
         </div>
-        <div v-else>
-          <p> 로그인 계정: {{ email }}</p>
-          <button class="logoutBtn" @click="signout">로그아웃</button>
+        <div class="loginDiv">
+          <div v-if="loginMode">
+            <button class="loginBtn" @click="loginGoogle">구글 로그인</button>
+            <p> *버튼을 눌러 로그인할 수 있습니다.</p>
+          </div>
+          <div v-else>
+            <p> 로그인 계정: {{ email }}</p>
+            <button class="logoutBtn" @click="signout">로그아웃</button>
+          </div>
         </div>
       </div>
     </div>
     <div class="mainDiv">
       <div class="flowViewDiv">
         <div class="flowViewControlDiv">
-            <div class="pageNameDiv">
-              <h2>{{ this.pageName }}</h2>
-            </div>
-            <div class="mainBtnDiv">
-              <div class="saveEditedDiv">
-                <button :class="{
-                  'saveEditedBtn_active': isEdited === true,
-                  'saveEditedBtn_inactive': isEdited === false
-                }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
-                <button :class="{
-                  'cancelEditedBtn_active': isEdited === true,
-                  'cancelEditedBtn_inactive': isEdited === false
-                }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
-              </div>
+          <div class="pageNameDiv">
+            <h2>{{ this.pageName }}</h2>
+          </div>
+          <div class="mainBtnDiv">
+            <div class="saveEditedDiv">
+              <button :class="{
+                'saveEditedBtn_active': isEdited === true,
+                'saveEditedBtn_inactive': isEdited === false
+              }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
+              <button :class="{
+                'cancelEditedBtn_active': isEdited === true,
+                'cancelEditedBtn_inactive': isEdited === false
+              }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
             </div>
           </div>
+        </div>
         <FlowView v-bind:expenses="expenses" :fetchedExpenses="fetchedExpenses" :clickedExpenseId="clickedExpenseId"
           :clickedEdgeTargetId="clickedEdgeTargetId" :editExpenseWorked="editExpenseWorked"
           @point-clicked-li="pointClickedLi" @cancel-point-clicked-li="cancelPointClickedLi"
@@ -53,7 +60,6 @@
           @remove-expense="removeExpense" :accounts="accounts" @select-account="selectAccount"
           :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
           :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" @create-new-expense="createNewExpense">
-
         </FlowView>
       </div>
       <div v-if="isPageSettingOpened" class="modal">

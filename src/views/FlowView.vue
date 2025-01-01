@@ -6,7 +6,6 @@
             <button @click="showGraphDefault" class="flowViewBtn">배치 초기화</button>
             <button @click="showCreateExpenseDiv" class="flowViewBtn">새 거점 만들기</button>
         </div>
-
     </div>
 
     <div class="graphDiv" ref="graphContainer" style="position: relative;">
