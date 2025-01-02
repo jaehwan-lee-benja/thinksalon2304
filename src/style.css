@@ -362,7 +362,9 @@ input:read-only {
   display: flex; /* flexbox 활성화 */
   width: 60%;
   position: absolute;
-  bottom: 20px;
+  top: 95%; /* 세로 방향 중앙 */
+  left: 50%; /* 가로 방향 중앙 */
+  transform: translate(-50%, -50%); /* 중심점 보정 */
   z-index: 996;
 }
 
