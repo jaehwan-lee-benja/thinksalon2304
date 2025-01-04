@@ -1,9 +1,21 @@
 <template>
 
-    <div class="flowViewBtnDiv">
-        <button @click="showGraphFit" class="flowViewBtn">그래프 보기</button>
-        <button @click="showGraphDefault" class="flowViewBtn">배치 초기화</button>
-        <button @click="showCreateExpenseDiv" class="flowViewBtn">새 거점 만들기</button>
+    <div class="flowViewBtnGrid">
+        <div class="flowViewBtnDiv">
+            <button :class="{
+                'saveEditedBtn_active': isEdited === true,
+                'saveEditedBtn_inactive': isEdited === false
+            }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
+            <button :class="{
+                'cancelEditedBtn_active': isEdited === true,
+                'cancelEditedBtn_inactive': isEdited === false
+            }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
+        </div>
+        <div class="flowViewBtnDiv">
+            <button @click="showGraphFit" class="flowViewBtn">그래프 보기</button>
+            <button @click="showGraphDefault" class="flowViewBtn">배치 초기화</button>
+            <button @click="showCreateExpenseDiv" class="flowViewBtn">새 거점 만들기</button>
+        </div>
     </div>
 
     <div class="graphDiv" ref="graphContainer" style="position: relative;">
@@ -114,6 +126,31 @@ export default {
         },
         showClickedEdgeModal() {
             return !!this.clickedEdgeTargetId;
+        },
+        isEdited() {
+
+            const fetched = this.fetchedExpenses.map(e => ({
+                category: e.category,
+                amount: Number(e.amount),
+                memo: e.memo,
+                account_id: e.account_id
+            })
+            );
+
+            const edited = this.expenses.map(e => ({
+                category: e.category,
+                amount: Number(e.amount),
+                memo: e.memo,
+                account_id: e.account_id
+            })
+            );
+
+            const fetchedData = JSON.stringify(fetched);
+            const editedData = JSON.stringify(edited);
+            const result = (fetchedData || "") != (editedData || "")
+
+            return result
+
         },
     },
     data() {

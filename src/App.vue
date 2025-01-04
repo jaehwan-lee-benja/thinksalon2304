@@ -40,18 +40,6 @@
           <div class="pageNameDiv">
             <h2>{{ this.pageName }}</h2>
           </div>
-          <div class="mainBtnDiv">
-            <div class="saveEditedDiv">
-              <button :class="{
-                'saveEditedBtn_active': isEdited === true,
-                'saveEditedBtn_inactive': isEdited === false
-              }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
-              <button :class="{
-                'cancelEditedBtn_active': isEdited === true,
-                'cancelEditedBtn_inactive': isEdited === false
-              }" :disabled="!isEdited" @click="cancelEditingExpense">편집 취소</button>
-            </div>
-          </div>
         </div>
         <FlowView v-bind:expenses="expenses" :fetchedExpenses="fetchedExpenses" :clickedExpenseId="clickedExpenseId"
           :clickedEdgeTargetId="clickedEdgeTargetId" :editExpenseWorked="editExpenseWorked"

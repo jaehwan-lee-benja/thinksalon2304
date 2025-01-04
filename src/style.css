@@ -98,8 +98,10 @@ h2 {
   margin-block-end: 0;
   line-height: 1;
   font-weight: bold;
-  display: inline-block; /* 또는 inline-flex */
-  vertical-align: middle; /* 또는 top, bottom */
+  display: inline-block;
+  /* 또는 inline-flex */
+  vertical-align: middle;
+  /* 또는 top, bottom */
 }
 
 span {
@@ -210,7 +212,7 @@ input:read-only {
   height: 30px;
 }
 
-.menuBtnDiv{
+.menuBtnDiv {
   margin-top: 20px;
 }
 
@@ -224,13 +226,14 @@ input:read-only {
 .menuMainGrid {
   width: 100%;
   display: grid;
-  grid-template-columns: auto 1fr; /* 메뉴와 메인 영역 레이아웃 */
+  grid-template-columns: auto 1fr;
+  /* 메뉴와 메인 영역 레이아웃 */
 }
 
 .menuGrid {
   display: grid;
   grid-template-rows: 3fr 1fr;
-  background-color: rgba(74,92,106,0.8);
+  background-color: rgba(74, 92, 106, 0.8);
   color: #FFFFFF;
   font-size: 13px;
   padding: 120px 20px 0 20px;
@@ -239,7 +242,8 @@ input:read-only {
   flex-shrink: 0;
   position: fixed;
   z-index: 995;
-  transition: all 0.3s ease; /* 애니메이션 효과 */
+  transition: all 0.3s ease;
+  /* 애니메이션 효과 */
 }
 
 .loginDiv {
@@ -294,15 +298,6 @@ input:read-only {
   margin: 0;
 }
 
-/* .mainBtnDiv {
-  background-color: transparent;
-} */
-
-.saveEditedDiv {
-  width: 400px;
-  text-align: left;
-}
-
 ::-webkit-scrollbar {
   display: block;
   background: transparent;
@@ -355,26 +350,31 @@ input:read-only {
   position: fixed;
   z-index: 994;
   padding: 40px 20px 0 100px;
-  align-items: center; /* 세로 중앙 정렬 */
+  align-items: center;
+  /* 세로 중앙 정렬 */
+}
+
+.flowViewBtnGrid {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: 20px;
+  position: absolute;
+  top: 95%;
+  /* 세로 방향 중앙 */
+  left: 50%;
+  /* 가로 방향 중앙 */
+  transform: translate(-50%, -50%);
+  /* 중심점 보정 */
+  z-index: 996;
+  padding: 10px;
+  background-color: #e2e2e2;
+  border-radius: 5px;
+  width: 80%;
 }
 
 .flowViewBtnDiv {
-  display: flex; /* flexbox 활성화 */
-  width: 60%;
-  position: absolute;
-  top: 95%; /* 세로 방향 중앙 */
-  left: 50%; /* 가로 방향 중앙 */
-  transform: translate(-50%, -50%); /* 중심점 보정 */
-  z-index: 996;
-}
-
-.flowViewBtn {
-  background-color: #f4f4f4;
-  border: 1px solid #4a5c6a;
-  color: #4a5c6a;
-  z-index: 1;
+  display: flex;
   width: 100%;
-  margin-bottom: 5px;
 }
 
 .closeIsolatedBtn {
@@ -444,50 +444,44 @@ input:read-only {
 
 }
 
+.flowViewBtn {
+  z-index: 1;
+  width: 100%;
+  color: #4a5c6a;
+  background-color: #f4f4f4;
+  border: 0px solid #4a5c6a;
+}
+
 .saveEditedBtn_active {
-  width: 49%;
-  height: 40px;
-  margin: 0.5%;
+  z-index: 1;
+  width: 100%;
   color: white;
   background-color: #004EFC;
   border: 1px solid #004EFC;
 }
 
 .saveEditedBtn_inactive {
-  width: 49%;
-  height: 40px;
-  margin: 0.5%;
-  color: white;
-  background-color: #e2e2e2;
-  border: 1px solid #e2e2e2;
-}
-
-.saveEditedBtn_inactive:hover {
-  box-shadow: none;
-  cursor: default;
+  z-index: 1;
+  width: 100%;
+  color: #4a5c6a;
+  background-color: #f4f4f4;
+  border: 0px solid #e2e2e2;
 }
 
 .cancelEditedBtn_active {
-  width: 49%;
-  height: 40px;
-  margin: 0.5%;
+  z-index: 1;
+  width: 100%;
   color: rgb(168, 40, 40);
   background-color: #f4f4f4;
   border: 1px solid rgb(168, 40, 40);
 }
 
 .cancelEditedBtn_inactive {
-  width: 49%;
-  height: 40px;
-  margin: 0.5%;
-  color: #e2e2e2;
+  z-index: 1;
+  width: 100%;
+  color: #4a5c6a;
   background-color: #f4f4f4;
   border: 1px solid #e2e2e2;
-}
-
-.cancelEditedBtn_inactive:hover {
-  box-shadow: none;
-  cursor: default;
 }
 
 .pageEditedBtn_active {
@@ -543,7 +537,8 @@ input:read-only {
 .isolatedExpenseDiv {
   height: 100%;
   width: 80%;
-  overflow: auto; /* 내용이 넘치면 스크롤 생성 */
+  overflow: auto;
+  /* 내용이 넘치면 스크롤 생성 */
 }
 
 .isolatedExpense {
