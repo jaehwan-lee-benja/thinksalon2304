@@ -47,7 +47,8 @@
           @point-clicked-Edge="pointClickedEdge" @cancel-point-clicked-edge="cancelPointClickedEdge"
           @remove-expense="removeExpense" :accounts="accounts" @select-account="selectAccount"
           :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
-          :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" @create-new-expense="createNewExpense">
+          :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" @create-new-expense="createNewExpense"
+          :isEdited="isEdited" @edit-expense="editExpense" @cancel-editing-expense="cancelEditingExpense">
         </FlowView>
       </div>
       <div v-if="isPageSettingOpened" class="modal">

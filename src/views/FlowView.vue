@@ -118,6 +118,10 @@ export default {
         createdExpenseIdByCreateNewE: {
             type: String,
             default: '',
+        },
+        isEdited: {
+            type: Boolean,
+            default: true,
         }
     },
     computed: {
@@ -126,31 +130,6 @@ export default {
         },
         showClickedEdgeModal() {
             return !!this.clickedEdgeTargetId;
-        },
-        isEdited() {
-
-            const fetched = this.fetchedExpenses.map(e => ({
-                category: e.category,
-                amount: Number(e.amount),
-                memo: e.memo,
-                account_id: e.account_id
-            })
-            );
-
-            const edited = this.expenses.map(e => ({
-                category: e.category,
-                amount: Number(e.amount),
-                memo: e.memo,
-                account_id: e.account_id
-            })
-            );
-
-            const fetchedData = JSON.stringify(fetched);
-            const editedData = JSON.stringify(edited);
-            const result = (fetchedData || "") != (editedData || "")
-
-            return result
-
         },
     },
     data() {
@@ -323,6 +302,12 @@ export default {
         this.fetchDataForEdge();
     },
     methods: {
+        cancelEditingExpense() {
+            this.$emit('cancel-editing-expense');
+        },
+        editExpense() {
+            this.$emit('edit-expense');
+        },
         closeIsolatedModal() {
             if (!this.isPageEdited) {
                 // 편집 내용이 없는 경우, 모달창 바깥을 눌러서 종료하는 경우

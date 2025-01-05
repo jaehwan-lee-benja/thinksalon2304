@@ -351,7 +351,6 @@ input:read-only {
   z-index: 994;
   padding: 40px 20px 0 100px;
   align-items: center;
-  /* 세로 중앙 정렬 */
 }
 
 .flowViewBtnGrid {
@@ -360,11 +359,8 @@ input:read-only {
   gap: 20px;
   position: absolute;
   top: 95%;
-  /* 세로 방향 중앙 */
   left: 50%;
-  /* 가로 방향 중앙 */
   transform: translate(-50%, -50%);
-  /* 중심점 보정 */
   z-index: 996;
   padding: 10px;
   background-color: #e2e2e2;
