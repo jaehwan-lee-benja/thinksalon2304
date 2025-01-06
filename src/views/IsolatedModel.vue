@@ -53,7 +53,6 @@ export default {
     },
     data() {
         return {
-            isLiDetailDivOpened: false,
             memoSaveBtnHandler: false
         }
     },
