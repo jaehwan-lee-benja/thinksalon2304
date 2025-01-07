@@ -5,7 +5,7 @@
             <button :class="{
                 'saveEditedBtn_active': isEdited === true,
                 'saveEditedBtn_inactive': isEdited === false
-            }" :disabled="!isEdited" @click="editExpense">편집한 내용 저장</button>
+            }" :disabled="!isEdited" @click="editExpense">저장</button>
             <button :class="{
                 'cancelEditedBtn_active': isEdited === true,
                 'cancelEditedBtn_inactive': isEdited === false
@@ -139,8 +139,8 @@ export default {
             edgeColor: "var(--edge-color)",
             hoverEdgeColor: "var(--hover-edge-color)",
             nodeStrokeColor: "var(--node-stroke-color)",
-            labelTextColor: "var(--label-text-color)",
-            labelBackgroundColor: "var(--label-background-color)"
+            labelTextColor: "var(--text-color)",
+            labelBackgroundColor: "var(--background-color)"
         };
 
         return {
@@ -216,15 +216,14 @@ export default {
                     normal: {
                         type: "rect",
                         color: colors.nodeColor,
-                        width: node => Math.pow(node.size / 300, 1 / 2),
-                        height: node => Math.pow(node.size / 500, 1 / 2),
+                        width: node => Math.pow(node.size / 400, 1 / 2),
+                        height: node => Math.pow(node.size / 600, 1 / 2),
                         borderRadius: 2,
-                        // radius: node => Math.pow(node.size / 1000, 1 / 2),
-                        strokeWidth: 3,
-                        strokeColor: colors.nodeStrokeColor,
                     },
                     hover: {
                         color: colors.hoverNodeColor,
+                        strokeWidth: 4,
+                        strokeColor: colors.nodeStrokeColor,
                     }
                 },
                 edge: {
