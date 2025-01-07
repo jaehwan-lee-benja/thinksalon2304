@@ -133,6 +133,16 @@ export default {
         },
     },
     data() {
+        const colors = {
+            nodeColor: "var(--node-color)",
+            hoverNodeColor: "var(--hover-node-color)",
+            edgeColor: "var(--edge-color)",
+            hoverEdgeColor: "var(--hover-edge-color)",
+            nodeStrokeColor: "var(--node-stroke-color)",
+            labelTextColor: "var(--label-text-color)",
+            labelBackgroundColor: "var(--label-background-color)"
+        };
+
         return {
 
             showExpenseModal: false,
@@ -194,7 +204,7 @@ export default {
             configs: {
                 view: {
                     grid: {
-                        visible: true,
+                        visible: false,
                         interval: 20
                     },
                     doubleClickZoomEnabled: false,
@@ -205,25 +215,25 @@ export default {
                     },
                     normal: {
                         type: "rect",
-                        color: "#4a5c6a",
+                        color: colors.nodeColor,
                         width: node => Math.pow(node.size / 300, 1 / 2),
                         height: node => Math.pow(node.size / 500, 1 / 2),
                         borderRadius: 2,
                         // radius: node => Math.pow(node.size / 1000, 1 / 2),
                         strokeWidth: 3,
-                        strokeColor: "#11212D",
+                        strokeColor: colors.nodeStrokeColor,
                     },
                     hover: {
-                        color: "#F6C5C5",
+                        color: colors.hoverNodeColor,
                     }
                 },
                 edge: {
                     normal: {
                         width: edge => Math.pow(edge.size / 100, 1 / 4),
-                        color: "#D3D2D0"
+                        color: colors.edgeColor
                     },
                     hover: {
-                        color: "#F6C5C5",
+                        color: colors.hoverEdgeColor,
                     },
                     margin: 4,
                     marker: {
@@ -250,11 +260,11 @@ export default {
                         fontFamily: undefined,
                         fontSize: 11,
                         lineHeight: 1.1,
-                        color: "#000000",
+                        color: colors.labelTextColor,
                         margin: 10,
                         background: {
                             visible: false,
-                            color: "#ffffff",
+                            color: colors.labelBackgroundColor,
                             padding: {
                                 vertical: 1,
                                 horizontal: 4,

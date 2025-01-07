@@ -1,11 +1,20 @@
 :root {
-  --primary-color: #11212D; /* 다크 색 */
-  --background-color: #F8F7F7; /* 배경 색 */
-  --highlight-color: #004EFC; /* 강조 색 */
-  --button-color: #4A5C6A; /* 버튼 색 */
-  --error-color: #A82828; /* 에러 색 */
+  --primary-color: #003B5C;
+  --background-color: #F0F4F8;
+  --highlight-color: #00A8E8;
+  --button-color: #1E2A33;
+  --error-color: #E74C3C;
   --shadow1-color: rgba(0, 0, 0, 0.05);
   --shadow2-color: rgba(0, 0, 0, 0.1);
+
+  /*FlowView.vue 컬러*/
+  --node-color: #006B8E; /* 약간 밝고 차분한 파란색 (주요 노드 색상) */
+  --hover-node-color: #0094B8; /* 호버 시 강조되는 밝은 파란색 */
+  --edge-color: #A2C9D7; /* 더 밝고 채도 낮춘 파란색 (엣지의 색상) */
+  --hover-edge-color: #65A7B8; /* 부드럽고 밝은 짙은 파란색 (호버 시 강조되는 엣지 색상) */
+  --node-stroke-color: #002A3B; /* 매우 짙은 파란색 (노드 테두리 색상) */
+  --label-text-color: #2C3E50; /* 어두운 회색 (텍스트 가독성 높이기 위해) */
+  --label-background-color: #E1F2F8; /* 아주 연한 파란색 배경 (상쾌한 느낌을 위해) */
 }
 
 * {
@@ -504,11 +513,26 @@ input:read-only {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: rgb(204, 208, 207);
-  border-radius: 20px;
-  padding: 40px;
+  background-color: var(--background-color); /* 더 밝고 깔끔한 배경색 */
+  border-radius: 15px; /* 더 부드럽고 자연스러운 라운드 */
+  padding: 30px 50px; /* 적당한 여백으로 크기 조정 */
   color: var(--primary-color);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* 부드러운 그림자 효과 */
   z-index: 999;
+  max-width: 90%; /* 화면 크기에 따라 너비 조정 */
+  max-height: 80%; /* 너무 큰 모달 방지 */
+  overflow: auto; /* 내용이 많을 경우 스크롤 가능하게 */
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out; /* 부드러운 애니메이션 효과 */
+}
+
+.modal.open {
+  transform: translate(-50%, -50%) scale(1); /* 열릴 때 자연스럽게 커짐 */
+  opacity: 1;
+}
+
+.modal.close {
+  transform: translate(-50%, -50%) scale(0.8); /* 닫힐 때 자연스럽게 작아짐 */
+  opacity: 0;
 }
 
 .modalOverlay {
