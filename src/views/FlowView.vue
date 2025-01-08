@@ -41,7 +41,7 @@
         <div class="isolatedExpenseDiv">
             <div class="modal" v-if="showExpenseModal">
                 <h3>돈의 거점 정의하기</h3>
-                <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
+                <button @click="closeIsolatedModal" class="closeIsolatedBtn">창닫기</button>
                 <IsolatedModel v-bind:expenses="expenses" :expenseId="clickedExpenseId" @remove-expense="removeExpense"
                     :selectedPageId="selectedPageId" :clickedExpenseId="clickedExpenseId" :accounts="accounts"
                     @select-account="selectAccount" />
@@ -346,6 +346,7 @@ export default {
             this.showCreateExpenseModal = true;
         },
         closeCreateExpenseDiv() {
+            console.log("closeCreateExpenseDiv")
             this.showCreateExpenseModal = false;
         },
         formatNodeName(nodeIdHere) {
