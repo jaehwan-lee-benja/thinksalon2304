@@ -54,6 +54,8 @@
                 <IsolatedCreateExpense v-bind:expenses="expenses" :accounts="accounts"
                     @create-new-expense="createNewExpense" />
             </div>
+            <div v-if="showCreateExpenseModal" class="modalOverlay" @click="closeCreateExpenseDiv"></div>
+
             <div class="modal" v-if="showClickedEdgeModal">
                 <h3>돈의 이동 정의하기</h3>
                 <button @click="closeIsolated" class="closeIsolatedBtn">창닫기</button>
@@ -61,6 +63,8 @@
                     :clickedEdgeTargetId="this.clickedEdgeTargetId" :clickedEdgeSourceId="this.clickedEdgeSourceId"
                     :session="session" :selectedMonitor="selectedMonitor" />
             </div>
+            <div v-if="showClickedEdgeModal" class="modalOverlay" @click="closeIsolated"></div>
+
         </div>
 
     </div>
