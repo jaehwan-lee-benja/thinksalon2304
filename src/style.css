@@ -262,10 +262,10 @@ input:read-only {
 }
 
 .pageNameDiv {
-  padding-left: 0 0 0 30px;
   display: flex;
   align-items: center;
-  margin: 0;
+  margin: 3px 0;
+  height: 40px;
 }
 
 ::-webkit-scrollbar {
@@ -312,7 +312,7 @@ input:read-only {
   background-color: transparent;
   position: fixed;
   z-index: 994;
-  padding: 40px 20px 0 100px;
+  padding: 40px 0 0 100px;
   align-items: center;
 }
 
