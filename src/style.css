@@ -2,6 +2,7 @@
   --primary-color: #003B5C;
   --second-color: #4A6D7C; /* 어두운 회색-파랑 톤 (메뉴바 배경) */
   --background-color: #E9EEF2;
+  --secondary-background-color: #D3DDE4;
   --text-color: #2C3E50;
   --highlight-color: #00A8E8;
   --button-color: #1E2A33;
@@ -233,7 +234,7 @@ input:read-only {
   margin: 40px 20px;
   z-index: 996;
   background-color: transparent;
-  border: 1px solid var(--button-color);
+  border: 0px solid var(--button-color);
   color: var(--button-color);
 }
 
@@ -317,15 +318,16 @@ input:read-only {
 
 .flowViewBtnGrid {
   display: grid;
-  grid-template-columns: 2fr 3fr;
+  grid-template-columns: 3fr 2fr;
   gap: 20px;
   position: absolute;
-  top: 95%;
+  top: 93%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 996;
   padding: 10px;
-  background-color: transparent;
+  background-color: var(--secondary-background-color);
+  box-shadow: 0 10px 35px var(--shadow1-color), 0 6px 6px var(--shadow2-color);
   border-radius: 5px;
   width: 60%;
 }
@@ -389,7 +391,7 @@ input:read-only {
   width: 100%;
   color: var(--button-color);
   background-color: var(--background-color);
-  border: 1px solid var(--button-color);
+  border: 0px solid var(--button-color);
 }
 
 .saveEditedBtn_active {
@@ -397,15 +399,15 @@ input:read-only {
   width: 100%;
   color: white;
   background-color: var(--highlight-color);
-  border: 1px solid var(--button-color);
+  border: 0px solid var(--button-color);
 }
 
 .saveEditedBtn_inactive {
   z-index: 1;
   width: 100%;
-  color: var(--button-color);
+  color: var(--inactive-color);
   background-color: var(--background-color);
-  border: 1px solid var(--button-color);
+  border: 0px solid var(--inactive-color);
 }
 
 .cancelEditedBtn_active {
@@ -413,15 +415,15 @@ input:read-only {
   width: 100%;
   color: var(--error-color);
   background-color: var(--background-color);
-  border: 1px solid var(--error-color);
+  border: 0px solid var(--error-color);
 }
 
 .cancelEditedBtn_inactive {
   z-index: 1;
   width: 100%;
-  color: var(--button-color);
+  color: var(--inactive-color);
   background-color: var(--background-color);
-  border: 1px solid var(--button-color);
+  border: 0px solid var(--inactive-color);
 }
 
 .pageEditedBtn_active {
