@@ -2,9 +2,9 @@
   <div class="menuMainGrid">
     <div>
       <button @click="toggleMenu" :class="{
-                'toggleButtonClicked': menuVisible === true,
-                'toggleButton': menuVisible === false
-              }" >☰</button>
+        'toggleButtonClicked': menuVisible === true,
+        'toggleButton': menuVisible === false
+      }">☰</button>
       <div class="menuGrid" v-show="menuVisible">
         <div class="pageListDiv">
 
@@ -16,9 +16,10 @@
           </select>
 
           <div class="menuBtnDiv">
-            <button class="menuBtn" @click="openPageSettingDiv">페이지 설정하기</button>
-            <button class="menuBtn" @click="openAccountDiv">계좌 설정하기</button>
-            <button class="menuBtn" @click="openContact">문의하기</button>
+            <button class="menuBtn" @click="showSection('flowView')">페이지 보기</button>
+            <button class="menuBtn" @click="showSection('pageSetting')">페이지 설정하기</button>
+            <button class="menuBtn" @click="showSection('accountSetting')">계좌 설정하기</button>
+            <!-- <button class="menuBtn" @click="openContact">문의하기</button> -->
           </div>
 
         </div>
@@ -35,7 +36,7 @@
       </div>
     </div>
     <div class="mainDiv">
-      <div class="flowViewDiv">
+      <div class="flowViewDiv" v-if="currentSection === 'flowView'">
         <div class="flowViewControlDiv">
           <div class="pageNameDiv">
             <h2>{{ this.pageName }}</h2>
@@ -51,18 +52,16 @@
           :isEdited="isEdited" @edit-expense="editExpense" @cancel-editing-expense="cancelEditingExpense">
         </FlowView>
       </div>
-      <div v-if="isPageSettingOpened" class="modal">
+      <div v-if="currentSection === 'pageSetting'">
         <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
           @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @edit-page="editPage"
           @remove-page="removePage" @cancel-editing-page="cancelEditingPage" />
       </div>
-      <div v-if="isPageSettingOpened" class="modalOverlay" @click="closePageSettingDiv"></div>
-      <div v-if="isAccountSettingOpened" class="modal">
+      <div v-if="currentSection === 'accountSetting'">
         <AccountSettingView v-bind:expenses="expenses" :accounts="accounts" :isAccountEdited="isAccountEdited"
           @create-new-account="createNewAccount" @edit-account="editAccount" @remove-account="removeAccount"
           @cancel-editing-account="cancelEditingAccount" />
       </div>
-      <div v-if="isAccountSettingOpened" class="modalOverlay" @click="closeAccountSettingDiv"></div>
     </div>
   </div>
 </template>
@@ -73,8 +72,23 @@ import LoginSessionModel from './views/LoginSessionModel.vue'
 import FlowView from './views/FlowView.vue'
 import PageSettingView from './views/PageSettingView.vue'
 import AccountSettingView from './views/AccountSettingView.vue'
+import { ref } from 'vue';
 
 export default {
+  setup() {
+    // 현재 표시할 섹션을 저장하는 상태
+    const currentSection = ref('flowView');
+
+    // 섹션을 변경하는 메서드
+    const showSection = (section) => {
+      currentSection.value = section;
+    };
+
+    return {
+      currentSection,
+      showSection,
+    };
+  },
   data() {
     return {
 
