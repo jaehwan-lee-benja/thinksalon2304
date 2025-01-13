@@ -19,7 +19,7 @@
             <button class="menuBtn" @click="showSection('flowView')">페이지 보기</button>
             <button class="menuBtn" @click="showSection('pageSetting')">페이지 설정하기</button>
             <button class="menuBtn" @click="showSection('accountSetting')">계좌 설정하기</button>
-            <!-- <button class="menuBtn" @click="openContact">문의하기</button> -->
+            <button class="menuBtn" @click="openContact">문의하기</button>
           </div>
 
         </div>
@@ -44,8 +44,6 @@
         </div>
         <FlowView v-bind:expenses="expenses" :fetchedExpenses="fetchedExpenses" :clickedExpenseId="clickedExpenseId"
           :clickedEdgeTargetId="clickedEdgeTargetId" :editExpenseWorked="editExpenseWorked"
-          @point-clicked-li="pointClickedLi" @cancel-point-clicked-li="cancelPointClickedLi"
-          @point-clicked-Edge="pointClickedEdge" @cancel-point-clicked-edge="cancelPointClickedEdge"
           @remove-expense="removeExpense" :accounts="accounts" @select-account="selectAccount"
           :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
           :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" @create-new-expense="createNewExpense"
@@ -68,11 +66,11 @@
 
 <script>
 import { supabase } from './lib/supabaseClient.js'
+import { ref } from 'vue';
 import LoginSessionModel from './views/LoginSessionModel.vue'
 import FlowView from './views/FlowView.vue'
 import PageSettingView from './views/PageSettingView.vue'
 import AccountSettingView from './views/AccountSettingView.vue'
-import { ref } from 'vue';
 
 export default {
   setup() {
@@ -101,7 +99,6 @@ export default {
 
       accounts: [],
       fetchedAccounts: [],
-      isAccountSettingOpened: false,
       previousPageName: '',
 
       expensePages: [],
@@ -129,14 +126,6 @@ export default {
     this.fetchData()
   },
   computed: {
-    isAnyOpenedLi() {
-      const anyOpened = this.expenses.filter(e => e.show_sub_list === true);
-      if (anyOpened.length > 0) {
-        return true
-      } else {
-        return false
-      }
-    },
     sortExpensePages() {
       const clonedExpensePages = this.expensePages;
       return clonedExpensePages.sort((a, b) => a.order - b.order);
@@ -239,58 +228,8 @@ export default {
         }
       })
     },
-    openAccountDiv() {
-      this.isAccountSettingOpened = true;
-    },
     openContact() {
       window.open("http://pf.kakao.com/_QxewxfT", "_blank");
-    },
-    updatedPageName() {
-      return this.expenses.find(e => e.id === this.selectedPageId).name
-    },
-    cancelPointClickedLi() {
-      this.clickedExpenseId = ""
-    },
-    cancelPointClickedEdge() {
-      this.clickedEdgeTargetId = ""
-    },
-    openOrCloseLi() {
-      if (this.isAnyOpenedLi) {
-
-        this.expenses.forEach(e => {
-          e.show_sub_list = false;
-          this.upsertExpense(e);
-        })
-
-      } else {
-
-        // 자식요소가 없을 때는, 펼치지지 않도록 설정
-        const parentsAndChildArr = this.expenses.map(e2 => {
-          return {
-            "parents": this.expenses.find(e3 => e3.id === e2.id),
-            "children": this.expenses.find(e3 => e3.parents_id === e2.id)
-          }
-        })
-
-        parentsAndChildArr.forEach(e4 => {
-          const parentsExpense = e4.parents
-          if (e4.children && Object.keys(e4.children).length > 0) {
-            parentsExpense.show_sub_list = true;
-            this.upsertExpense(parentsExpense);
-          } else {
-            parentsExpense.show_sub_list = false;
-            this.upsertExpense(parentsExpense);
-          }
-        })
-
-      }
-    },
-    pointClickedLi(idHere) {
-      this.clickedExpenseId = idHere
-      this.updateParentsToggle(idHere)
-    },
-    pointClickedEdge(idHere) {
-      this.clickedEdgeTargetId = idHere
     },
     async cancelEditingPage() {
       this.expensePages = "";
@@ -513,51 +452,6 @@ export default {
       this.createdExpenseIdForMonitor = initialExpenseData.id;
 
     },
-    updateParentsToggle(idHere) {
-
-      const expense = this.expenses.find(e => e.id === idHere)
-      const ParentsToUpdate = this.findParentsExpense(expense, []);
-      ParentsToUpdate.forEach(e => {
-        e.show_sub_list = true;
-        this.upsertExpense(e)
-      })
-
-    },
-    findParentsExpense(childHere, resultHere) {
-      const parents = this.expenses.filter((t) => t.id === childHere.parents_id);
-
-      parents.forEach((parents) => {
-        resultHere.push(parents);
-        this.findParentsExpense(parents, resultHere);
-      });
-
-      return resultHere;
-    },
-
-    toggleSubList(expenseHere) {
-      this.controlToggleActiveHandler(expenseHere);
-      this.controlIsThereChildMonitor(expenseHere);
-      if (expenseHere.level < 5) {
-        expenseHere.show_sub_list = !expenseHere.show_sub_list;
-
-        // show_sub_list에 대해 서버에 올라가는 값과 로컬에 저장해둔 fetched값을 맞추는 작업
-        this.fetchedExpenses.forEach(e => {
-          if (e.id == expenseHere.id) {
-            e.show_sub_list = expenseHere.show_sub_list
-          }
-        })
-
-        this.upsertExpense(expenseHere)
-      }
-
-    },
-    controlToggleActiveHandler(expenseHere) {
-      if (expenseHere.level == 5) {
-        this.toggleActiveHandler[expenseHere.id] = false;
-      } else {
-        this.toggleActiveHandler[expenseHere.id] = true;
-      }
-    },
     controlIsThereChildMonitor(expenseHere) {
       // 새 리스트 만들기 하는 경우, child가 없으면 new가 뜨도록 하는 방식
       const children = this.expenses.filter((e) => e.parents_id === expenseHere.id);
@@ -739,47 +633,6 @@ export default {
       }
 
     },
-    openPageSettingDiv() {
-      this.isPageSettingOpened = true;
-    },
-    closeAccountSettingDiv() {
-      if (!this.isAccountEdited) {
-        // 편집 내용이 없는 경우, 모달창 바깥을 눌러서 종료하는 경우
-        this.isAccountSettingOpened = false;
-        this.cancelEditingAccount();
-      } else {
-        // 편집한 내용이 있는 경우,
-        const text = "페이지에 편집된 내용이 있습니다. \n [확인]을 누르면, 편집된 내용은 저장되지 않고 진행됩니다. \n *편집 내용을 저장하고 싶은 경우, [취소]>[편집 저장하기] 후 종료"
-        const confirmValue = confirm(text)
-
-        if (confirmValue) {
-          // 편집을 취소하며, 모달창을 종료하는 경우
-          this.isAccountSettingOpened = false;
-          this.cancelEditingAccount();
-        } else {
-          // 편집을 계속하기
-        }
-      }
-    },
-    closePageSettingDiv() {
-      if (!this.isPageEdited) {
-        // 편집 내용이 없는 경우, 모달창 바깥을 눌러서 종료하는 경우
-        this.isPageSettingOpened = false;
-        this.cancelEditingPage();
-      } else {
-        // 편집한 내용이 있는 경우,
-        const text = "페이지에 편집된 내용이 있습니다. \n [확인]을 누르면, 편집된 내용은 저장되지 않고 진행됩니다. \n *편집 내용을 저장하고 싶은 경우, [취소]>[편집 저장하기] 후 종료"
-        const confirmValue = confirm(text)
-
-        if (confirmValue) {
-          // 편집을 취소하며, 모달창을 종료하는 경우
-          this.isPageSettingOpened = false;
-          this.cancelEditingPage();
-        } else {
-          // 편집을 계속하기
-        }
-      }
-    },
     async selectPageByLoading() {
 
       let selectedPage = this.sortExpensePages.find(e => e.order === 0)
@@ -838,7 +691,6 @@ export default {
       })
 
     },
-
     async fetchDataForAccount() {
       const a = await supabase
         .from('account')
@@ -847,7 +699,6 @@ export default {
       this.accounts = data.sort((a, b) => a.order - b.order);
       this.fetchedAccounts = JSON.parse(JSON.stringify(this.accounts));
     },
-
     async fetchDataForPage() {
       const a = await supabase
         .from('expense_page')
@@ -856,7 +707,6 @@ export default {
       this.expensePages = data;
       this.fetchedExpensePages = JSON.parse(JSON.stringify(this.expensePages));
     },
-
   }
 }
 </script>
