@@ -381,7 +381,6 @@ export default {
             }
             await this.insertNodeLayout(nodeLayout)
         },
-
         async pushInitiallNode() {
             const nodeLayout = {
                 id: this.getUuidv4(),
@@ -392,12 +391,10 @@ export default {
             }
             await this.nodeLayoutsNew.push(nodeLayout)
         },
-
         insertNodeLayouts() {
             this.nodeLayoutsNew.forEach((e) => this.insertNodeLayout(e))
             this.nodeLayoutsNew = []
         },
-
         async fetchDataForNode() {
             const a = await supabase
                 .from('node')
@@ -405,7 +402,6 @@ export default {
             const { data } = a;
             this.nodeFromServer = data
         },
-
         async fetchDataForEdge() {
             const a = await supabase
                 .from('edge')
@@ -413,7 +409,6 @@ export default {
             const { data } = a;
             this.edgeFromServer = data
         },
-
         async updateNodeLayout(nodeLayoutHere) {
             try {
                 const { error } = await supabase
@@ -428,7 +423,6 @@ export default {
             }
             await this.fetchDataForNode();
         },
-
         async insertNodeLayout(nodeLayoutHere) {
             try {
                 const { error } = await supabase
@@ -442,7 +436,6 @@ export default {
             }
             await this.fetchDataForNode();
         },
-
         async updateNodeLayoutLocal(expenseIdHere, xHere, yHere) {
 
             const nodeLayout = { expense_id: expenseIdHere, x: xHere, y: yHere }
@@ -503,18 +496,15 @@ export default {
             }
 
         },
-
         selectAccount(expenseIdHere, accountIdHere) {
             this.$emit('select-account', expenseIdHere, accountIdHere)
         },
-
         removeExpense(expenseHere) {
             const confirmValue = confirm("삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
             if (confirmValue) {
                 this.$emit('remove-expense', expenseHere)
             }
         },
-
         formatExpenses() {
 
             const nodesResult = {}
@@ -561,7 +551,6 @@ export default {
             this.setGraphFit();
 
         },
-
         formatLayout() {
 
             // 최종적인 값이 담길 오브젝트
@@ -650,7 +639,6 @@ export default {
             return nodeLayouts
 
         },
-
         formatLayoutDefault() {
             // 최초 생길 때, 디폴트 버튼을 누를 때 진행되는 함수
 
@@ -702,7 +690,6 @@ export default {
             return defaultXYs
 
         },
-
         showGraphDefault() {
             const defaultResult = this.formatLayoutDefault()
             // node가 1개인 경우, formatLayoutDefault는 undefined가 된다. => 거르기
@@ -714,7 +701,6 @@ export default {
             }
             this.setGraphFit();
         },
-
         showGraphFit() {
 
             const nodeLayouts = {}
@@ -743,7 +729,6 @@ export default {
             this.setGraphFit();
 
         },
-
         setGraphFit() {
             const vngref = this.$refs.vng
 
@@ -756,27 +741,16 @@ export default {
 
             vngref?.transitionWhile(() => vngref.fitToContents(), { duration: 0 })
         },
-
         getUuidv4() {
             return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
                 (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
             );
         },
-
         closeIsolated() {
             this.closeCreateExpenseDiv();
             this.$emit('cancel-point-clicked-li');
             this.$emit('cancel-point-clicked-edge');
-        },
-
-        calculateRelativePosition(event, container) {
-            // container에서의 상대적인 위치 계산
-            const containerRect = container.getBoundingClientRect();
-            const top = event.clientY - containerRect.top;
-            const left = event.clientX - containerRect.left;
-
-            return { top, left };
-        },
+        }
     },
     components: {
         VNetworkGraph,
@@ -784,8 +758,7 @@ export default {
         IsolatedEdgeModel,
         IsolatedCreateExpense,
         VEdgeLabel
-    },
-
+    }
 }
 </script>
 
