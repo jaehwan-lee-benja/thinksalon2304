@@ -92,7 +92,7 @@ export default {
   data() {
     return {
 
-      menuVisible: false, // 메뉴 표시 여부 상태
+      menuVisible: false,
 
       totalExpenses: [],
       expenses: [],
