@@ -1,69 +1,85 @@
 <template>
     <div class="pageListStyle">
-        <h2>계좌 설정하기</h2>
-        <div class="createNewPageDiv">
-            <h4>새 계좌 추가하기</h4>
-            <table>
-                <tr>
-                    <td class="tdOnAccount"><span>계좌 별명</span></td>
-                    <td class="tdOnAccount"><span>은행</span></td>
-                    <td class="tdOnAccount"><span>계좌 번호</span></td>
-                    <td class="tdOnAccount"><span>역할</span></td>
-                    <td class="tdOnAccount"><span>타입</span></td>
-                    <td class="tdOnAccount"><span>수수료</span></td>
-                    <td class="tdOnAccount"><span>메모</span></td>
-                </tr>
-                <tr>
-                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newName" placeholder="계좌 별명 적기">
-                    </td>
-                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newBank" placeholder="은행 적기"></td>
-                    <td class="tdOnAccount"><input class="inputOnAccount2" v-model="this.newNumber" placeholder="계좌 번호 적기">
-                    </td>
-                    <td class="tdOnAccount"><input class="inputOnAccount2" v-model="this.newRole" placeholder="역할 적기"></td>
-                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newType" placeholder="타입 적기"></td>
-                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newTransferFee"
-                            placeholder="수수료 여부 적기"></td>
-                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newMemo" placeholder="메모 적기"></td>
-                    <td class="tdOnAccountBtn"><button class="btnOnAccountBtn" @click="createNewAccount">추가</button></td>
-                </tr>
-            </table>
-
-
+        <div :class="{
+            'pageNameDivMenuClicked': menuVisible === true,
+            'pageNameDiv': menuVisible === false
+        }">
+            <h2>계좌 설정하기</h2>
         </div>
+        <div class="pageSettingDiv">
+            <div class="createNewPageDiv">
+                <h4>새 계좌 추가하기</h4>
+                <table>
+                    <tr>
+                        <td class="tdOnAccount"><span>계좌 별명</span></td>
+                        <td class="tdOnAccount"><span>은행</span></td>
+                        <td class="tdOnAccount"><span>계좌 번호</span></td>
+                        <td class="tdOnAccount"><span>역할</span></td>
+                        <td class="tdOnAccount"><span>타입</span></td>
+                        <td class="tdOnAccount"><span>수수료</span></td>
+                        <td class="tdOnAccount"><span>메모</span></td>
+                    </tr>
+                    <tr>
+                        <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newName"
+                                placeholder="계좌 별명 적기">
+                        </td>
+                        <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newBank"
+                                placeholder="은행 적기">
+                        </td>
+                        <td class="tdOnAccount"><input class="inputOnAccount2" v-model="this.newNumber"
+                                placeholder="계좌 번호 적기">
+                        </td>
+                        <td class="tdOnAccount"><input class="inputOnAccount2" v-model="this.newRole"
+                                placeholder="역할 적기">
+                        </td>
+                        <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newType"
+                                placeholder="타입 적기">
+                        </td>
+                        <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newTransferFee"
+                                placeholder="수수료 여부 적기"></td>
+                        <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newMemo"
+                                placeholder="메모 적기">
+                        </td>
+                        <td class="tdOnAccountBtn"><button class="btnOnAccountBtn" @click="createNewAccount">추가</button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div>
+                <h4>기존 계좌 편집하기</h4>
+                <table>
+                    <tr>
+                        <td class="tdOnAccount"><span>계좌 별명</span></td>
+                        <td class="tdOnAccount"><span>은행</span></td>
+                        <td class="tdOnAccount"><span>계좌 번호</span></td>
+                        <td class="tdOnAccount"><span>역할</span></td>
+                        <td class="tdOnAccount"><span>타입</span></td>
+                        <td class="tdOnAccount"><span>수수료</span></td>
+                        <td class="tdOnAccount"><span>메모</span></td>
+                    </tr>
+                    <tr v-for="account in accounts" :key="account.id">
+                        <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.name"></td>
+                        <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.bank"></td>
+                        <td class="tdOnAccount"><input class="inputOnAccount2" v-model="account.number"></td>
+                        <td class="tdOnAccount"><input class="inputOnAccount2" v-model="account.role"></td>
+                        <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.type"></td>
+                        <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.transfer_fee"></td>
+                        <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.memo"></td>
+                        <td class="tdOnAccountBtn"><button class="btnOnAccountBtn"
+                                @click="removeAccount(account)">삭제</button>
+                        </td>
+                    </tr>
 
-        <div>
-            <h4>기존 계좌 편집하기</h4>
-            <table>
-                <tr>
-                    <td class="tdOnAccount"><span>계좌 별명</span></td>
-                    <td class="tdOnAccount"><span>은행</span></td>
-                    <td class="tdOnAccount"><span>계좌 번호</span></td>
-                    <td class="tdOnAccount"><span>역할</span></td>
-                    <td class="tdOnAccount"><span>타입</span></td>
-                    <td class="tdOnAccount"><span>수수료</span></td>
-                    <td class="tdOnAccount"><span>메모</span></td>
-                </tr>
-                <tr v-for="account in accounts" :key="account.id">
-                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.name"></td>
-                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.bank"></td>
-                    <td class="tdOnAccount"><input class="inputOnAccount2" v-model="account.number"></td>
-                    <td class="tdOnAccount"><input class="inputOnAccount2" v-model="account.role"></td>
-                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.type"></td>
-                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.transfer_fee"></td>
-                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.memo"></td>
-                    <td class="tdOnAccountBtn"><button class="btnOnAccountBtn" @click="removeAccount(account)">삭제</button>
-                    </td>
-                </tr>
-
-            </table>
-            <button :class="{
-                'pageEditedBtn_active': isAccountEdited === true,
-                'pageEditedBtn_inactive': isAccountEdited === false
-            }" :disabled="!isAccountEdited" @click="editAccount">편집한 내용 저장</button>
-            <button :class="{
-                'cancelPageEditedBtn_active': isAccountEdited === true,
-                'cancelPageEditedBtn_inactive': isAccountEdited === false
-            }" :disabled="!isAccountEdited" @click="cancelEditingAccount">편집 취소</button>
+                </table>
+                <button :class="{
+                    'pageEditedBtn_active': isAccountEdited === true,
+                    'pageEditedBtn_inactive': isAccountEdited === false
+                }" :disabled="!isAccountEdited" @click="editAccount">편집한 내용 저장</button>
+                <button :class="{
+                    'cancelPageEditedBtn_active': isAccountEdited === true,
+                    'cancelPageEditedBtn_inactive': isAccountEdited === false
+                }" :disabled="!isAccountEdited" @click="cancelEditingAccount">편집 취소</button>
+            </div>
         </div>
     </div>
 </template>
@@ -82,6 +98,10 @@ export default {
             default: () => { }
         },
         isAccountEdited: {
+            type: Boolean,
+            default: false
+        },
+        menuVisible: {
             type: Boolean,
             default: false
         },
@@ -141,5 +161,6 @@ export default {
 }
 </script>
 
-<style scoped>@import '../style.css';</style>
-
+<style scoped>
+@import '../style.css';
+</style>
