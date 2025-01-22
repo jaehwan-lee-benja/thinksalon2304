@@ -1,36 +1,30 @@
 <template>
-    <div class="pageListStyle">
-        <div :class="{
-            'pageNameDivMenuClicked': menuVisible === true,
-            'pageNameDiv': menuVisible === false
-        }">
-            <h2>페이지 설정하기</h2>
+    <div class="pageSettingDiv">
+        <div class="createNewPageDiv">
+            <h4>새 페이지 만들기</h4>
+            <span>새 페이지명: </span>
+            <input class="pageNameStyle" v-model="this.newPageName" placeholder="새 페이지명 적기">
+            <button @click="createNewPage">만들기</button>
         </div>
-        <div class="pageSettingDiv">
-            <div class="createNewPageDiv">
-                <h4>새 페이지 만들기</h4>
-                <span>새 페이지명: </span>
-                <input class="pageNameStyle" v-model="this.newPageName" placeholder="새 페이지명 적기">
-                <button @click="createNewPage">만들기</button>
-            </div>
-            <div>
-                <h4>기존 페이지 편집하기</h4>
-                <ol class="pageSettingOlStyle">
-                    <li v-for="page in this.expensePages" :key="page.id">
-                        <input class="pageNameStyle" v-model="page.page_name">
-                        <button @click="removePage(page)">삭제</button>
-                    </li>
-                </ol>
-                <button :class="{
-                    'pageEditedBtn_active': isPageEdited === true,
-                    'pageEditedBtn_inactive': isPageEdited === false
-                }" :disabled="!isPageEdited" @click="editPage">편집한 내용 저장</button>
-                <button :class="{
-                    'cancelPageEditedBtn_active': isPageEdited === true,
-                    'cancelPageEditedBtn_inactive': isPageEdited === false
-                }" :disabled="!isPageEdited" @click="cancelEditingPage">편집 취소</button>
-            </div>
+        <div>
+            <h4>기존 페이지 편집하기</h4>
+            <ol class="pageSettingOlStyle">
+                <li v-for="page in this.expensePages" :key="page.id">
+                    <input class="pageNameStyle" v-model="page.page_name">
+                    <button @click="removePage(page)">삭제</button>
+                </li>
+            </ol>
         </div>
+    </div>
+    <div class="settingSaveBtnDiv">
+        <button :class="{
+            'pageEditedBtn_active': isPageEdited === true,
+            'pageEditedBtn_inactive': isPageEdited === false
+        }" :disabled="!isPageEdited" @click="editPage">편집한 내용 저장</button>
+        <button :class="{
+            'cancelPageEditedBtn_active': isPageEdited === true,
+            'cancelPageEditedBtn_inactive': isPageEdited === false
+        }" :disabled="!isPageEdited" @click="cancelEditingPage">편집 취소</button>
     </div>
 </template>
 
@@ -50,11 +44,7 @@ export default {
         isPageEdited: {
             type: Boolean,
             default: false
-        },
-        menuVisible: {
-            type: Boolean,
-            default: false
-        },
+        }
     },
     data() {
         return {
