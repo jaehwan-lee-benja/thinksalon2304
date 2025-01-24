@@ -8,13 +8,6 @@
       <div class="menuGrid" v-show="menuVisible">
         <div class="pageListDiv">
 
-          <!-- <h3>페이지 이동하기</h3>
-          <select class="pageSelect" v-model="pageName" @change="selectPageBySelectBox" ref="pageSelectRef">
-            <option v-for="page in sortExpensePages" :key="page.id" :value="page.page_name">
-              {{ page.page_name }}
-            </option>
-          </select> -->
-
           <div class="menuBtnDiv">
             <button class="menuBtn" @click="showSection('flowView')">페이지 보기</button>
             <button class="menuBtn" @click="showSection('pageSetting')">페이지 설정하기</button>
@@ -51,7 +44,8 @@
           :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
           :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" @create-new-expense="createNewExpense"
           :isEdited="isEdited" @edit-expense="editExpense" @cancel-editing-expense="cancelEditingExpense"
-          :sortExpensePages="sortExpensePages" :previousPageName="previousPageName" :expensePages="expensePages">
+          :sortExpensePages="sortExpensePages" :previousPageName="previousPageName" :expensePages="expensePages"
+          @emit-selected-page="emitSelectedPage">
         </FlowView>
       </div>
       <div class="flowViewDiv" v-if="currentSection === 'pageSetting'">
@@ -153,7 +147,6 @@ export default {
     },
     sortExpensePages() {
       const clonedExpensePages = this.expensePages;
-      console.log("clonedExpensePages =", clonedExpensePages)
       return clonedExpensePages.sort((a, b) => a.order - b.order);
     },
     totalExpenseId() {
@@ -244,6 +237,10 @@ export default {
     },
   },
   methods: {
+    emitSelectedPage(selectedPageHere) {
+      this.selectedPageId = selectedPageHere.id
+      this.setPageBySelectPage(selectedPageHere)
+    },
     toggleMenu() {
       this.menuVisible = !this.menuVisible; // 상태를 반전
     },
@@ -798,7 +795,6 @@ export default {
     async selectPageByLoading() {
 
       let selectedPage = this.sortExpensePages.find(e => e.order === 0)
-      console.log("this.sortExpensePages =", this.sortExpensePages);
       if (selectedPage != undefined) {
         this.selectedPageId = selectedPage.id
       } else {
@@ -808,28 +804,6 @@ export default {
       this.setPageBySelectPage(selectedPage)
 
     },
-    // selectPageBySelectBox(pageNameHere) {
-    //   console.log("selectPageBySelectBox Here!")
-
-    //   console.log("pageNameHere =", pageNameHere);
-
-    //   const previousPageName = this.previousPageName;
-
-    //   if (this.isEdited) {
-
-    //     alert("편집된 내용이 있습니다. 편집된 내용에 대한 저장 또는 취소 후 페이지 이동이 가능합니다.")
-    //     this.pageName = previousPageName
-    //     this.$refs.pageSelectRef.value = previousPageName;
-
-    //   } else {
-
-    //     const selectedPage = this.expensePages.find(e => e.page_name === this.pageName)
-    //     console.log("this.pageName =", this.pageName);
-    //     this.selectedPageId = selectedPage.id
-    //     this.setPageBySelectPage(selectedPage)
-
-    //   }
-    // },
     selectPageByEditPage() {
 
       let selectedPage = this.expensePages.find(e => e.id === this.selectedPageId)

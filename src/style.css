@@ -312,8 +312,8 @@ input:read-only {
 .pageSelect {
   background-color: var(--background-color);
   border-radius: 4px;
-  width: 160px;
-  margin: 10px auto;
+  width: 300px;
+  margin: 20px auto;
   padding: 4px;
   cursor: pointer;
 }

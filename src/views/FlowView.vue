@@ -378,7 +378,6 @@ export default {
             this.showChangePageModal = true;
         },
         selectPageBySelectBox() {
-            console.log("selectPageBySelectBox Here!")
 
             const previousPageName = this.previousPageName;
 
@@ -391,16 +390,10 @@ export default {
             } else {
 
                 const selectedPage = this.expensePages.find(e => e.page_name === this.pageName)
-                console.log("this.pageName =", this.pageName);
                 this.$emit("emit-selected-page", selectedPage);
-
-                this.selectedPageId = selectedPage.id
-                this.setPageBySelectPage(selectedPage)
-
             }
         },
         closeCreateExpenseDiv() {
-            console.log("closeCreateExpenseDiv")
             this.showCreateExpenseModal = false;
         },
         closeChangePageDiv() {
