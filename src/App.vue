@@ -37,10 +37,11 @@
     </div>
     <div class="mainDiv">
       <div class="flowViewDiv" v-if="currentSection === 'flowView'">
-        <div class="flowViewControlDiv">
-          <div class="pageNameDiv">
-            <h2>{{ this.pageName }}</h2>
-          </div>
+        <div :class="{
+          'pageNameDivMenuClicked': menuVisible === true,
+          'pageNameDiv': menuVisible === false
+        }">
+          <h2>{{ this.pageName }}</h2>
         </div>
         <FlowView v-bind:expenses="expenses" :fetchedExpenses="fetchedExpenses" :clickedExpenseId="clickedExpenseId"
           :clickedEdgeTargetId="clickedEdgeTargetId" :editExpenseWorked="editExpenseWorked"
@@ -50,12 +51,24 @@
           :isEdited="isEdited" @edit-expense="editExpense" @cancel-editing-expense="cancelEditingExpense">
         </FlowView>
       </div>
-      <div v-if="currentSection === 'pageSetting'">
+      <div class="flowViewDiv" v-if="currentSection === 'pageSetting'">
+        <div :class="{
+          'pageNameDivMenuClicked': menuVisible === true,
+          'pageNameDiv': menuVisible === false
+        }">
+          <h2>페이지 설정하기</h2>
+        </div>
         <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
           @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @edit-page="editPage"
           @remove-page="removePage" @cancel-editing-page="cancelEditingPage" />
       </div>
-      <div v-if="currentSection === 'accountSetting'">
+      <div class="flowViewDiv" v-if="currentSection === 'accountSetting'">
+        <div :class="{
+          'pageNameDivMenuClicked': menuVisible === true,
+          'pageNameDiv': menuVisible === false
+        }">
+          <h2>계좌 설정하기</h2>
+        </div>
         <AccountSettingView v-bind:expenses="expenses" :accounts="accounts" :isAccountEdited="isAccountEdited"
           @create-new-account="createNewAccount" @edit-account="editAccount" @remove-account="removeAccount"
           @cancel-editing-account="cancelEditingAccount" />
@@ -90,7 +103,7 @@ export default {
   data() {
     return {
 
-      menuVisible: false, // 메뉴 표시 여부 상태
+      menuVisible: false,
 
       totalExpenses: [],
       expenses: [],

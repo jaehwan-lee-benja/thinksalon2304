@@ -1,8 +1,7 @@
 <template>
-    <div class="pageListStyle">
-        <h2>계좌 설정하기</h2>
+    <div class="pageSettingDiv">
         <div class="createNewPageDiv">
-            <h4>새 계좌 추가하기</h4>
+            <h4>새 계좌 만들기</h4>
             <table>
                 <tr>
                     <td class="tdOnAccount"><span>계좌 별명</span></td>
@@ -16,21 +15,24 @@
                 <tr>
                     <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newName" placeholder="계좌 별명 적기">
                     </td>
-                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newBank" placeholder="은행 적기"></td>
-                    <td class="tdOnAccount"><input class="inputOnAccount2" v-model="this.newNumber" placeholder="계좌 번호 적기">
+                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newBank" placeholder="은행 적기">
                     </td>
-                    <td class="tdOnAccount"><input class="inputOnAccount2" v-model="this.newRole" placeholder="역할 적기"></td>
-                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newType" placeholder="타입 적기"></td>
+                    <td class="tdOnAccount"><input class="inputOnAccount2" v-model="this.newNumber"
+                            placeholder="계좌 번호 적기">
+                    </td>
+                    <td class="tdOnAccount"><input class="inputOnAccount2" v-model="this.newRole" placeholder="역할 적기">
+                    </td>
+                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newType" placeholder="타입 적기">
+                    </td>
                     <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newTransferFee"
                             placeholder="수수료 여부 적기"></td>
-                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newMemo" placeholder="메모 적기"></td>
-                    <td class="tdOnAccountBtn"><button class="btnOnAccountBtn" @click="createNewAccount">추가</button></td>
+                    <td class="tdOnAccount"><input class="inputOnAccount" v-model="this.newMemo" placeholder="메모 적기">
+                    </td>
+                    <td class="tdOnAccountBtn"><button class="btnOnAccountBtn" @click="createNewAccount">추가</button>
+                    </td>
                 </tr>
             </table>
-
-
         </div>
-
         <div>
             <h4>기존 계좌 편집하기</h4>
             <table>
@@ -51,20 +53,23 @@
                     <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.type"></td>
                     <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.transfer_fee"></td>
                     <td class="tdOnAccount"><input class="inputOnAccount" v-model="account.memo"></td>
-                    <td class="tdOnAccountBtn"><button class="btnOnAccountBtn" @click="removeAccount(account)">삭제</button>
+                    <td class="tdOnAccountBtn"><button class="btnOnAccountBtn"
+                            @click="removeAccount(account)">삭제</button>
                     </td>
                 </tr>
 
             </table>
-            <button :class="{
-                'pageEditedBtn_active': isAccountEdited === true,
-                'pageEditedBtn_inactive': isAccountEdited === false
-            }" :disabled="!isAccountEdited" @click="editAccount">편집한 내용 저장</button>
-            <button :class="{
-                'cancelPageEditedBtn_active': isAccountEdited === true,
-                'cancelPageEditedBtn_inactive': isAccountEdited === false
-            }" :disabled="!isAccountEdited" @click="cancelEditingAccount">편집 취소</button>
         </div>
+    </div>
+    <div class="settingSaveBtnDiv">
+        <button :class="{
+            'pageEditedBtn_active': isAccountEdited === true,
+            'pageEditedBtn_inactive': isAccountEdited === false
+        }" :disabled="!isAccountEdited" @click="editAccount">편집한 내용 저장</button>
+        <button :class="{
+            'cancelPageEditedBtn_active': isAccountEdited === true,
+            'cancelPageEditedBtn_inactive': isAccountEdited === false
+        }" :disabled="!isAccountEdited" @click="cancelEditingAccount">편집 취소</button>
     </div>
 </template>
 
@@ -84,7 +89,7 @@ export default {
         isAccountEdited: {
             type: Boolean,
             default: false
-        },
+        }
     },
     data() {
         return {
@@ -141,5 +146,6 @@ export default {
 }
 </script>
 
-<style scoped>@import '../style.css';</style>
-
+<style scoped>
+@import '../style.css';
+</style>

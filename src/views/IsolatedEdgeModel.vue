@@ -174,7 +174,8 @@ export default {
             }
         },
         async upsertEdge() {
-            const edgeDate = {
+            console.log("upsertEdge")
+            const edgeData = {
                 id: this.getUuidv4(),
                 source: this.clickedEdgeSourceId,
                 target: this.clickedEdgeTargetId,
@@ -184,11 +185,12 @@ export default {
                 memo: this.memo,
                 user_id: this.session.user.id
             }
+            console.log("edgeData = ", edgeData)
             try {
                 const { error } = await supabase
                     .from('edge')
-                    .upsert(edgeDate)
-                    .eq('id', edgeDate.id)
+                    .upsert(edgeData)
+                    .eq('id', edgeData.id)
                 if (error) {
                     throw error;
                 }
@@ -196,6 +198,7 @@ export default {
                 console.error(error);
             } finally {
                 // 성공하던 실패하던 실행되는 곳
+                console.log("upsertEdge done")
             }
         },
         getUuidv4() {
