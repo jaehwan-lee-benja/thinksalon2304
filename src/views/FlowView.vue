@@ -5,6 +5,7 @@
             <button @click="showGraphFit" class="flowViewBtn">그래프 보기</button>
             <button @click="showGraphDefault" class="flowViewBtn">배치 초기화</button>
             <button @click="showCreateExpenseDiv" class="flowViewBtn">새 거점 만들기</button>
+            <button @click="showChangePageDiv" class="flowViewBtn">페이지 이동하기</button>
         </div>
         <div class="flowViewBtnDiv">
             <button :class="{
@@ -55,6 +56,17 @@
                     @create-new-expense="createNewExpense" />
             </div>
             <div v-if="showCreateExpenseModal" class="modalOverlay" @click="closeCreateExpenseDiv"></div>
+
+            <div class="modal" v-if="showChangePageModal">
+                <h3>페이지 이동하기</h3>
+                <button @click="closeChangePageDiv" class="closeIsolatedBtn">창닫기</button>
+                <select class="pageSelect" v-model="pageName" @change="selectPageBySelectBox" ref="pageSelectRef">
+                    <option v-for="page in sortExpensePages" :key="page.id" :value="page.page_name">
+                        {{ page.page_name }}
+                    </option>
+                </select>
+            </div>
+            <div v-if="showChangePageModal" class="modalOverlay" @click="closeChangePageDiv"></div>
 
             <div class="modal" v-if="showClickedEdgeModal">
                 <h3>돈의 이동 정의하기</h3>
@@ -126,7 +138,19 @@ export default {
         isEdited: {
             type: Boolean,
             default: true,
-        }
+        },
+        sortExpensePages: {
+            type: Array,
+            default: () => []
+        },
+        previousPageName: {
+            type: String,
+            default: '',
+        },
+        expensePages: {
+            type: Array,
+            default: () => []
+        },
     },
     computed: {
         showClickedLiDiv() {
@@ -151,6 +175,7 @@ export default {
 
             showExpenseModal: false,
             showCreateExpenseModal: false,
+            showChangePageModal: false,
 
             pageLengthMonitor: 0,
 
@@ -349,9 +374,37 @@ export default {
             this.$emit('cancel-point-clicked-edge');
             this.showCreateExpenseModal = true;
         },
+        showChangePageDiv() {
+            this.showChangePageModal = true;
+        },
+        selectPageBySelectBox() {
+            console.log("selectPageBySelectBox Here!")
+
+            const previousPageName = this.previousPageName;
+
+            if (this.isEdited) {
+
+                alert("편집된 내용이 있습니다. 편집된 내용에 대한 저장 또는 취소 후 페이지 이동이 가능합니다.")
+                this.pageName = previousPageName
+                this.$refs.pageSelectRef.value = previousPageName;
+
+            } else {
+
+                const selectedPage = this.expensePages.find(e => e.page_name === this.pageName)
+                console.log("this.pageName =", this.pageName);
+                this.$emit("emit-selected-page", selectedPage);
+
+                this.selectedPageId = selectedPage.id
+                this.setPageBySelectPage(selectedPage)
+
+            }
+        },
         closeCreateExpenseDiv() {
             console.log("closeCreateExpenseDiv")
             this.showCreateExpenseModal = false;
+        },
+        closeChangePageDiv() {
+            this.showChangePageModal = false;
         },
         formatNodeName(nodeIdHere) {
             const eachE = this.expenses.find((e) => nodeIdHere == e.id);

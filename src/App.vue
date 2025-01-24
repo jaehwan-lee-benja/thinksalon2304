@@ -8,12 +8,12 @@
       <div class="menuGrid" v-show="menuVisible">
         <div class="pageListDiv">
 
-          <h3>페이지 이동하기</h3>
+          <!-- <h3>페이지 이동하기</h3>
           <select class="pageSelect" v-model="pageName" @change="selectPageBySelectBox" ref="pageSelectRef">
             <option v-for="page in sortExpensePages" :key="page.id" :value="page.page_name">
               {{ page.page_name }}
             </option>
-          </select>
+          </select> -->
 
           <div class="menuBtnDiv">
             <button class="menuBtn" @click="showSection('flowView')">페이지 보기</button>
@@ -50,7 +50,8 @@
           @remove-expense="removeExpense" :accounts="accounts" @select-account="selectAccount"
           :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
           :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" @create-new-expense="createNewExpense"
-          :isEdited="isEdited" @edit-expense="editExpense" @cancel-editing-expense="cancelEditingExpense">
+          :isEdited="isEdited" @edit-expense="editExpense" @cancel-editing-expense="cancelEditingExpense"
+          :sortExpensePages="sortExpensePages" :previousPageName="previousPageName" :expensePages="expensePages">
         </FlowView>
       </div>
       <div class="flowViewDiv" v-if="currentSection === 'pageSetting'">
@@ -152,6 +153,7 @@ export default {
     },
     sortExpensePages() {
       const clonedExpensePages = this.expensePages;
+      console.log("clonedExpensePages =", clonedExpensePages)
       return clonedExpensePages.sort((a, b) => a.order - b.order);
     },
     totalExpenseId() {
@@ -796,6 +798,7 @@ export default {
     async selectPageByLoading() {
 
       let selectedPage = this.sortExpensePages.find(e => e.order === 0)
+      console.log("this.sortExpensePages =", this.sortExpensePages);
       if (selectedPage != undefined) {
         this.selectedPageId = selectedPage.id
       } else {
@@ -805,24 +808,28 @@ export default {
       this.setPageBySelectPage(selectedPage)
 
     },
-    selectPageBySelectBox() {
+    // selectPageBySelectBox(pageNameHere) {
+    //   console.log("selectPageBySelectBox Here!")
 
-      const previousPageName = this.previousPageName;
+    //   console.log("pageNameHere =", pageNameHere);
 
-      if (this.isEdited) {
+    //   const previousPageName = this.previousPageName;
 
-        alert("편집된 내용이 있습니다. 편집된 내용에 대한 저장 또는 취소 후 페이지 이동이 가능합니다.")
-        this.pageName = previousPageName
-        this.$refs.pageSelectRef.value = previousPageName;
+    //   if (this.isEdited) {
 
-      } else {
+    //     alert("편집된 내용이 있습니다. 편집된 내용에 대한 저장 또는 취소 후 페이지 이동이 가능합니다.")
+    //     this.pageName = previousPageName
+    //     this.$refs.pageSelectRef.value = previousPageName;
 
-        const selectedPage = this.expensePages.find(e => e.page_name === this.pageName)
-        this.selectedPageId = selectedPage.id
-        this.setPageBySelectPage(selectedPage)
+    //   } else {
 
-      }
-    },
+    //     const selectedPage = this.expensePages.find(e => e.page_name === this.pageName)
+    //     console.log("this.pageName =", this.pageName);
+    //     this.selectedPageId = selectedPage.id
+    //     this.setPageBySelectPage(selectedPage)
+
+    //   }
+    // },
     selectPageByEditPage() {
 
       let selectedPage = this.expensePages.find(e => e.id === this.selectedPageId)
