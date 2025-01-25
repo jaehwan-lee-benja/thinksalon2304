@@ -81,14 +81,36 @@ import FlowView from './views/FlowView.vue'
 import PageSettingView from './views/PageSettingView.vue'
 import AccountSettingView from './views/AccountSettingView.vue'
 import { ref } from 'vue';
+import { getCurrentInstance } from 'vue';
 
 export default {
+  // setup() {
+  //   // 현재 표시할 섹션을 저장하는 상태
+  //   const currentSection = ref('flowView');
+
+  //   // 섹션을 변경하는 메서드
+  //   const showSection = (section) => {
+  //     if(section === 'flowView') {
+  //       console.log(this.selectedPageId)
+  //     }
+  //     currentSection.value = section;
+  //   };
+
+  //   return {
+  //     currentSection,
+  //     showSection,
+  //   };
+  // },
   setup() {
-    // 현재 표시할 섹션을 저장하는 상태
+    const { proxy } = getCurrentInstance(); // 현재 컴포넌트 인스턴스를 가져옴
     const currentSection = ref('flowView');
 
-    // 섹션을 변경하는 메서드
     const showSection = (section) => {
+      if (section === 'flowView') {
+        console.log(proxy.updatedPageName); // data()의 selectedPageId를 참조
+        console.log(proxy.expenses)
+        console.log(proxy.expenses.find(e => e.id === proxy.selectedPageId))
+      }
       currentSection.value = section;
     };
 
