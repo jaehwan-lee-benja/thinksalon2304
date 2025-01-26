@@ -80,48 +80,13 @@ import LoginSessionModel from './views/LoginSessionModel.vue'
 import FlowView from './views/FlowView.vue'
 import PageSettingView from './views/PageSettingView.vue'
 import AccountSettingView from './views/AccountSettingView.vue'
-import { ref } from 'vue';
-import { getCurrentInstance } from 'vue';
 
 export default {
-  // setup() {
-  //   // 현재 표시할 섹션을 저장하는 상태
-  //   const currentSection = ref('flowView');
-
-  //   // 섹션을 변경하는 메서드
-  //   const showSection = (section) => {
-  //     if(section === 'flowView') {
-  //       console.log(this.selectedPageId)
-  //     }
-  //     currentSection.value = section;
-  //   };
-
-  //   return {
-  //     currentSection,
-  //     showSection,
-  //   };
-  // },
-  setup() {
-    const { proxy } = getCurrentInstance(); // 현재 컴포넌트 인스턴스를 가져옴
-    const currentSection = ref('flowView');
-
-    const showSection = (section) => {
-      if (section === 'flowView') {
-        console.log(proxy.updatedPageName); // data()의 selectedPageId를 참조
-        console.log(proxy.expenses)
-        console.log(proxy.expenses.find(e => e.id === proxy.selectedPageId))
-      }
-      currentSection.value = section;
-    };
-
-    return {
-      currentSection,
-      showSection,
-    };
-  },
   data() {
     return {
 
+      currentSection: 'flowView',
+      previousSection: null,
       menuVisible: false,
 
       totalExpenses: [],
@@ -259,6 +224,27 @@ export default {
     },
   },
   methods: {
+    showSection(section) {
+      // 섹션이 변경될 때 메뉴를 닫음
+      if (this.currentSection !== section) {
+        this.menuVisible = false;
+      }
+
+      // 이전 섹션 상태 저장
+      this.previousSection = this.currentSection;
+
+      // 현재 섹션 업데이트
+      this.currentSection = section;
+
+      console.log("this.currentSection =", this.currentSection)
+
+      if(section === 'flowView') {
+        console.log('section =', section)
+        const selectedPage = this.expensePages.find(e => e.id === this.selectedPageId)
+        console.log('selectedPage =', selectedPage)
+        this.setPageBySelectPage(selectedPage);
+      }
+    },
     emitSelectedPage(selectedPageHere) {
       this.selectedPageId = selectedPageHere.id
       this.setPageBySelectPage(selectedPageHere)
