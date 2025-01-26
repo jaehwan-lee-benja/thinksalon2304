@@ -80,6 +80,7 @@ import LoginSessionModel from './views/LoginSessionModel.vue'
 import FlowView from './views/FlowView.vue'
 import PageSettingView from './views/PageSettingView.vue'
 import AccountSettingView from './views/AccountSettingView.vue'
+import { reactive } from 'vue';
 
 export default {
   data() {
@@ -90,7 +91,8 @@ export default {
       menuVisible: false,
 
       totalExpenses: [],
-      expenses: [],
+      // expenses: [],
+      expenses: reactive([]), // expenses를 반응형으로 설정
       fetchedExpenses: [],
       selectedPageId: '',
 
@@ -224,6 +226,7 @@ export default {
   },
   methods: {
     showSection(section) {
+
       // 섹션이 변경될 때 메뉴를 닫음
       if (this.currentSection !== section) {
         this.menuVisible = false;
@@ -235,14 +238,13 @@ export default {
       // 현재 섹션 업데이트
       this.currentSection = section;
 
-      console.log("this.currentSection =", this.currentSection)
-
-      if(section === 'flowView') {
-        console.log('section =', section)
-        const selectedPage = this.expensePages.find(e => e.id === this.selectedPageId)
-        console.log('selectedPage =', selectedPage)
-        this.setPageBySelectPage(selectedPage);
+      if (section === 'flowView') {
+        this.$nextTick(() => {
+          const selectedPage = this.expensePages.find(e => e.id === this.selectedPageId);
+          this.setPageBySelectPage(selectedPage);
+        });
       }
+
     },
     emitSelectedPage(selectedPageHere) {
       this.selectedPageId = selectedPageHere.id

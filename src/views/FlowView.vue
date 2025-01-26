@@ -307,6 +307,7 @@ export default {
     watch: {
         expenses: {
             handler() {
+                console.log("expenses changed")
                 const expensesLength = this.expenses.length;
                 if (expensesLength > 0) {
                     this.$nextTick(() => {
@@ -392,6 +393,8 @@ export default {
                 const selectedPage = this.expensePages.find(e => e.page_name === this.pageName)
                 this.$emit("emit-selected-page", selectedPage);
             }
+
+            this.showChangePageModal = false;
         },
         closeCreateExpenseDiv() {
             this.showCreateExpenseModal = false;
@@ -561,7 +564,7 @@ export default {
             }
         },
 
-        formatExpenses() {
+        async formatExpenses() {
 
             const nodesResult = {}
             const edgeResult = {}
@@ -602,13 +605,13 @@ export default {
 
             this.nodes = nodesResult
             this.edges = edgeResult
-            this.layouts.nodes = this.formatLayout();
+            this.layouts.nodes = await this.formatLayout();
 
             this.setGraphFit();
-
+            
         },
 
-        formatLayout() {
+        async formatLayout() {
 
             // 최종적인 값이 담길 오브젝트
             const nodeLayouts = {}
