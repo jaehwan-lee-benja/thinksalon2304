@@ -105,7 +105,6 @@ export default {
       createdExpenseIdForMonitor: '',
       createdExpenseIdByCreateNewE: '',
 
-      toggleActiveHandler: {},
       isThereChildMonitor: {},
       clickedExpenseId: '',
       clickedEdgeTargetId: '',
@@ -553,44 +552,9 @@ export default {
 
       return resultHere;
     },
-
-    toggleSubList(expenseHere) {
-      this.controlToggleActiveHandler(expenseHere);
-      this.controlIsThereChildMonitor(expenseHere);
-      if (expenseHere.level < 5) {
-        expenseHere.show_sub_list = !expenseHere.show_sub_list;
-
-        // show_sub_list에 대해 서버에 올라가는 값과 로컬에 저장해둔 fetched값을 맞추는 작업
-        this.fetchedExpenses.forEach(e => {
-          if (e.id == expenseHere.id) {
-            e.show_sub_list = expenseHere.show_sub_list
-          }
-        })
-
-        this.upsertExpense(expenseHere)
-      }
-
-    },
-    controlToggleActiveHandler(expenseHere) {
-      if (expenseHere.level == 5) {
-        this.toggleActiveHandler[expenseHere.id] = false;
-      } else {
-        this.toggleActiveHandler[expenseHere.id] = true;
-      }
-    },
-    controlIsThereChildMonitor(expenseHere) {
-      // 새 리스트 만들기 하는 경우, child가 없으면 new가 뜨도록 하는 방식
-      const children = this.expenses.filter((e) => e.parents_id === expenseHere.id);
-      if (children.length > 0) {
-        this.isThereChildMonitor[expenseHere.id] = true;
-      } else {
-        this.isThereChildMonitor[expenseHere.id] = false;
-      }
-    },
     cancelEditingExpense() {
       this.expenses = "";
       this.expenses = JSON.parse(JSON.stringify(this.fetchedExpenses));
-      this.expenses.forEach(e => this.controlIsThereChildMonitor(e.id)); // 새리스트 만들기 관련
     },
     removeExpense(expenseHere) {
       const parentsId = expenseHere.parents_id;
@@ -708,12 +672,6 @@ export default {
         account_id: selectedAccountIdHere
       };
 
-      if (levelForO < 5) {
-        this.toggleActiveHandler[o.id] = true;
-      } else {
-        this.toggleActiveHandler[o.id] = false;
-      }
-
       this.totalExpenses.push(o);
       this.expenses.push(o);
       this.isThereChildMonitor[parentsIdHere] = true;
@@ -751,10 +709,6 @@ export default {
         await this.selectPageByLoading(); //페이지 선택 후 this.expenses가 만들어짐
 
         this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
-
-        this.expenses.forEach(e => {
-          if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
-        })
 
       }
 
@@ -834,10 +788,6 @@ export default {
 
       this.expenses = this.totalExpenses.filter(e => e.page_id === this.selectedPageId)
       this.fetchedExpenses = JSON.parse(JSON.stringify(this.expenses));
-
-      this.expenses.forEach(e => {
-        if (e.level == 5) { this.toggleActiveHandler[e.id] = false; }
-      })
 
     },
 
