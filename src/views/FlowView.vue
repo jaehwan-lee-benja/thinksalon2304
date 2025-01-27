@@ -307,7 +307,6 @@ export default {
     watch: {
         expenses: {
             handler() {
-                console.log("expenses changed")
                 const expensesLength = this.expenses.length;
                 if (expensesLength > 0) {
                     this.$nextTick(() => {
@@ -566,6 +565,13 @@ export default {
 
         async formatExpenses() {
 
+            try {
+                await this.fetchDataForNode();
+            } catch (error) {
+                console.error("Failed to fetch node data:", error);
+                return; // 데이터를 못 가져온 경우 나머지 로직을 실행하지 않음
+            }
+
             const nodesResult = {}
             const edgeResult = {}
 
@@ -608,7 +614,7 @@ export default {
             this.layouts.nodes = await this.formatLayout();
 
             this.setGraphFit();
-            
+
         },
 
         async formatLayout() {
@@ -668,8 +674,6 @@ export default {
             })
 
             const defaultResult = this.formatLayoutDefault()
-
-            console.log("this.session = ", this.session)
 
             let userId = ""
 
