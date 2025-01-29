@@ -11,6 +11,7 @@
             <ol class="pageSettingOlStyle">
                 <li v-for="page in this.expensePages" :key="page.id">
                     <input class="pageNameStyle" v-model="page.page_name">
+                    <button @click="selectPageByPageSetting(page.id)">열기</button>
                     <button @click="removePage(page)">삭제</button>
                 </li>
             </ol>
@@ -71,8 +72,21 @@ export default {
                 this.$emit('remove-page', pageHere);
             }
         },
+        async selectPageByPageSetting(pageIdHere) {
+            const selectedPage = this.expensePages.find(e => e.id === pageIdHere);
+            if (!this.isPageEdited) {
+                this.$emit('set-page-by-select-page', selectedPage);
+                this.$emit('show-section', 'flowView');
+            } else {
+                const confirmValue = confirm("편집 중인 내용을 저장하시겠습니까? 저장하지 않으면, 편집 중인 내용은 사라집니다.")
+                if (confirmValue) {
+                    this.$emit('edit-page');
+                    this.$emit('set-page-by-select-page', selectedPage);
+                    this.$emit('show-section', 'flowView');
+                }
+            }
+        }
     }
-
 }
 </script>
 

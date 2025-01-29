@@ -57,7 +57,8 @@
         </div>
         <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
           @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @edit-page="editPage"
-          @remove-page="removePage" @cancel-editing-page="cancelEditingPage" />
+          @remove-page="removePage" @cancel-editing-page="cancelEditingPage" 
+          @set-page-by-select-page="setPageBySelectPage" @show-section="showSection"/>
       </div>
       <div class="flowViewDiv" v-if="currentSection === 'accountSetting'">
         <div :class="{
@@ -87,7 +88,6 @@ export default {
     return {
 
       currentSection: 'flowView',
-      previousSection: null,
       menuVisible: false,
 
       totalExpenses: [],
@@ -225,17 +225,9 @@ export default {
     },
   },
   methods: {
+
     showSection(section) {
 
-      // 섹션이 변경될 때 메뉴를 닫음
-      if (this.currentSection !== section) {
-        this.menuVisible = false;
-      }
-
-      // 이전 섹션 상태 저장
-      this.previousSection = this.currentSection;
-
-      // 현재 섹션 업데이트
       this.currentSection = section;
 
       if (section === 'flowView') {
@@ -785,6 +777,7 @@ export default {
 
     },
     setPageBySelectPage(selectedPageHere) {
+      this.selectedPageId = selectedPageHere.id;
       this.pageName = selectedPageHere.page_name;
       this.previousPageName = this.pageName;
 
