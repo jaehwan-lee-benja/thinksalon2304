@@ -478,6 +478,7 @@ export default {
         },
 
         async insertNodeLayout(nodeLayoutHere) {
+            console.log("nodeLayoutHere @insertNodeLayout= ", nodeLayoutHere)
             try {
                 const { error } = await supabase
                     .from('node')
