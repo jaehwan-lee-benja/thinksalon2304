@@ -318,12 +318,14 @@ export default {
         },
         editExpenseWorked: {
             handler() {
+                console.log("editExpenseWorked = ", this.editExpenseWorked)
                 this.insertNodeLayouts()
             },
             deep: true
         },
         createdExpenseIdForMonitor: {
             handler() {
+                console.log("createdExpenseIdForMonitor = ", this.createdExpenseIdForMonitor)
                 this.insertInitiallNode()
             },
             xdeep: true
@@ -427,6 +429,7 @@ export default {
                 x: null,
                 y: null,
             }
+            console.log("nodeLayout @insertInitiallNode= ", nodeLayout)
             await this.insertNodeLayout(nodeLayout)
         },
 
@@ -442,8 +445,12 @@ export default {
         },
 
         insertNodeLayouts() {
+            console.log("this.nodeLayoutsNew(0) = ", this.nodeLayoutsNew)
+            // 여기에 1개만 있어야하는데, 2개가 있다. 왜일까?
             this.nodeLayoutsNew.forEach((e) => this.insertNodeLayout(e))
+            console.log("this.nodeLayoutsNew(1) = ", this.nodeLayoutsNew)
             this.nodeLayoutsNew = []
+            console.log("this.nodeLayoutsNew(2) = ", this.nodeLayoutsNew)
         },
 
         async fetchDataForNode() {
@@ -561,6 +568,7 @@ export default {
             const confirmValue = confirm("삭제하시겠습니까? 삭제 후, '저장'버튼을 눌러야 삭제가 완료됩니다.")
             if (confirmValue) {
                 this.$emit('remove-expense', expenseHere)
+                this.showExpenseModal = false;
             }
         },
 

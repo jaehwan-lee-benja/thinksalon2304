@@ -61,7 +61,6 @@ export default {
             this.$emit('select-account', expenseIdHere, accountIdHere)
         },
         removeExpense(expenseHere) {
-            console.log("expenseHere = ", expenseHere)
             this.$emit('remove-expense', expenseHere);
         }
     },
