@@ -10,8 +10,8 @@
 
           <div class="menuBtnDiv">
             <button class="menuBtn" @click="showSection('flowView')">페이지 보기</button>
-            <button class="menuBtn" @click="showSection('pageSetting')">페이지 설정하기</button>
-            <button class="menuBtn" @click="showSection('accountSetting')">계좌 설정하기</button>
+            <button class="menuBtn" @click="showSection('pageSetting')">페이지 관리</button>
+            <button class="menuBtn" @click="showSection('accountSetting')">은행계좌 관리</button>
             <!-- <button class="menuBtn" @click="openContact">문의하기</button> -->
           </div>
 
@@ -53,7 +53,7 @@
           'pageNameDivMenuClicked': menuVisible === true,
           'pageNameDiv': menuVisible === false
         }">
-          <h2>페이지 설정하기</h2>
+          <h2>페이지 관리</h2>
         </div>
         <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
           @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @edit-page="editPage"
@@ -65,7 +65,7 @@
           'pageNameDivMenuClicked': menuVisible === true,
           'pageNameDiv': menuVisible === false
         }">
-          <h2>계좌 설정하기</h2>
+          <h2>은행계좌 관리</h2>
         </div>
         <AccountSettingView v-bind:expenses="expenses" :accounts="accounts" :isAccountEdited="isAccountEdited"
           @create-new-account="createNewAccount" @edit-account="editAccount" @remove-account="removeAccount"

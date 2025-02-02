@@ -434,6 +434,7 @@ export default {
         },
 
         async pushInitiallNode() {
+            console.log("***pushInitiallNode")
             const nodeLayout = {
                 id: this.getUuidv4(),
                 user_id: this.session.user.id,
@@ -441,6 +442,7 @@ export default {
                 x: null,
                 y: null,
             }
+            // 이 과정에서 문제가 발생하는 것 같은데.. 정확한 이해가 필요하다.
             await this.nodeLayoutsNew.push(nodeLayout)
         },
 
@@ -500,6 +502,8 @@ export default {
         },
 
         async updateNodeLayoutLocal(expenseIdHere, xHere, yHere) {
+
+            console.log("updateNodeLayoutLocal");
 
             const nodeLayout = { expense_id: expenseIdHere, x: xHere, y: yHere }
 
@@ -640,6 +644,7 @@ export default {
 
             // Array 중 기존 fetchedIdArray에 없는 id를 필터링해서 모으기 => 새로 생긴 것
             const newIdArray = idArray.filter(eachId => !fetchedIdArray.includes(eachId));
+            console.log("newIdArray = ", newIdArray)
 
             // normal을 찾기 위해 위 두 배열의 합집합을 구한다, 그리고 전체C에서 차집합한다.
             const setA = new Set(willBeDeletedIdArray)
@@ -682,16 +687,22 @@ export default {
 
             })
 
+            console.log("newExpenses = ", newExpenses)
+
             const defaultResult = this.formatLayoutDefault()
 
             let userId = ""
 
+            console.log("this.session = ", this.session)
+            
             if (this.session) {
                 userId = this.session.user.id
             }
 
+            console.log("****this.nodeLayoutsNew = ", this.nodeLayoutsNew)
             newIdArray.forEach((expenseId) => {
                 nodeLayouts[expenseId] = defaultResult[expenseId]
+                console.log("defaultResult[expenseId] = ", defaultResult[expenseId]);
                 // 편집한 내용 저장 시, 서버로 upsert되기위해 담아두기
                 const nodeLayoutNew = {
                     id: this.getUuidv4(),
@@ -700,7 +711,10 @@ export default {
                     y: nodeLayouts[expenseId].y,
                     user_id: userId
                 }
+                console.log("nodeLayoutNew = ", nodeLayoutNew)
                 this.nodeLayoutsNew.push(nodeLayoutNew)
+                console.log("**this.nodeLayoutsNew = ", this.nodeLayoutsNew)
+                // 여기까지는 문제가 없다.
             })
 
 
@@ -778,7 +792,8 @@ export default {
         },
 
         showGraphFit() {
-
+            console.log("showGraphFit")
+            
             const nodeLayouts = {}
             const newExpenseIds = this.nodeLayoutsNew.map((n) => n.expense_id)
             let foundNode = []

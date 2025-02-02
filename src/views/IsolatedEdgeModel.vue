@@ -160,7 +160,6 @@ export default {
         selectEdge() {
             const selectedSource = this.edge.filter(e1 => e1.source == this.clickedEdgeSourceId);
             const selectedTarget = selectedSource.find(e2 => e2.target == this.clickedEdgeTargetId);
-            console.log("selectedTarget = ", selectedTarget);
             if (selectedTarget) {
                 this.when = selectedTarget.when
                 this.method = selectedTarget.method
@@ -174,7 +173,6 @@ export default {
             }
         },
         async upsertEdge() {
-            console.log("upsertEdge")
             const edgeData = {
                 id: this.getUuidv4(),
                 source: this.clickedEdgeSourceId,
@@ -185,7 +183,6 @@ export default {
                 memo: this.memo,
                 user_id: this.session.user.id
             }
-            console.log("edgeData = ", edgeData)
             try {
                 const { error } = await supabase
                     .from('edge')
