@@ -42,7 +42,7 @@
           @point-clicked-Edge="pointClickedEdge" @cancel-point-clicked-edge="cancelPointClickedEdge"
           @remove-expense="removeExpense" :accounts="accounts" @select-account="selectAccount"
           :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
-          :createdExpenseIdByCreateNewE="createdExpenseIdByCreateNewE" @create-new-expense="createNewExpense"
+          @create-new-expense="createNewExpense"
           :isEdited="isEdited" @edit-expense="editExpense" @cancel-editing-expense="cancelEditingExpense"
           :sortExpensePages="sortExpensePages" :previousPageName="previousPageName" :expensePages="expensePages"
           @emit-selected-page="emitSelectedPage">
@@ -105,7 +105,6 @@ export default {
       fetchedExpensePages: [],
       isPageSettingOpened: false,
       createdExpenseIdForMonitor: '',
-      createdExpenseIdByCreateNewE: '',
 
       isThereChildMonitor: {},
       clickedExpenseId: '',
@@ -669,7 +668,6 @@ export default {
       this.totalExpenses.push(o);
       this.expenses.push(o);
       this.isThereChildMonitor[parentsIdHere] = true;
-      this.createdExpenseIdByCreateNewE = o.id;
 
     },
     setOrder(parentsIdHere) {

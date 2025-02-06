@@ -131,10 +131,6 @@ export default {
             type: String,
             default: '',
         },
-        createdExpenseIdByCreateNewE: {
-            type: String,
-            default: '',
-        },
         isEdited: {
             type: Boolean,
             default: true,
@@ -330,12 +326,6 @@ export default {
             },
             xdeep: true
         },
-        createdExpenseIdByCreateNewE: {
-            handler() {
-                this.pushInitiallNode()
-            },
-            xdeep: true
-        }
     },
     mounted() {
         this.fetchDataForNode();
@@ -433,19 +423,6 @@ export default {
             await this.insertNodeLayout(nodeLayout)
         },
 
-        async pushInitiallNode() {
-            console.log("***pushInitiallNode")
-            const nodeLayout = {
-                id: this.getUuidv4(),
-                user_id: this.session.user.id,
-                expense_id: this.createdExpenseIdByCreateNewE,
-                x: null,
-                y: null,
-            }
-            // 이 과정에서 문제가 발생하는 것 같은데.. 정확한 이해가 필요하다.
-            await this.nodeLayoutsNew.push(nodeLayout)
-        },
-
         insertNodeLayouts() {
             console.log("this.nodeLayoutsNew(0) = ", this.nodeLayoutsNew)
             // 여기에 1개만 있어야하는데, 2개가 있다. 왜일까?
@@ -519,6 +496,7 @@ export default {
                     nodeLayout.id = this.nodeFromServer.find(e => e.expense_id === expenseIdHere).id
                     this.updateNodeLayout(nodeLayout)
                 } else {
+                    console.log("524")
                     const expenseIdFromNew = this.nodeLayoutsNew.map((e) => e.expense_id)
                     if (expenseIdFromNew.length > 0) {
 
@@ -534,6 +512,7 @@ export default {
                                     return true;
                                 }
                             }
+                            console.log("539")
                             const oldValue = this.nodeLayoutsNew.find(isNodeLayout);
 
                             // 기존 값에서 id 가져오기
@@ -547,15 +526,18 @@ export default {
                                 }
                             }
 
+                            console.log("554")
                             updateArray(this.nodeLayoutsNew, oldValue, nodeLayout)
 
                         } else {
                             // 포함이 안되어있는 경우
                             nodeLayout.id = this.getUuidv4();
+                            console.log("557")
                             await this.nodeLayoutsNew.push(nodeLayout)
                         }
                     } else {
                         nodeLayout.id = this.getUuidv4();
+                        console.log("561")
                         this.nodeLayoutsNew.push(nodeLayout)
                     }
                 }
@@ -795,6 +777,7 @@ export default {
             console.log("showGraphFit")
             
             const nodeLayouts = {}
+            console.log("805")
             const newExpenseIds = this.nodeLayoutsNew.map((n) => n.expense_id)
             let foundNode = []
 
@@ -802,8 +785,10 @@ export default {
 
                 const isNewExpense = newExpenseIds.includes(e.id);
                 if (isNewExpense) {
+                    console.log("812")
                     foundNode = this.nodeLayoutsNew.find((n) => n.expense_id == e.id)
                 } else {
+                    console.log("815")
                     foundNode = this.nodeFromServer.find((n) => n.expense_id == e.id)
                 }
 
