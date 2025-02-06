@@ -7,9 +7,17 @@
       }">☰</button>
       <div class="menuGrid" v-show="menuVisible">
         <div class="pageListDiv">
+          <div class="menuBtnForPage">
+            <h3>페이지 보기</h3>
+            <select class="pageSelect" v-model="pageName" @change="selectPageBySelectBox" ref="pageSelectRef">
+              <option v-for="page in sortExpensePages" :key="page.id" :value="page.page_name">
+                {{ page.page_name }}
+              </option>
+            </select>
+          </div>
 
           <div class="menuBtnDiv">
-            <button class="menuBtn" @click="showSection('flowView')">페이지 보기</button>
+            <!-- <button class="menuBtn" @click="showSection('flowView')">페이지 보기</button> -->
             <button class="menuBtn" @click="showSection('pageSetting')">페이지 관리</button>
             <button class="menuBtn" @click="showSection('accountSetting')">은행계좌 관리</button>
             <!-- <button class="menuBtn" @click="openContact">문의하기</button> -->
@@ -42,10 +50,9 @@
           @point-clicked-Edge="pointClickedEdge" @cancel-point-clicked-edge="cancelPointClickedEdge"
           @remove-expense="removeExpense" :accounts="accounts" @select-account="selectAccount"
           :createdExpenseIdForMonitor="createdExpenseIdForMonitor" :session="session"
-          @create-new-expense="createNewExpense"
-          :isEdited="isEdited" @edit-expense="editExpense" @cancel-editing-expense="cancelEditingExpense"
-          :sortExpensePages="sortExpensePages" :previousPageName="previousPageName" :expensePages="expensePages"
-          @emit-selected-page="emitSelectedPage">
+          @create-new-expense="createNewExpense" :isEdited="isEdited" @edit-expense="editExpense"
+          @cancel-editing-expense="cancelEditingExpense" :sortExpensePages="sortExpensePages"
+          :previousPageName="previousPageName" :expensePages="expensePages" @emit-selected-page="emitSelectedPage">
         </FlowView>
       </div>
       <div class="flowViewDiv" v-if="currentSection === 'pageSetting'">
@@ -57,8 +64,8 @@
         </div>
         <PageSettingView v-bind:expenses="expenses" :expensePages="expensePages" :isPageEdited="isPageEdited"
           @remove-e-by-pageId="removeExpenseByPageDelete" @create-new-page="createNewPage" @edit-page="editPage"
-          @remove-page="removePage" @cancel-editing-page="cancelEditingPage" 
-          @set-page-by-select-page="setPageBySelectPage" @show-section="showSection"/>
+          @remove-page="removePage" @cancel-editing-page="cancelEditingPage"
+          @set-page-by-select-page="setPageBySelectPage" @show-section="showSection" />
       </div>
       <div class="flowViewDiv" v-if="currentSection === 'accountSetting'">
         <div :class="{
@@ -224,6 +231,19 @@ export default {
     },
   },
   methods: {
+
+    selectPageBySelectBox() {
+      const previousPageName = this.previousPageName;
+      if (this.isEdited) {
+        alert("편집된 내용이 있습니다. 편집된 내용에 대한 저장 또는 취소 후 페이지 이동이 가능합니다.")
+        this.pageName = previousPageName
+        this.$refs.pageSelectRef.value = previousPageName;
+      } else {
+        const selectedPage = this.expensePages.find(e => e.page_name === this.pageName)
+        this.selectedPageId = selectedPage.id
+        this.setPageBySelectPage(selectedPage)
+      }
+    },
 
     showSection(section) {
 
