@@ -314,14 +314,12 @@ export default {
         },
         editExpenseWorked: {
             handler() {
-                console.log("editExpenseWorked = ", this.editExpenseWorked)
                 this.insertNodeLayouts()
             },
             deep: true
         },
         createdExpenseIdForMonitor: {
             handler() {
-                console.log("createdExpenseIdForMonitor = ", this.createdExpenseIdForMonitor)
                 this.insertInitiallNode()
             },
             xdeep: true
@@ -419,7 +417,6 @@ export default {
                 x: null,
                 y: null,
             }
-            console.log("nodeLayout @insertInitiallNode= ", nodeLayout)
             await this.insertNodeLayout(nodeLayout)
         },
 
@@ -464,7 +461,6 @@ export default {
         },
 
         async insertNodeLayout(nodeLayoutHere) {
-            console.log("nodeLayoutHere @insertNodeLayout= ", nodeLayoutHere)
             try {
                 const { error } = await supabase
                     .from('node')
@@ -480,8 +476,6 @@ export default {
 
         async updateNodeLayoutLocal(expenseIdHere, xHere, yHere) {
 
-            console.log("updateNodeLayoutLocal");
-
             const nodeLayout = { expense_id: expenseIdHere, x: xHere, y: yHere }
 
             const expensesLength = this.expenses.length;
@@ -496,7 +490,6 @@ export default {
                     nodeLayout.id = this.nodeFromServer.find(e => e.expense_id === expenseIdHere).id
                     this.updateNodeLayout(nodeLayout)
                 } else {
-                    console.log("524")
                     const expenseIdFromNew = this.nodeLayoutsNew.map((e) => e.expense_id)
                     if (expenseIdFromNew.length > 0) {
 
@@ -512,7 +505,6 @@ export default {
                                     return true;
                                 }
                             }
-                            console.log("539")
                             const oldValue = this.nodeLayoutsNew.find(isNodeLayout);
 
                             // 기존 값에서 id 가져오기
@@ -526,18 +518,15 @@ export default {
                                 }
                             }
 
-                            console.log("554")
                             updateArray(this.nodeLayoutsNew, oldValue, nodeLayout)
 
                         } else {
                             // 포함이 안되어있는 경우
                             nodeLayout.id = this.getUuidv4();
-                            console.log("557")
                             await this.nodeLayoutsNew.push(nodeLayout)
                         }
                     } else {
                         nodeLayout.id = this.getUuidv4();
-                        console.log("561")
                         this.nodeLayoutsNew.push(nodeLayout)
                     }
                 }
@@ -626,7 +615,6 @@ export default {
 
             // Array 중 기존 fetchedIdArray에 없는 id를 필터링해서 모으기 => 새로 생긴 것
             const newIdArray = idArray.filter(eachId => !fetchedIdArray.includes(eachId));
-            console.log("newIdArray = ", newIdArray)
 
             // normal을 찾기 위해 위 두 배열의 합집합을 구한다, 그리고 전체C에서 차집합한다.
             const setA = new Set(willBeDeletedIdArray)
@@ -669,22 +657,16 @@ export default {
 
             })
 
-            console.log("newExpenses = ", newExpenses)
-
             const defaultResult = this.formatLayoutDefault()
 
             let userId = ""
-
-            console.log("this.session = ", this.session)
             
             if (this.session) {
                 userId = this.session.user.id
             }
 
-            console.log("****this.nodeLayoutsNew = ", this.nodeLayoutsNew)
             newIdArray.forEach((expenseId) => {
                 nodeLayouts[expenseId] = defaultResult[expenseId]
-                console.log("defaultResult[expenseId] = ", defaultResult[expenseId]);
                 // 편집한 내용 저장 시, 서버로 upsert되기위해 담아두기
                 const nodeLayoutNew = {
                     id: this.getUuidv4(),
@@ -693,10 +675,7 @@ export default {
                     y: nodeLayouts[expenseId].y,
                     user_id: userId
                 }
-                console.log("nodeLayoutNew = ", nodeLayoutNew)
                 this.nodeLayoutsNew.push(nodeLayoutNew)
-                console.log("**this.nodeLayoutsNew = ", this.nodeLayoutsNew)
-                // 여기까지는 문제가 없다.
             })
 
 
@@ -774,10 +753,8 @@ export default {
         },
 
         showGraphFit() {
-            console.log("showGraphFit")
-            
+
             const nodeLayouts = {}
-            console.log("805")
             const newExpenseIds = this.nodeLayoutsNew.map((n) => n.expense_id)
             let foundNode = []
 
@@ -785,10 +762,8 @@ export default {
 
                 const isNewExpense = newExpenseIds.includes(e.id);
                 if (isNewExpense) {
-                    console.log("812")
                     foundNode = this.nodeLayoutsNew.find((n) => n.expense_id == e.id)
                 } else {
-                    console.log("815")
                     foundNode = this.nodeFromServer.find((n) => n.expense_id == e.id)
                 }
 
