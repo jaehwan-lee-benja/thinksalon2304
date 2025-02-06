@@ -155,8 +155,12 @@ export default {
         showClickedEdgeModal() {
             return !!this.clickedEdgeTargetId;
         },
+        reactiveExpenseId() {
+            return this.createdExpenseIdForMonitor;
+        }
     },
     data() {
+
         const colors = {
             nodeColor: "var(--node-color)",
             hoverNodeColor: "var(--hover-node-color)",
@@ -168,6 +172,8 @@ export default {
         };
 
         return {
+
+            localExpenseId: this.createdExpenseIdForMonitor, // 반응형 상태로 변환
 
             showExpenseModal: false,
             showCreateExpenseModal: false,
@@ -318,16 +324,37 @@ export default {
             },
             deep: true
         },
-        createdExpenseIdForMonitor: {
-            handler() {
-                this.insertInitiallNode()
-            },
-            xdeep: true
-        },
+        // createdExpenseIdForMonitor: {
+        //     handler(newVal) {
+        //         console.log("(1) createdExpenseIdForMonitor", newVal);
+        //         this.localExpenseId = newVal; // 로컬 반응형 변수 업데이트
+        //         if (this.expenses.length > 0) {
+        //             this.$nextTick(() => {
+        //                 console.log("(2) createdExpenseIdForMonitor changed after nextTick: ", newVal);
+        //                 this.insertInitiallNode();
+        //             });
+        //         }
+        //     },
+        //     immediate: true
+        // }
+        reactiveExpenseId(newVal) {
+            console.log("(1) createdExpenseIdForMonitor", newVal);
+            this.localExpenseId = newVal; // 로컬 반응형 변수 업데이트
+            if (this.expenses.length > 0) {
+                this.$nextTick(() => {
+                    console.log("(2) createdExpenseIdForMonitor changed after nextTick: ", newVal);
+                    this.insertInitiallNode();
+                });
+            }
+        }
     },
     mounted() {
         this.fetchDataForNode();
         this.fetchDataForEdge();
+        console.log("Mounted - createdExpenseIdForMonitor: ", this.createdExpenseIdForMonitor);
+    },
+    updated() {
+        console.log("Updated - createdExpenseIdForMonitor: ", this.createdExpenseIdForMonitor);
     },
     methods: {
         cancelEditingExpense() {
@@ -410,23 +437,23 @@ export default {
             }
         },
         async insertInitiallNode() {
+            const defaultResult = this.formatLayoutDefault()
+
+            console.log("defaultResult = ", defaultResult)
+
             const nodeLayout = {
                 id: this.getUuidv4(),
                 user_id: this.session.user.id,
                 expense_id: this.createdExpenseIdForMonitor,
-                x: null,
-                y: null,
+                x: defaultResult[this.createdExpenseIdForMonitor].x,
+                y: defaultResult[this.createdExpenseIdForMonitor].y,
             }
             await this.insertNodeLayout(nodeLayout)
         },
 
         insertNodeLayouts() {
-            console.log("this.nodeLayoutsNew(0) = ", this.nodeLayoutsNew)
-            // 여기에 1개만 있어야하는데, 2개가 있다. 왜일까?
             this.nodeLayoutsNew.forEach((e) => this.insertNodeLayout(e))
-            console.log("this.nodeLayoutsNew(1) = ", this.nodeLayoutsNew)
             this.nodeLayoutsNew = []
-            console.log("this.nodeLayoutsNew(2) = ", this.nodeLayoutsNew)
         },
 
         async fetchDataForNode() {
@@ -660,7 +687,7 @@ export default {
             const defaultResult = this.formatLayoutDefault()
 
             let userId = ""
-            
+
             if (this.session) {
                 userId = this.session.user.id
             }

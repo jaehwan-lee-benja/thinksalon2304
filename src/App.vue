@@ -447,6 +447,7 @@ export default {
       deleteExpensesArray.forEach(e => this.deleteExpense(e.id))
     },
     async createNewPage(newPageNameHere) {
+      console.log("createNewPage")
       const isThereSamePageName = this.expensePages.filter((e) => e.page_name == newPageNameHere)
       if (isThereSamePageName.length == 0) {
         const o = {
@@ -506,6 +507,8 @@ export default {
       }
     },
     async upsertInitailExpense(idHere) {
+      console.log("upsertInitailExpense")
+
       const initialExpenseData = {
         id: this.getUuidv4(),
         parents_id: null,
@@ -522,7 +525,9 @@ export default {
       // 질문: 이것이 제대로 되고 있는 것인지?
       await this.upsertExpense(initialExpenseData)
 
+      console.log("this.createdExpenseIdForMonitor(1) = ", this.createdExpenseIdForMonitor)
       this.createdExpenseIdForMonitor = initialExpenseData.id;
+      console.log("this.createdExpenseIdForMonitor(2) = ", this.createdExpenseIdForMonitor)
 
     },
     updateParentsToggle(idHere) {
